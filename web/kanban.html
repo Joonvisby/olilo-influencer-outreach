@@ -403,6 +403,25 @@
   .category-select:focus { outline: none; border-color: var(--olilo-sweet-orange); }
   .category-select.active { background-color: var(--olilo-black); color: var(--olilo-cream); border-color: var(--olilo-black); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='rgba(247,242,224,0.7)' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
 
+  .btn-list-view {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--olilo-black-64);
+    text-decoration: none;
+    padding: 6px 12px;
+    border: 2px solid var(--olilo-black-16);
+    border-radius: var(--radius-pill);
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .btn-list-view:hover { border-color: var(--olilo-black-40); color: var(--olilo-black); }
+
   /* ── Mobile ──────────────────────────────── */
   @media (max-width: 640px) {
     .nav-hide-mobile { display: none !important; }
@@ -426,7 +445,7 @@
     <span id="last-updated"></span>
     <button class="btn-refresh" id="btn-refresh">↺ Refresh</button>
     <a href="/api/export" class="nav-hide-mobile" style="font-family:var(--font-mono);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--olilo-sweet-orange);text-decoration:none;padding:6px 14px;border:2px solid var(--olilo-sweet-orange);border-radius:var(--radius-pill);">↓ Export Kit Queue</a>
-    <a href="/admin" class="nav-link">List View</a>
+    <a href="/admin" class="btn-list-view">≡ List</a>
     <a href="/kanban" class="nav-link active">Pipeline</a>
   </div>
 </header>

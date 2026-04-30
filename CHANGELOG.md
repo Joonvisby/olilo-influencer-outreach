@@ -7,6 +7,9 @@ Format per entry:
 
 ---
 
+## 2026-04-30 — Match List View button style to admin's Pipeline button (kanban.html)
+Added .btn-list-view class mirroring admin's btn-kanban-mobile — inline-flex pill, outlined, with ≡ icon.
+
 ## 2026-04-30 — Show List View button on mobile (kanban.html)
 Removed `nav-hide-mobile` from the List View nav link so it's visible on all screen sizes.
 
