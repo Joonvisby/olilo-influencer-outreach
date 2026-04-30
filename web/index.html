@@ -1,0 +1,697 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OLILO — You're invited to taste Sweet Fiber Syrup</title>
+<link rel="icon" href="assets/favicon-o.svg" type="image/svg+xml">
+<link rel="icon" href="assets/olilo-logo.png" type="image/png">
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg-page);
+    background-image:
+      radial-gradient(circle at 15% 25%, rgba(51,27,10,0.06) 0 0.8px, transparent 1.2px),
+      radial-gradient(circle at 70% 70%, rgba(51,27,10,0.05) 0 0.6px, transparent 1px),
+      radial-gradient(circle at 40% 50%, rgba(51,27,10,0.04) 0 0.5px, transparent 0.9px);
+    background-size: 120px 120px, 160px 160px, 90px 90px;
+    color: var(--fg-1);
+    min-height: 100vh;
+  }
+
+  /* ---------- Top bar ---------- */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 36px;
+    max-width: 1440px; margin: 0 auto;
+  }
+  .topbar img { height: 34px; width: auto; display: block; }
+  .topbar .kicker {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--fg-2);
+  }
+
+  /* ---------- Main grid ---------- */
+  .stage {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 8px 24px 72px;
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+  @media (max-width: 960px) {
+    .stage { grid-template-columns: 1fr; gap: 28px; padding-bottom: 48px; }
+    .topbar { padding: 18px 20px; }
+  }
+
+  /* ---------- Left pitch column ---------- */
+  .pitch {
+    padding: 40px 8px 0 12px;
+    position: relative;
+  }
+  .eyebrow-row {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--olilo-sweet-orange);
+    color: #fff;
+    padding: 9px 16px 10px;
+    border-radius: 9999px;
+    font-family: var(--font-mono); font-size: 12px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    font-weight: 500;
+  }
+  .eyebrow-row .dot {
+    width: 8px; height: 8px; border-radius: 9999px; background: #fff;
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.28);
+  }
+  h1.pitch-h {
+    font-family: var(--font-headline); font-weight: 900;
+    font-size: clamp(3rem, 5.6vw, 5.25rem);
+    line-height: 0.9; letter-spacing: -0.025em;
+    margin: 22px 0 0; text-wrap: balance;
+  }
+  h1.pitch-h em {
+    font-style: normal;
+    font-family: var(--font-display);
+    color: var(--olilo-sweet-orange);
+    -webkit-text-stroke: 3.5px var(--olilo-black);
+    paint-order: stroke fill;
+    text-shadow: 0 3px 0 var(--olilo-black);
+    display: inline-block;
+    transform: rotate(-2deg) translateY(-2px);
+    padding: 0 .1em;
+  }
+  .pitch p.lede {
+    font-family: var(--font-body); font-weight: 500;
+    font-size: 19px; line-height: 1.5;
+    max-width: 480px;
+    margin: 24px 0 0;
+    color: var(--olilo-black-88);
+  }
+
+  /* Story paragraph */
+  .story-text {
+    font-family: var(--font-body); font-weight: 500;
+    font-size: 17px; line-height: 1.55;
+    color: var(--olilo-black-88);
+    max-width: 480px; margin: 20px 0 0;
+    border-left: 3px solid var(--olilo-sweet-orange);
+    padding-left: 14px;
+  }
+
+  /* Fact sheet */
+  .fact-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px; max-width: 480px;
+  }
+  .fact-card {
+    background: var(--olilo-white);
+    border: 2px solid var(--olilo-black);
+    border-radius: 16px; padding: 16px 18px 18px;
+  }
+  .fact-card--full {
+    grid-column: span 2;
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 20px;
+  }
+  .fact-num {
+    display: block;
+    font-family: var(--font-headline); font-weight: 900;
+    font-size: 46px; line-height: 0.9; letter-spacing: -0.025em;
+    color: var(--olilo-sweet-orange);
+  }
+  .fact-label {
+    display: block;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--olilo-black-64); font-weight: 500;
+    margin-top: 8px; line-height: 1.35;
+  }
+  .fact-body {
+    display: block;
+    font-family: var(--font-headline); font-weight: 900;
+    font-size: 17px; line-height: 1.15; letter-spacing: -0.01em;
+    color: var(--olilo-black);
+  }
+
+  /* bubble near pitch */
+  .pitch-bubble {
+    position: absolute;
+    right: 20px; top: 12px;
+    background: var(--olilo-sweet-orange);
+    color: #fff;
+    border: none;
+    border-radius: 28px;
+    padding: 18px 22px 20px;
+    transform: rotate(3deg);
+    font-family: var(--font-basal);
+    font-weight: 400;
+    font-size: 22px; line-height: 1.1;
+    text-transform: uppercase;
+    text-align: center;
+    max-width: 155px;
+    box-shadow: none;
+  }
+  .pitch-bubble::before {
+    content: '';
+    position: absolute;
+    top: 16px; left: -22px;
+    width: 0; height: 0;
+    border-style: solid;
+    border-width: 6px 26px 20px 0;
+    border-color: transparent var(--olilo-sweet-orange) transparent transparent;
+  }
+  @media (max-width: 960px) { .pitch-bubble { display: none; } }
+
+  /* ---------- Right form card ---------- */
+  .form-card {
+    position: relative;
+    background: var(--olilo-day-blue);
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(255,255,255,0.65) 0 1.2px, transparent 1.6px),
+      radial-gradient(circle at 70% 60%, rgba(255,255,255,0.55) 0 1px, transparent 1.4px),
+      radial-gradient(circle at 85% 20%, rgba(255,255,255,0.45) 0 0.8px, transparent 1.2px),
+      radial-gradient(circle at 35% 80%, rgba(255,255,255,0.55) 0 1px, transparent 1.4px);
+    background-size: 180px 180px, 220px 220px, 140px 140px, 200px 200px;
+    border: 2.5px solid var(--olilo-black);
+    border-radius: 32px;
+    padding: 36px 36px 32px;
+    box-shadow: 8px 10px 0 var(--olilo-black);
+  }
+  .form-card h2 {
+    font-family: var(--font-headline); font-weight: 900;
+    font-size: 36px; line-height: 0.95; letter-spacing: -0.015em;
+    margin: 0;
+  }
+  .form-card .sub {
+    font-family: var(--font-mono); font-size: 12px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--olilo-black-64);
+    margin: 0 0 6px;
+  }
+
+  form.intake { margin-top: 22px; display: grid; gap: 18px; }
+  .field { display: grid; gap: 6px; }
+  .field label {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--olilo-black); font-weight: 500;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .field label .opt {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--olilo-black-64); text-transform: none; letter-spacing: 0.04em;
+    font-weight: 400;
+  }
+  .field .wrap {
+    display: flex; align-items: center;
+    background: var(--olilo-white);
+    border: 2px solid var(--olilo-black);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: box-shadow var(--dur) var(--ease-out), transform var(--dur) var(--ease-out);
+  }
+  .field .wrap:focus-within {
+    box-shadow: 0 0 0 3px var(--olilo-sweet-orange), 4px 4px 0 var(--olilo-black);
+    transform: translate(-1px, -1px);
+  }
+  .field .wrap .prefix {
+    font-family: var(--font-mono); font-size: 15px; font-weight: 500;
+    color: var(--olilo-black-64);
+    padding: 0 2px 0 14px;
+    user-select: none;
+  }
+  .field input {
+    width: 100%; border: 0; outline: 0; background: transparent;
+    padding: 14px 40px 14px 16px;
+    font-family: var(--font-body); font-weight: 500; font-size: 16px;
+    color: var(--olilo-black);
+  }
+  .field input::placeholder { color: var(--olilo-black-40); font-weight: 500; }
+  .field.has-prefix input { padding-left: 4px; }
+
+  /* Affiliate toggle */
+  .affil {
+    margin-top: 4px;
+    background: var(--olilo-cream);
+    border: 2px solid var(--olilo-black);
+    border-radius: 20px;
+    padding: 16px 18px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 14px; align-items: center;
+  }
+  .affil h4 {
+    font-family: var(--font-headline); font-weight: 900;
+    font-size: 18px; line-height: 1.05; margin: 0;
+  }
+  .affil p {
+    margin: 4px 0 0; font-family: var(--font-body);
+    font-size: 14px; line-height: 1.4; color: var(--olilo-black-64);
+    font-weight: 500;
+  }
+  /* Toggle switch */
+  .switch {
+    position: relative;
+    width: 58px; height: 32px;
+    background: var(--olilo-white);
+    border: 2px solid var(--olilo-black);
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: background var(--dur) var(--ease-out);
+    flex-shrink: 0;
+  }
+  .switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .switch .knob {
+    position: absolute; top: 2px; left: 2px;
+    width: 24px; height: 24px; border-radius: 9999px;
+    background: var(--olilo-black);
+    transition: left var(--dur) var(--ease-spring), background var(--dur) var(--ease-out);
+  }
+  .switch.on { background: var(--olilo-sweet-orange); }
+  .switch.on .knob { left: 28px; background: var(--olilo-white); }
+
+  /* Submit */
+  .submit-row { display: flex; align-items: center; gap: 14px; margin-top: 8px; }
+  button.submit {
+    background: var(--olilo-sweet-orange);
+    color: #fff;
+    border: 2.5px solid var(--olilo-black);
+    border-radius: 9999px;
+    padding: 16px 28px;
+    font-family: var(--font-mono); font-size: 14px;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    font-weight: 500; cursor: pointer;
+    box-shadow: 0 5px 0 var(--olilo-black);
+    transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  button.submit:hover { transform: translateY(-2px); box-shadow: 0 7px 0 var(--olilo-black); }
+  button.submit:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--olilo-black); }
+  button.submit svg { width: 18px; height: 18px; }
+
+  .fineprint {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--olilo-black-64);
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+  }
+
+  /* sticker star near form */
+  .form-star {
+    position: absolute;
+    top: -26px; left: -18px;
+    width: 78px; height: 78px;
+    color: var(--olilo-sweet-orange);
+    filter: drop-shadow(0 4px 0 var(--olilo-black));
+    transform: rotate(-12deg);
+    pointer-events: none;
+  }
+  .form-corner-splash {
+    position: absolute;
+    right: -22px; bottom: -28px;
+    width: 100px;
+    transform: rotate(15deg);
+    pointer-events: none;
+  }
+
+  /* ---------- Success state ---------- */
+  .success {
+    display: none;
+    text-align: center;
+    padding: 20px 8px 8px;
+  }
+  .success.on { display: block; }
+  .success .big {
+    font-family: var(--font-display);
+    color: var(--olilo-sweet-orange);
+    -webkit-text-stroke: 3.5px var(--olilo-black);
+    paint-order: stroke fill;
+    text-shadow: 0 3px 0 var(--olilo-black);
+    font-size: 68px; line-height: 0.95;
+    margin: 8px 0 14px;
+  }
+  .success .body {
+    font-family: var(--font-body); font-weight: 600;
+    font-size: 17px; line-height: 1.5; color: var(--olilo-black-88);
+    max-width: 340px; margin: 0 auto;
+  }
+  .success .meta {
+    margin-top: 18px;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--olilo-black-64);
+  }
+
+  /* ---------- Footer ---------- */
+  footer {
+    max-width: 1320px; margin: 0 auto;
+    padding: 24px 36px 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--olilo-black-40);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    flex-wrap: wrap; gap: 8px;
+  }
+
+  /* Google Places dropdown */
+  .pac-container {
+    border: 2px solid var(--olilo-black);
+    border-radius: 12px;
+    box-shadow: 4px 4px 0 var(--olilo-black);
+    font-family: var(--font-mono), monospace;
+    margin-top: 4px;
+    overflow: hidden;
+    background: var(--olilo-white);
+  }
+  .pac-item {
+    padding: 10px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    border-top: 1px solid var(--olilo-black-16);
+    color: var(--olilo-black);
+    line-height: 1.4;
+  }
+  .pac-item:first-child { border-top: none; }
+  .pac-item:hover, .pac-item-selected { background: var(--olilo-dawn-orange); }
+  .pac-item-query { font-weight: 600; color: var(--olilo-black); font-size: 13px; }
+  .pac-matched { color: var(--olilo-sweet-orange); font-weight: 700; }
+  .pac-icon, .pac-icon-markerless { display: none !important; width: 0 !important; margin: 0 !important; }
+  .pac-logo::after { display: none !important; }
+  .pac-item { padding-left: 14px !important; }
+  .pac-item img, .pac-item svg { display: none !important; }
+  /* Kill native search clear button */
+  #addr::-webkit-search-cancel-button,
+  #addr::-webkit-search-decoration { display: none !important; }
+
+  /* Error state */
+  .field .wrap.err { box-shadow: 0 0 0 3px rgba(251,68,8,0.35); }
+  .err-text {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--olilo-sweet-orange); letter-spacing: 0.04em;
+    display: none;
+  }
+  .field.err .err-text { display: block; }
+
+  /* gentle idle wiggle on star */
+  @keyframes wiggle {
+    0%,100% { transform: rotate(-12deg); }
+    50%     { transform: rotate(-8deg); }
+  }
+  .form-star { animation: wiggle 6s ease-in-out infinite; transform-origin: center; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <img src="assets/olilo-logo.png" alt="OLILO">
+
+</header>
+
+<main class="stage">
+
+  <!-- LEFT: Pitch -->
+  <section class="pitch">
+    <span class="eyebrow-row"><span class="dot"></span>You're on the list</span>
+
+    <h1 class="pitch-h">
+      Send me a <em>sweet</em> kit.
+    </h1>
+
+    <p class="lede">
+      Drop your details here and we'll ship you a bottle of Sweet Fiber Syrup.
+    </p>
+
+    <p class="story-text">
+      We made something better than sugar. We want you to taste it first. It took two years to get it right. Just pour it on something you like and tell us what you think.
+    </p>
+
+    <div class="fact-grid" style="margin-top: 24px;">
+      <div class="fact-card">
+        <span class="fact-num">7g</span>
+        <span class="fact-label">Prebiotic fiber per serving (1 tbsp)</span>
+      </div>
+      <div class="fact-card">
+        <span class="fact-num">45%</span>
+        <span class="fact-label">Fewer calories than sugar</span>
+      </div>
+      <div class="fact-card">
+        <span class="fact-body">Cold Soluble</span>
+        <span class="fact-label" style="margin-top:6px;">For drinks &amp; smoothies</span>
+      </div>
+      <div class="fact-card">
+        <span class="fact-body">Heat Stable</span>
+        <span class="fact-label" style="margin-top:6px;">For cooking &amp; baking</span>
+      </div>
+      <div class="fact-card" style="display:flex; align-items:center; gap:10px;">
+        <span style="font-size:20px;">🇰🇷</span>
+        <span class="fact-body">Rooted in Korea.</span>
+      </div>
+      <div class="fact-card" style="display:flex; align-items:center; gap:10px;">
+        <span style="font-size:20px;">🇺🇸</span>
+        <span class="fact-body">Made in USA.</span>
+      </div>
+    </div>
+
+    <span class="pitch-bubble">Try it<br/>first.</span>
+  </section>
+
+  <!-- RIGHT: Form -->
+  <section class="form-card" id="card">
+
+
+    <!-- FORM -->
+    <div id="form-view">
+      <p class="sub">Ship my kit to —</p>
+      <h2>Tell us where to send it.</h2>
+
+      <form class="intake" id="intake" novalidate>
+        <div class="field" id="f-name">
+          <label for="name">Full name</label>
+          <div class="wrap"><input id="name" name="name" type="text" placeholder="Jamie Park" autocomplete="name" required></div>
+          <span class="err-text">We'll need a name on the package.</span>
+        </div>
+
+        <div class="field" id="f-email">
+          <label for="email">Email <span class="opt">· for shipping updates</span></label>
+          <div class="wrap"><input id="email" name="email" type="email" placeholder="jamie@email.com" autocomplete="email" required></div>
+          <span class="err-text">That doesn't look like an email.</span>
+        </div>
+
+        <div class="field" id="f-phone">
+          <label for="phone">Phone <span class="opt">· for shipping updates</span></label>
+          <div class="wrap"><input id="phone" name="phone" type="tel" placeholder="(555) 000-0000" autocomplete="tel" required></div>
+          <span class="err-text">We'll need a number for shipping updates.</span>
+        </div>
+
+        <div class="field has-prefix" id="f-ig">
+          <label for="ig">Instagram handle</label>
+          <div class="wrap"><span class="prefix">@</span><input id="ig" name="instagram" type="text" placeholder="jamiepark" autocomplete="off" required></div>
+          <span class="err-text">Add your Instagram so we can match the DM.</span>
+        </div>
+
+        <div class="field has-prefix" id="f-tt">
+          <label for="tt">TikTok handle <span class="opt">· optional</span></label>
+          <div class="wrap"><span class="prefix">@</span><input id="tt" name="tiktok" type="text" placeholder="jamiepark" autocomplete="off"></div>
+        </div>
+
+        <div class="field" id="f-addr">
+          <label for="addr">Shipping address</label>
+          <div class="wrap"><input id="addr" name="shipping_dest" type="search" placeholder="Start typing your address…" autocomplete="off" required></div>
+          <span class="err-text">We need somewhere to ship the kit.</span>
+        </div>
+
+        <div class="field" id="f-apt">
+          <label for="apt">Apt, Suite, or Unit <span class="opt">· optional</span></label>
+          <div class="wrap"><input id="apt" name="apt" type="text" placeholder="Apt 4B, Suite 200…" autocomplete="off"></div>
+        </div>
+
+        <div class="affil">
+          <div>
+            <h4>Invite me to OLILO Affiliates</h4>
+            <p>Earn on every bottle your people buy with your code. We'll follow up after your kit lands.</p>
+          </div>
+          <label class="switch" id="affil-switch" aria-label="Join OLILO Affiliates">
+            <input type="checkbox" id="affiliate" name="affiliate">
+            <span class="knob"></span>
+          </label>
+        </div>
+
+        <div class="submit-row">
+          <button type="submit" class="submit">
+            Send my kit
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12 H19"/><path d="M13 6 L19 12 L13 18"/>
+            </svg>
+          </button>
+          <span class="fineprint">One kit per person ·<br/>US shipping only for now</span>
+        </div>
+      </form>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="success" id="success">
+      <svg viewBox="0 0 64 64" fill="var(--olilo-sweet-orange)" style="width:72px;height:72px;filter:drop-shadow(0 4px 0 var(--olilo-black));margin: 10px auto 0;display:block;">
+        <path d="M32 4 C34 22, 42 30, 60 32 C42 34, 34 42, 32 60 C30 42, 22 34, 4 32 C22 30, 30 22, 32 4 Z"/>
+      </svg>
+      <div class="big">YUM!</div>
+      <p class="body">Your kit is queued up, <span id="success-name">friend</span>. Watch your inbox for a shipping note in the next 48 hours — and keep an eye on your DMs.</p>
+      <div class="meta" id="success-affil">Shipping to <span id="success-addr">you</span></div>
+    </div>
+
+  </section>
+</main>
+
+<footer>
+  <span>© OLILO 2026 · Sweet Fiber Syrup</span>
+  <span>Questions? info@olilosweet.com</span>
+</footer>
+
+<script>
+  // ── Config ──────────────────────────────────────────────────────────────────
+  // Replace with your live n8n webhook URL before deploying.
+  const WEBHOOK_URL = '/api/intake';
+
+  // ── Affiliate toggle ────────────────────────────────────────────────────────
+  const sw = document.getElementById('affil-switch');
+  const swInput = document.getElementById('affiliate');
+  sw.addEventListener('click', (e) => {
+    if (e.target.tagName.toLowerCase() === 'input') return;
+    swInput.checked = !swInput.checked;
+    sw.classList.toggle('on', swInput.checked);
+  });
+  sw.addEventListener('keydown', (e) => {
+    if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      swInput.checked = !swInput.checked;
+      sw.classList.toggle('on', swInput.checked);
+    }
+  });
+  sw.tabIndex = 0;
+
+  // ── Phone auto-format (XXX) XXX-XXXX ────────────────────────────────────────
+  document.getElementById('phone').addEventListener('input', function () {
+    const digits = this.value.replace(/\D/g, '').slice(0, 10);
+    let formatted = digits;
+    if (digits.length > 6)      formatted = `(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`;
+    else if (digits.length > 3) formatted = `(${digits.slice(0,3)}) ${digits.slice(3)}`;
+    else if (digits.length > 0) formatted = `(${digits}`;
+    this.value = formatted;
+  });
+
+
+  // ── Clear errors as user types ───────────────────────────────────────────────
+  ['name','email','phone','ig','addr'].forEach(id => {
+    document.getElementById(id).addEventListener('input', () => {
+      document.getElementById('f-' + id).classList.remove('err');
+    });
+  });
+
+  // ── Submit ───────────────────────────────────────────────────────────────────
+  const form = document.getElementById('intake');
+  const submitBtn = form.querySelector('button.submit');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const name  = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const ig    = document.getElementById('ig').value.trim().replace(/^@/, '');
+    const tt    = document.getElementById('tt').value.trim().replace(/^@/, '');
+    const addr  = document.getElementById('addr').value.trim();
+    const apt   = document.getElementById('apt').value.trim();
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const phoneOk = phone.replace(/\D/g, '').length >= 10;
+
+    let ok = true;
+    if (!name)    { document.getElementById('f-name').classList.add('err');  ok = false; }
+    if (!emailOk) { document.getElementById('f-email').classList.add('err'); ok = false; }
+    if (!phoneOk) { document.getElementById('f-phone').classList.add('err'); ok = false; }
+    if (!ig)      { document.getElementById('f-ig').classList.add('err');    ok = false; }
+    if (!addr)    { document.getElementById('f-addr').classList.add('err');  ok = false; }
+    if (!ok) return;
+
+    // Loading state
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = 'Sending&hellip;';
+
+    try {
+      const res = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          email,
+          phone,
+          instagram_handle: ig,
+          tiktok_handle: tt || null,
+          shipping_address: apt ? `${addr}, ${apt}` : addr,
+          affiliate_opt_in: swInput.checked
+        })
+      });
+
+      if (!res.ok) throw new Error(`Server error ${res.status}`);
+
+      // Success
+      document.getElementById('form-view').style.display = 'none';
+      const s = document.getElementById('success');
+      s.classList.add('on');
+      document.getElementById('success-name').textContent = name.split(' ')[0];
+      document.getElementById('success-addr').textContent = addr.split(',').slice(0,2).join(', ') || 'you';
+
+    } catch (err) {
+      // Reset button and show inline error
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'Send my kit <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12 H19"/><path d="M13 6 L19 12 L13 18"/></svg>';
+      const existing = form.querySelector('.submit-err');
+      if (!existing) {
+        const msg = document.createElement('p');
+        msg.className = 'submit-err';
+        msg.style.cssText = 'font-family:var(--font-mono);font-size:12px;color:var(--olilo-sweet-orange);letter-spacing:0.04em;margin:0';
+        msg.textContent = 'Something went wrong — please try again or email info@olilosweet.com';
+        form.querySelector('.submit-row').after(msg);
+      }
+    }
+
+    // Scroll to top of card regardless
+    const card = document.getElementById('card');
+    window.scrollTo({ top: card.getBoundingClientRect().top + window.scrollY - 24, behavior: 'smooth' });
+  });
+</script>
+
+
+<script>
+  function initAutocomplete() {
+    const input = document.getElementById('addr');
+    input.removeAttribute('readonly');
+    if (!window.google || !window.google.maps || !window.google.maps.places) {
+      input.placeholder = '⚠️ Places API not loaded — check API key restrictions';
+      return;
+    }
+    const autocomplete = new google.maps.places.Autocomplete(input, {
+      types: ['address'],
+      componentRestrictions: { country: 'us' },
+      fields: ['formatted_address']
+    });
+
+    autocomplete.addListener('place_changed', () => {
+      const place = autocomplete.getPlace();
+      if (place.formatted_address) {
+        input.value = place.formatted_address;
+        document.getElementById('f-addr').classList.remove('err');
+      }
+    });
+
+    // Prevent form submit on Enter while dropdown is open
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') e.preventDefault();
+    });
+  }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDSfPleLQxie_NtmfkbFuk1mw9UAnCLhEY&libraries=places&v=weekly&callback=initAutocomplete" async defer></script>
+</body>
+</html>

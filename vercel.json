@@ -1,0 +1,11 @@
+{
+  "outputDirectory": "web",
+  "framework": null,
+  "redirects": [
+    { "source": "/kit", "destination": "/", "permanent": false }
+  ],
+  "rewrites": [
+    { "source": "/admin", "destination": "/admin.html" },
+    { "source": "/kanban", "destination": "/kanban.html" }
+  ]
+}

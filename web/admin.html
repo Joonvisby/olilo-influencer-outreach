@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OLILO · Outreach</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon-o.svg">
+<link rel="stylesheet" href="/colors_and_type.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--olilo-cream);
+    background-image:
+      radial-gradient(circle at 15% 25%, rgba(51,27,10,0.06) 0 0.8px, transparent 1.2px),
+      radial-gradient(circle at 70% 70%, rgba(51,27,10,0.05) 0 0.6px, transparent 1px),
+      radial-gradient(circle at 40% 50%, rgba(51,27,10,0.04) 0 0.5px, transparent 0.9px);
+    background-size: 120px 120px, 160px 160px, 90px 90px;
+    color: var(--olilo-black);
+    min-height: 100vh;
+  }
+
+  /* ── Header ─────────────────────────────────────────────── */
+  header {
+    background: var(--olilo-day-blue);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 24px;
+    gap: 10px;
+  }
+  header img { height: 28px; flex-shrink: 0; }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .header-right a, .header-right button {
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .nav-hide-mobile { display: inline-flex; }
+  #last-updated {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--olilo-black-40);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .btn-kanban-mobile {
+    display: none;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--olilo-black-64);
+    text-decoration: none;
+    padding: 6px 12px;
+    border: 2px solid var(--olilo-black-16);
+    border-radius: var(--radius-pill);
+    white-space: nowrap;
+  }
+
+  /* ── Toolbar ─────────────────────────────────────────────── */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 24px 12px;
+    flex-wrap: wrap;
+  }
+
+  .page-title {
+    font-family: var(--font-headline);
+    font-weight: 900;
+    font-size: 26px;
+    letter-spacing: -0.01em;
+    color: var(--olilo-black);
+  }
+
+  .filter-tabs {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    width: 100%;
+    padding-bottom: 2px;
+  }
+  .filter-tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    padding: 6px 14px;
+    border-radius: var(--radius-pill);
+    border: 2px solid var(--olilo-black-16);
+    background: var(--olilo-white);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: var(--olilo-black-64);
+    transition: all var(--dur-fast) var(--ease-out);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .tab:hover { border-color: var(--olilo-black-40); color: var(--olilo-black); }
+  .tab.active { background: var(--olilo-black); color: var(--olilo-cream); border-color: var(--olilo-black); }
+
+  .spacer { flex: 1; }
+
+  .count {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--olilo-black-40);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .search-box {
+    padding: 9px 14px;
+    border: 2px solid var(--olilo-black-16);
+    border-radius: var(--radius-md);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    width: 100%;
+    background: var(--olilo-white);
+    color: var(--olilo-black);
+    transition: border-color var(--dur-fast);
+  }
+  .search-box:focus { outline: none; border-color: var(--olilo-sweet-orange); }
+
+  /* ── Table — desktop ─────────────────────────────────────── */
+  .table-wrap {
+    margin: 0 24px 48px;
+    background: var(--olilo-white);
+    border-radius: var(--radius-lg);
+    overflow: auto;
+    box-shadow: var(--shadow-md);
+    border: 2px solid var(--olilo-black-08);
+    max-height: calc(100vh - 180px);
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+  thead { background: var(--olilo-hanji); position: sticky; top: 0; z-index: 10; }
+  th {
+    text-align: left;
+    padding: 13px 20px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--olilo-black-64);
+    border-bottom: 2px solid var(--olilo-black-08);
+  }
+  td {
+    padding: 14px 20px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 500;
+    border-bottom: 1px solid var(--olilo-black-08);
+    vertical-align: middle;
+    color: var(--olilo-black);
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--olilo-cream); }
+
+  .name-cell { font-weight: 700; }
+  .handle { color: var(--olilo-sweet-orange); font-weight: 600; }
+  .no-val { color: var(--olilo-black-40); font-size: 13px; }
+
+  /* ── Card list — mobile ──────────────────────────────────── */
+  .card-list { display: none; flex-direction: column; gap: 10px; margin: 0 16px 40px; }
+  .creator-card {
+    background: var(--olilo-white);
+    border-radius: var(--radius-lg);
+    border: 2px solid var(--olilo-black-08);
+    padding: 16px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .creator-card-info { flex: 1; min-width: 0; }
+  .creator-card-name {
+    font-family: var(--font-headline);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--olilo-black);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .creator-card-handle {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--olilo-sweet-orange);
+    font-weight: 600;
+    margin-top: 2px;
+  }
+  .creator-card-footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  /* ── Mobile breakpoint ───────────────────────────────────── */
+  @media (max-width: 640px) {
+    header { padding: 12px 16px; }
+    .nav-hide-mobile { display: none !important; }
+    .btn-kanban-mobile { display: inline-flex; }
+    .toolbar { padding: 12px 16px 8px; gap: 8px; }
+    .table-wrap { display: none; }
+    .card-list { display: flex; }
+    .spacer { display: none; }
+    .count { order: -1; }
+    .search-box { font-size: 16px; } /* prevents iOS zoom */
+    .modal { padding: 24px 20px; border-radius: var(--radius-lg); }
+  }
+
+  /* Status badges */
+  .badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .s-not-contacted  { background: var(--olilo-hanji);      color: var(--olilo-black-64); }
+  .s-contacted      { background: var(--olilo-day-yellow); color: #5a3d00; }
+  .s-replied        { background: #d4f0e0;                  color: #1a5c2a; }
+  .s-deal-agreed    { background: var(--olilo-dawn-orange); color: #7a2800; }
+  .s-shipped        { background: var(--olilo-day-blue);    color: #004a6e; }
+  .s-delivered      { background: #c8f0f5;                  color: #0c5460; }
+  .s-content-posted { background: #e2d9f3;                  color: #4a1d6e; }
+  .s-declined       { background: #fde0e0;                  color: #721c24; }
+  .s-other          { background: var(--olilo-hanji);       color: var(--olilo-black-64); }
+
+  /* Action button */
+  .btn-contact {
+    padding: 7px 16px;
+    background: var(--olilo-sweet-orange);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity var(--dur-fast);
+    box-shadow: 0 3px 0 rgba(51,27,10,0.2);
+  }
+  .btn-contact:hover { opacity: 0.88; }
+  .btn-contact:disabled {
+    background: var(--olilo-black-16);
+    color: var(--olilo-black-40);
+    box-shadow: none;
+    cursor: default;
+  }
+
+  /* Empty / loading states */
+  .state-row td {
+    text-align: center;
+    padding: 60px 20px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--olilo-black-40);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── Modal ───────────────────────────────────────────────── */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(51,27,10,0.45);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+  .overlay.open { display: flex; }
+
+  .modal {
+    background: var(--olilo-white);
+    border-radius: var(--radius-xl);
+    padding: 32px;
+    width: 420px;
+    max-width: 92vw;
+    box-shadow: var(--shadow-lg);
+    border: 2px solid var(--olilo-black-08);
+  }
+
+  .modal-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--olilo-sweet-orange);
+    margin-bottom: 6px;
+  }
+
+  .modal-name {
+    font-family: var(--font-headline);
+    font-weight: 900;
+    font-size: 26px;
+    letter-spacing: -0.01em;
+    color: var(--olilo-black);
+    margin-bottom: 2px;
+  }
+
+  .modal-handle {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--olilo-sweet-orange);
+    margin-bottom: 24px;
+  }
+
+  .modal label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--olilo-black-64);
+    margin-bottom: 7px;
+  }
+
+  .modal select, .modal textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 2px solid var(--olilo-black-16);
+    border-radius: var(--radius-md);
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--olilo-black);
+    background: var(--olilo-white);
+    margin-bottom: 18px;
+    transition: border-color var(--dur-fast);
+    appearance: auto;
+  }
+  .modal select:focus, .modal textarea:focus {
+    outline: none;
+    border-color: var(--olilo-sweet-orange);
+  }
+  .modal textarea { height: 88px; resize: vertical; }
+
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 6px;
+  }
+
+  .btn-cancel {
+    padding: 10px 20px;
+    border: 2px solid var(--olilo-black-16);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--olilo-black-64);
+    cursor: pointer;
+    transition: border-color var(--dur-fast);
+  }
+  .btn-cancel:hover { border-color: var(--olilo-black-40); }
+
+  .btn-confirm {
+    padding: 10px 22px;
+    background: var(--olilo-black);
+    color: var(--olilo-cream);
+    border: none;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    box-shadow: 0 4px 0 rgba(51,27,10,0.25);
+    transition: opacity var(--dur-fast);
+  }
+  .btn-confirm:hover { opacity: 0.88; }
+  .btn-confirm:disabled { opacity: 0.4; cursor: default; }
+
+  /* ── Password gate ───────────────────────────────────────── */
+  #gate {
+    position: fixed;
+    inset: 0;
+    background: var(--olilo-cream);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #gate.hidden { display: none; }
+  .gate-box {
+    background: var(--olilo-white);
+    border: 2px solid var(--olilo-black-08);
+    border-radius: var(--radius-xl);
+    padding: 40px 36px;
+    width: 320px;
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+  }
+  .gate-box img { height: 28px; margin-bottom: 24px; }
+  .gate-box label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--olilo-black-64);
+    margin-bottom: 10px;
+  }
+  .gate-box input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--olilo-black-16);
+    border-radius: var(--radius-md);
+    font-family: var(--font-mono);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-align: center;
+    color: var(--olilo-black);
+    background: var(--olilo-white);
+    margin-bottom: 14px;
+    transition: border-color 0.15s;
+  }
+  .gate-box input:focus { outline: none; border-color: var(--olilo-sweet-orange); }
+  .gate-box input.error { border-color: #e02020; }
+  .gate-error {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: #e02020;
+    margin-top: -8px;
+    margin-bottom: 14px;
+    letter-spacing: 0.04em;
+    min-height: 16px;
+  }
+  .gate-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--olilo-black);
+    color: var(--olilo-cream);
+    border: none;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    box-shadow: 0 4px 0 rgba(51,27,10,0.25);
+    transition: opacity 0.15s;
+  }
+  .gate-btn:hover { opacity: 0.88; }
+
+  /* ── Stats bar ───────────────────────────────────────────── */
+  .stats-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 24px 0;
+    flex-wrap: wrap;
+  }
+  .stats-bar span {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--olilo-black-64);
+    letter-spacing: 0.04em;
+  }
+  .stats-bar .s-num { font-weight: 700; color: var(--olilo-black); }
+  .stats-bar .s-dot { color: var(--olilo-black-16); }
+  @media (max-width: 640px) { .stats-bar { padding: 6px 16px 0; } }
+
+  /* ── Tier filter row ─────────────────────────────────────── */
+  .tier-tabs {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    width: 100%;
+    padding-bottom: 2px;
+  }
+  .tier-tabs::-webkit-scrollbar { display: none; }
+  .tier-tab {
+    padding: 5px 12px;
+    border-radius: var(--radius-pill);
+    border: 2px solid var(--olilo-black-16);
+    background: var(--olilo-white);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: var(--olilo-black-64);
+    transition: all var(--dur-fast) var(--ease-out);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .tier-tab:hover { border-color: var(--olilo-black-40); color: var(--olilo-black); }
+  .tier-tab.active { background: var(--olilo-sweet-orange); color: #fff; border-color: var(--olilo-sweet-orange); }
+
+  /* ── Follow-up flag ──────────────────────────────────────── */
+  .followup-flag {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #c05000;
+    background: #fff0e0;
+    border: 1.5px solid #f0a060;
+    border-radius: var(--radius-pill);
+    padding: 2px 7px;
+    margin-left: 6px;
+    white-space: nowrap;
+  }
+
+  /* ── Category dropdown ───────────────────────────────────── */
+  .category-select {
+    padding: 5px 32px 5px 12px;
+    border-radius: var(--radius-pill);
+    border: 2px solid var(--olilo-black-16);
+    background: var(--olilo-white);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: var(--olilo-black-64);
+    transition: all var(--dur-fast) var(--ease-out);
+    white-space: nowrap;
+    flex-shrink: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='rgba(51,27,10,0.4)' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+  }
+  .category-select:hover { border-color: var(--olilo-black-40); color: var(--olilo-black); }
+  .category-select:focus { outline: none; border-color: var(--olilo-sweet-orange); }
+  .category-select.active { background-color: var(--olilo-black); color: var(--olilo-cream); border-color: var(--olilo-black); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='rgba(247,242,224,0.7)' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+
+  /* ── Contacted timestamp ─────────────────────────────────── */
+  .contacted-at {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--olilo-black-40);
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+
+  /* ── Clickable handle links ──────────────────────────────── */
+  a.handle-link {
+    color: var(--olilo-sweet-orange);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  a.handle-link:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<!-- Password gate -->
+<div id="gate">
+  <div class="gate-box">
+    <img src="/assets/olilo-logo.png" alt="OLILO">
+    <label>Enter password</label>
+    <input type="password" id="gate-input" maxlength="10" autocomplete="off" autofocus>
+    <p class="gate-error" id="gate-error"></p>
+    <button class="gate-btn" id="gate-btn">Enter</button>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const PASS = '07170';
+    const gate = document.getElementById('gate');
+    const input = document.getElementById('gate-input');
+    const errEl = document.getElementById('gate-error');
+    const btn = document.getElementById('gate-btn');
+
+    if (sessionStorage.getItem('olilo-auth') === '1') {
+      gate.classList.add('hidden');
+      return;
+    }
+
+    function attempt() {
+      if (input.value === PASS) {
+        sessionStorage.setItem('olilo-auth', '1');
+        gate.classList.add('hidden');
+      } else {
+        input.classList.add('error');
+        errEl.textContent = 'Wrong password.';
+        input.value = '';
+        setTimeout(() => { input.classList.remove('error'); errEl.textContent = ''; }, 2000);
+      }
+    }
+    btn.addEventListener('click', attempt);
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') attempt(); });
+  })();
+</script>
+
+<header>
+  <img src="/assets/olilo-logo.png" alt="OLILO">
+  <div class="header-right">
+    <span id="last-updated"></span>
+    <button id="btn-refresh" style="background:transparent;border:2px solid var(--olilo-black-40);border-radius:var(--radius-pill);padding:6px 12px;color:var(--olilo-black);cursor:pointer;font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;">↺ Refresh</button>
+    <a href="/kanban" class="btn-kanban-mobile">⠿ Pipeline</a>
+    <a href="/api/export" class="nav-hide-mobile" style="color:var(--olilo-sweet-orange);text-decoration:none;padding:6px 12px;border:2px solid var(--olilo-sweet-orange);border-radius:var(--radius-pill);">↓ Export</a>
+    <a href="/admin" class="nav-hide-mobile" style="color:var(--olilo-white);text-decoration:none;padding:6px 12px;border:2px solid var(--olilo-black);background:var(--olilo-black);border-radius:var(--radius-pill);">List</a>
+    <a href="/kanban" class="nav-hide-mobile" style="color:var(--olilo-black-64);text-decoration:none;padding:6px 12px;border:2px solid var(--olilo-black-16);border-radius:var(--radius-pill);">Pipeline</a>
+  </div>
+</header>
+
+<div class="toolbar">
+  <span class="page-title">Creators</span>
+  <div class="filter-tabs">
+    <button class="tab active" data-status="all">All</button>
+    <button class="tab" data-status="Not Contacted">Not Contacted</button>
+    <button class="tab" data-status="Contacted">Contacted</button>
+    <button class="tab" data-status="Replied">Replied</button>
+    <button class="tab" data-status="Shipped">Shipped</button>
+    <button class="tab" data-status="Delivered">Delivered</button>
+    <button class="tab" data-status="affiliate">★ Affiliate</button>
+  </div>
+  <div class="tier-tabs">
+    <button class="tier-tab active" data-tier="all">All Tiers</button>
+    <button class="tier-tab" data-tier="Tier 1">Tier 1</button>
+    <button class="tier-tab" data-tier="Tier 2">Tier 2</button>
+    <button class="tier-tab" data-tier="Tier 3">Tier 3</button>
+  </div>
+  <select class="category-select" id="category-select">
+    <option value="all">All Categories</option>
+    <option value="Beverage">Beverage</option>
+    <option value="Gut Health">Gut Health</option>
+    <option value="Blood Sugar &amp; Metabolic">Blood Sugar &amp; Metabolic</option>
+    <option value="Korean Food">Korean Food</option>
+    <option value="Asian Food">Asian Food</option>
+    <option value="Healthy Recipe">Healthy Recipe</option>
+    <option value="Baking &amp; Dessert">Baking &amp; Dessert</option>
+  </select>
+  <div class="tier-tabs" id="assignee-tabs">
+    <button class="tier-tab active" data-assignee="all">All</button>
+    <button class="tier-tab" data-assignee="Joon">Joon</button>
+    <button class="tier-tab" data-assignee="Rich">Rich</button>
+  </div>
+  <div class="spacer"></div>
+  <span class="count" id="count"></span>
+  <input class="search-box" type="search" placeholder="Search name or handle…" id="search">
+</div>
+
+<div class="stats-bar" id="stats-bar"></div>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Handles</th>
+        <th>Status</th>
+        <th>Contacted</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="tbody">
+      <tr class="state-row"><td colspan="5">Loading creators…</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Mobile card list -->
+<div class="card-list" id="card-list"></div>
+
+<!-- Modal -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <p class="modal-eyebrow">Mark as Contacted</p>
+    <p class="modal-name" id="modal-name"></p>
+    <p class="modal-handle" id="modal-handle"></p>
+
+    <label>Channel</label>
+    <select id="modal-channel">
+      <option value="Instagram DM">Instagram DM</option>
+      <option value="Email">Email</option>
+      <option value="TikTok DM">TikTok DM</option>
+    </select>
+
+    <label>Sent by</label>
+    <select id="modal-sentby">
+      <option value="Joon">Joon</option>
+      <option value="Rich">Rich</option>
+    </select>
+
+    <!-- Subject line — Email only -->
+    <div id="subject-row" style="display:none;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;">
+        <label style="margin-bottom:0;">Subject Line</label>
+        <button id="btn-copy-subject" style="background:transparent;border:none;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--olilo-sweet-orange);cursor:pointer;letter-spacing:0.04em;text-transform:uppercase;">Copy</button>
+      </div>
+      <input id="modal-subject" type="text" style="width:100%;padding:10px 14px;border:2px solid var(--olilo-black-16);border-radius:var(--radius-md);font-family:var(--font-body);font-size:14px;color:var(--olilo-black);background:var(--olilo-white);margin-bottom:14px;" readonly>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;">
+      <label style="margin-bottom:0;" id="draft-label">Message / DM Draft</label>
+      <button id="btn-copy" style="background:transparent;border:none;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--olilo-sweet-orange);cursor:pointer;letter-spacing:0.04em;text-transform:uppercase;">Copy</button>
+    </div>
+    <textarea id="modal-notes" placeholder="No draft found for this creator…" style="height:140px;"></textarea>
+    <div style="margin-top:-10px;margin-bottom:18px;">
+      <a href="https://olilosweet.com/kit" target="_blank" style="font-family:var(--font-mono);font-size:11px;color:var(--olilo-black-40);text-decoration:none;letter-spacing:0.04em;">↗ Intake form link</a>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" id="btn-cancel">Cancel</button>
+      <button class="btn-confirm" id="btn-confirm">Mark Contacted</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let allRecords = [];
+  let activeStatus = 'all';
+  let activeTier = 'all';
+  let activeCategory = 'all';
+  let activeAssignee = 'all';
+  let activeSearch = '';
+  let pendingRecord = null;
+
+  const STATUS_CLASS = {
+    'Not Contacted': 's-not-contacted',
+    'Contacted':     's-contacted',
+    'Replied':       's-replied',
+    'Deal Agreed':   's-deal-agreed',
+    'Shipped':       's-shipped',
+    'Delivered':     's-delivered',
+    'Content Posted':'s-content-posted',
+    'Declined':      's-declined',
+  };
+
+  function daysAgo(dateStr) {
+    if (!dateStr) return null;
+    return Math.floor((Date.now() - new Date(dateStr).getTime()) / 86400000);
+  }
+
+  function igLink(handle) {
+    if (!handle || handle === '—') return handle || '—';
+    const bare = handle.replace(/^@/, '');
+    return `<a class="handle-link" href="https://instagram.com/${bare}" target="_blank" rel="noopener">${handle}</a>`;
+  }
+
+  function ttLink(handle) {
+    if (!handle) return '<span class="no-val">—</span>';
+    const bare = handle.replace(/^@/, '');
+    return `<a class="handle-link" href="https://tiktok.com/@${bare}" target="_blank" rel="noopener">${handle}</a>`;
+  }
+
+  function statusBadge(current) {
+    const cls = STATUS_CLASS[current] || 's-not-contacted';
+    return `<span class="badge ${cls}">${current}</span>`;
+  }
+
+  function followupTag(status, lastContactedAt) {
+    if (status !== 'Contacted') return '';
+    const days = daysAgo(lastContactedAt);
+    if (days === null || days < 5) return '';
+    return `<span class="followup-flag">⚑ ${days}d</span>`;
+  }
+
+  function contactedAtLabel(lastContactedAt) {
+    const days = daysAgo(lastContactedAt);
+    if (days === null) return '<span class="contacted-at">—</span>';
+    if (days === 0) return '<span class="contacted-at">Today</span>';
+    if (days === 1) return '<span class="contacted-at">Yesterday</span>';
+    return `<span class="contacted-at">${days}d ago</span>`;
+  }
+
+  async function load() {
+    try {
+      const res = await fetch('/api/creators');
+      const data = await res.json();
+      allRecords = data.records || [];
+      document.getElementById('last-updated').textContent =
+        'Updated ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      render();
+    } catch {
+      document.getElementById('tbody').innerHTML =
+        '<tr class="state-row"><td colspan="5">Failed to load. Refresh to try again.</td></tr>';
+    }
+  }
+
+  function renderStats() {
+    const counts = {};
+    allRecords.forEach(r => {
+      const s = r.fields.Status || 'Not Contacted';
+      counts[s] = (counts[s] || 0) + 1;
+    });
+    const kits = (counts['Shipped']||0) + (counts['Delivered']||0) + (counts['Content Posted']||0);
+    const affiliates = allRecords.filter(r => r.fields['Affiliate Interest']).length;
+    document.getElementById('stats-bar').innerHTML =
+      `<span><span class="s-num">${allRecords.length}</span> total</span>
+       <span class="s-dot">·</span>
+       <span><span class="s-num">${counts['Not Contacted']||0}</span> not yet</span>
+       <span class="s-dot">·</span>
+       <span><span class="s-num">${counts['Contacted']||0}</span> contacted</span>
+       <span class="s-dot">·</span>
+       <span><span class="s-num">${counts['Replied']||0}</span> replied</span>
+       <span class="s-dot">·</span>
+       <span><span class="s-num">${kits}</span> kits out</span>
+       <span class="s-dot">·</span>
+       <span><span class="s-num">${affiliates}</span> ★ affiliate</span>`;
+  }
+
+  function render() {
+    const q = activeSearch.toLowerCase();
+    const filtered = allRecords.filter(r => {
+      const f = r.fields;
+      const matchStatus = activeStatus === 'all'
+        ? true
+        : activeStatus === 'affiliate'
+          ? !!f['Affiliate Interest']
+          : f.Status === activeStatus;
+      const matchTier = activeTier === 'all' ? true : f['Outreach Tier'] === activeTier;
+      const matchCategory = activeCategory === 'all'
+        ? true
+        : Array.isArray(f['Category'])
+          ? f['Category'].includes(activeCategory)
+          : f['Category'] === activeCategory;
+      const matchAssignee = activeAssignee === 'all'
+        ? true
+        : f['Assigned To'] === activeAssignee;
+      const matchSearch = !q ||
+        (f.Name || '').toLowerCase().includes(q) ||
+        (f['Instagram Handle'] || '').toLowerCase().includes(q) ||
+        (f['TikTok Handle'] || '').toLowerCase().includes(q);
+      return matchStatus && matchTier && matchCategory && matchAssignee && matchSearch;
+    });
+
+    renderStats();
+    document.getElementById('count').textContent = `${filtered.length} creators`;
+
+    const tbody = document.getElementById('tbody');
+    if (!filtered.length) {
+      tbody.innerHTML = '<tr class="state-row"><td colspan="5">No creators found.</td></tr>';
+    } else {
+      tbody.innerHTML = filtered.map(r => {
+        const f = r.fields;
+        const status = f.Status || 'Not Contacted';
+        const ig = f['Instagram Handle'] || '—';
+        const tt = f['TikTok Handle'] || '';
+        const lca = f['Last Contacted At'] || null;
+        const affiliate = f['Affiliate Interest']
+          ? '<span style="font-size:11px;color:var(--olilo-sweet-orange);margin-left:5px;">★</span>' : '';
+        return `<tr>
+          <td class="name-cell">${f.Name || '—'}${affiliate}</td>
+          <td>
+            <div>${igLink(ig)}</div>
+            ${tt ? `<div style="margin-top:3px;">${ttLink(tt)}</div>` : ''}
+          </td>
+          <td>${statusBadge(status)}</td>
+          <td>${contactedAtLabel(lca)}${followupTag(status, lca)}</td>
+          <td>
+            ${status === 'Not Contacted'
+              ? `<button class="btn-contact" data-id="${r.id}" data-name="${(f.Name||'').replace(/"/g,'&quot;')}" data-ig="${ig}">Contact</button>`
+              : ''}
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    // Mobile cards
+    const cardList = document.getElementById('card-list');
+    if (!filtered.length) {
+      cardList.innerHTML = `<div style="text-align:center;padding:48px 20px;font-family:var(--font-mono);font-size:13px;color:var(--olilo-black-40);">No creators found.</div>`;
+    } else {
+      cardList.innerHTML = filtered.map(r => {
+        const f = r.fields;
+        const status = f.Status || 'Not Contacted';
+        const ig = f['Instagram Handle'] || '—';
+        const lca = f['Last Contacted At'] || null;
+        const igBare = ig.replace(/^@/, '');
+        return `<div class="creator-card">
+          <div class="creator-card-info">
+            <div class="creator-card-name">
+              ${f.Name || '—'}
+              ${f['Affiliate Interest'] ? '<span style="font-size:12px;color:var(--olilo-sweet-orange);margin-left:4px;">★</span>' : ''}
+            </div>
+            <a class="creator-card-handle handle-link" href="https://instagram.com/${igBare}" target="_blank" rel="noopener">${ig}</a>
+            <div class="creator-card-footer" style="gap:6px;flex-wrap:wrap;">
+              ${statusBadge(status)}
+              ${contactedAtLabel(lca)}
+              ${followupTag(status, lca)}
+            </div>
+          </div>
+          ${status === 'Not Contacted'
+            ? `<button class="btn-contact" data-id="${r.id}" data-name="${(f.Name||'').replace(/"/g,'&quot;')}" data-ig="${ig}" style="flex-shrink:0;">Contact</button>`
+            : ''}
+        </div>`;
+      }).join('');
+    }
+
+    bindEvents(tbody);
+    bindEvents(cardList);
+  }
+
+  function bindEvents(container) {
+    container.querySelectorAll('.btn-contact').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const rec = allRecords.find(r => r.id === btn.dataset.id);
+        const draft = rec ? (rec.fields['DM Draft'] || '') : '';
+        const emailDraft = rec ? (rec.fields['Email Draft'] || '') : '';
+        pendingRecord = { id: btn.dataset.id, name: btn.dataset.name, ig: btn.dataset.ig, draft, emailDraft };
+        openModal();
+      });
+    });
+
+  }
+
+  function populateDraft() {
+    const INTAKE_URL = 'https://olilo-kit.vercel.app';
+    const channel = document.getElementById('modal-channel').value;
+    const isEmail = channel === 'Email';
+    const subjectRow = document.getElementById('subject-row');
+    const draftLabel = document.getElementById('draft-label');
+
+    subjectRow.style.display = isEmail ? 'block' : 'none';
+    draftLabel.textContent = isEmail ? 'Email Body' : 'Message / DM Draft';
+
+    if (isEmail) {
+      const emailDraft = (pendingRecord.emailDraft || '').replace(/\[INTAKE LINK\]/gi, INTAKE_URL);
+      // Extract subject line (first line starting with "Subject:")
+      const lines = emailDraft.split('\n');
+      const subjectLine = lines[0].startsWith('Subject:') ? lines[0].replace(/^Subject:\s*/i, '') : '';
+      const body = lines.slice(subjectLine ? 2 : 0).join('\n').trim();
+      document.getElementById('modal-subject').value = subjectLine;
+      document.getElementById('modal-notes').value = body;
+    } else {
+      document.getElementById('modal-notes').value = (pendingRecord.draft || '').replace(/\[INTAKE LINK\]/gi, INTAKE_URL);
+    }
+  }
+
+  function openModal() {
+    document.getElementById('modal-name').textContent = pendingRecord.name;
+    document.getElementById('modal-handle').textContent = pendingRecord.ig;
+    document.getElementById('modal-channel').value = 'Instagram DM';
+    populateDraft();
+    document.getElementById('overlay').classList.add('open');
+  }
+
+  document.getElementById('modal-channel').addEventListener('change', populateDraft);
+
+  document.getElementById('btn-copy-subject').addEventListener('click', () => {
+    const val = document.getElementById('modal-subject').value;
+    if (!val) return;
+    navigator.clipboard.writeText(val).then(() => {
+      const btn = document.getElementById('btn-copy-subject');
+      btn.textContent = 'Copied ✓';
+      setTimeout(() => btn.textContent = 'Copy', 2000);
+    });
+  });
+
+  document.getElementById('btn-copy').addEventListener('click', () => {
+    const txt = document.getElementById('modal-notes').value;
+    if (!txt) return;
+    navigator.clipboard.writeText(txt).then(() => {
+      const btn = document.getElementById('btn-copy');
+      btn.textContent = 'Copied ✓';
+      setTimeout(() => btn.textContent = 'Copy', 2000);
+    });
+  });
+
+  function closeModal() {
+    document.getElementById('overlay').classList.remove('open');
+    pendingRecord = null;
+  }
+
+  document.getElementById('btn-cancel').addEventListener('click', closeModal);
+  document.getElementById('overlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('overlay')) closeModal();
+  });
+
+  document.getElementById('btn-confirm').addEventListener('click', async () => {
+    if (!pendingRecord) return;
+    const btn = document.getElementById('btn-confirm');
+    btn.disabled = true;
+    btn.textContent = 'Saving…';
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          recordId: pendingRecord.id,
+          channel: document.getElementById('modal-channel').value,
+          sentBy: document.getElementById('modal-sentby').value,
+          notes: document.getElementById('modal-notes').value.trim(),
+        }),
+      });
+      if (!res.ok) throw new Error();
+      const rec = allRecords.find(r => r.id === pendingRecord.id);
+      if (rec) {
+        rec.fields.Status = 'Contacted';
+        rec.fields['Last Contacted At'] = new Date().toISOString().split('T')[0];
+      }
+      closeModal();
+      render();
+    } catch {
+      alert('Something went wrong. Try again.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Mark Contacted';
+    }
+  });
+
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      activeStatus = tab.dataset.status;
+      render();
+    });
+  });
+
+  document.querySelectorAll('.tier-tab[data-tier]').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tier-tab[data-tier]').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      activeTier = tab.dataset.tier;
+      render();
+    });
+  });
+
+  document.querySelectorAll('.tier-tab[data-assignee]').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tier-tab[data-assignee]').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      activeAssignee = tab.dataset.assignee;
+      render();
+    });
+  });
+
+  document.getElementById('category-select').addEventListener('change', e => {
+    activeCategory = e.target.value;
+    const sel = document.getElementById('category-select');
+    sel.classList.toggle('active', activeCategory !== 'all');
+    render();
+  });
+
+  document.getElementById('search').addEventListener('input', e => {
+    activeSearch = e.target.value;
+    render();
+  });
+
+  document.getElementById('btn-refresh').addEventListener('click', () => {
+    document.getElementById('last-updated').textContent = 'Refreshing…';
+    load();
+  });
+
+  load();
+</script>
+</body>
+</html>

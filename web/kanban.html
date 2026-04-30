@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OLILO · Pipeline</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon-o.svg">
+<link rel="stylesheet" href="/colors_and_type.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--olilo-cream);
+    background-image:
+      radial-gradient(circle at 15% 25%, rgba(51,27,10,0.06) 0 0.8px, transparent 1.2px),
+      radial-gradient(circle at 70% 70%, rgba(51,27,10,0.05) 0 0.6px, transparent 1px),
+      radial-gradient(circle at 40% 50%, rgba(51,27,10,0.04) 0 0.5px, transparent 0.9px);
+    background-size: 120px 120px, 160px 160px, 90px 90px;
+    color: var(--olilo-black);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ── Header ─────────────────────────────── */
+  header {
+    background: var(--olilo-day-blue);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    flex-shrink: 0;
+    gap: 10px;
+  }
+  header img { height: 28px; flex-shrink: 0; }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+  }
+  .nav-link {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--olilo-black-64);
+    text-decoration: none;
+    padding: 6px 12px;
+    border: 2px solid var(--olilo-black-16);
+    border-radius: var(--radius-pill);
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .nav-link:hover { border-color: var(--olilo-black-40); color: var(--olilo-black); }
+  .nav-link.active { background: var(--olilo-black); color: var(--olilo-cream); border-color: var(--olilo-black); }
+  .nav-hide-mobile { display: inline-flex; }
+  #last-updated {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--olilo-black-40);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .btn-refresh {
+    background: transparent;
+    border: 2px solid var(--olilo-black-40);
+    border-radius: var(--radius-pill);
+    padding: 6px 12px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--olilo-black);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  /* ── Board ───────────────────────────────── */
+  .board {
+    display: flex;
+    gap: 14px;
+    padding: 20px 24px;
+    overflow-x: auto;
+    flex: 1;
+    align-items: flex-start;
+  }
+  .board::-webkit-scrollbar { height: 6px; }
+  .board::-webkit-scrollbar-track { background: transparent; }
+  .board::-webkit-scrollbar-thumb { background: var(--olilo-black-16); border-radius: 3px; }
+
+  /* ── Column ──────────────────────────────── */
+  .col {
+    flex-shrink: 0;
+    width: 240px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 100%;
+  }
+
+  .col-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    background: var(--olilo-hanji);
+    border: 2px solid var(--olilo-black-08);
+    flex-shrink: 0;
+  }
+  .col-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--olilo-black-64);
+  }
+  .col-count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--olilo-white);
+    background: var(--olilo-black-40);
+    border-radius: var(--radius-pill);
+    padding: 2px 8px;
+    min-width: 24px;
+    text-align: center;
+  }
+
+  /* Column accent colors */
+  .col[data-status="Not Contacted"]  .col-header { background: var(--olilo-hanji); }
+  .col[data-status="Not Contacted"]  .col-count  { background: var(--olilo-black-40); }
+  .col[data-status="Contacted"]      .col-header { background: #fff8dc; }
+  .col[data-status="Contacted"]      .col-count  { background: #c8960a; }
+  .col[data-status="Replied"]        .col-header { background: #d4f0e0; }
+  .col[data-status="Replied"]        .col-count  { background: #2a7a4a; }
+  .col[data-status="Shipped"]        .col-header { background: var(--olilo-day-blue); }
+  .col[data-status="Shipped"]        .col-count  { background: #006a9e; }
+  .col[data-status="Delivered"]      .col-header { background: #c8f0f5; }
+  .col[data-status="Delivered"]      .col-count  { background: #0c5460; }
+  .col[data-status="Content Posted"] .col-header { background: #e8d9ff; }
+  .col[data-status="Content Posted"] .col-count  { background: #5a1d9e; }
+
+  /* Affiliate badge */
+  .affiliate-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--olilo-sweet-orange);
+    background: #fff0eb;
+    border: 1.5px solid var(--olilo-sweet-orange);
+    border-radius: var(--radius-pill);
+    padding: 2px 8px;
+  }
+
+  /* ── Cards list ──────────────────────────── */
+  .cards {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    padding-bottom: 8px;
+  }
+  .cards::-webkit-scrollbar { width: 4px; }
+  .cards::-webkit-scrollbar-track { background: transparent; }
+  .cards::-webkit-scrollbar-thumb { background: var(--olilo-black-16); border-radius: 2px; }
+
+  /* ── Card ────────────────────────────────── */
+  .card {
+    background: var(--olilo-white);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    border: 2px solid var(--olilo-black-08);
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.15s, transform 0.15s;
+    cursor: default;
+  }
+  .card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+
+  .card-name {
+    font-family: var(--font-headline);
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--olilo-black);
+    margin-bottom: 3px;
+    line-height: 1.2;
+  }
+  .card-handle {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--olilo-sweet-orange);
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+  .card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .card-tier {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--olilo-black-40);
+  }
+
+  .btn-card-contact {
+    padding: 4px 10px;
+    background: var(--olilo-sweet-orange);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    white-space: nowrap;
+  }
+  .btn-card-contact:hover { opacity: 0.85; }
+
+  .empty-col {
+    text-align: center;
+    padding: 24px 12px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--olilo-black-40);
+    letter-spacing: 0.04em;
+    border: 2px dashed var(--olilo-black-08);
+    border-radius: var(--radius-md);
+  }
+
+  /* ── Modal (same as admin) ───────────────── */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(51,27,10,0.45);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+  .overlay.open { display: flex; }
+  .modal {
+    background: var(--olilo-white);
+    border-radius: var(--radius-xl);
+    padding: 32px;
+    width: 420px;
+    max-width: 92vw;
+    box-shadow: var(--shadow-lg);
+    border: 2px solid var(--olilo-black-08);
+  }
+  .modal-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--olilo-sweet-orange);
+    margin-bottom: 6px;
+  }
+  .modal-name {
+    font-family: var(--font-headline);
+    font-weight: 900;
+    font-size: 26px;
+    letter-spacing: -0.01em;
+    color: var(--olilo-black);
+    margin-bottom: 2px;
+  }
+  .modal-handle {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--olilo-sweet-orange);
+    margin-bottom: 24px;
+  }
+  .modal label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--olilo-black-64);
+    margin-bottom: 7px;
+  }
+  .modal select, .modal textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 2px solid var(--olilo-black-16);
+    border-radius: var(--radius-md);
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--olilo-black);
+    background: var(--olilo-white);
+    margin-bottom: 18px;
+    transition: border-color 0.15s;
+    appearance: auto;
+  }
+  .modal select:focus, .modal textarea:focus { outline: none; border-color: var(--olilo-sweet-orange); }
+  .modal textarea { height: 80px; resize: vertical; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 4px; }
+  .btn-cancel {
+    padding: 10px 20px;
+    border: 2px solid var(--olilo-black-16);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--olilo-black-64);
+    cursor: pointer;
+  }
+  .btn-confirm {
+    padding: 10px 22px;
+    background: var(--olilo-black);
+    color: var(--olilo-cream);
+    border: none;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    box-shadow: 0 4px 0 rgba(51,27,10,0.25);
+  }
+  .btn-confirm:disabled { opacity: 0.4; cursor: default; }
+
+  /* ── Tier toolbar ───────────────────────── */
+  .tier-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 24px;
+    flex-shrink: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    border-bottom: 1px solid var(--olilo-black-08);
+    background: var(--olilo-cream);
+  }
+  .tier-toolbar::-webkit-scrollbar { display: none; }
+  .tier-tab {
+    padding: 5px 14px;
+    border-radius: var(--radius-pill);
+    border: 2px solid var(--olilo-black-16);
+    background: var(--olilo-white);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: var(--olilo-black-64);
+    transition: all 0.15s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .tier-tab:hover { border-color: var(--olilo-black-40); color: var(--olilo-black); }
+  .tier-tab.active { background: var(--olilo-sweet-orange); color: #fff; border-color: var(--olilo-sweet-orange); }
+
+  /* ── Category dropdown ───────────────────── */
+  .category-select {
+    padding: 5px 32px 5px 12px;
+    border-radius: var(--radius-pill);
+    border: 2px solid var(--olilo-black-16);
+    background: var(--olilo-white);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: var(--olilo-black-64);
+    transition: all 0.15s;
+    white-space: nowrap;
+    flex-shrink: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='rgba(51,27,10,0.4)' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+  }
+  .category-select:hover { border-color: var(--olilo-black-40); color: var(--olilo-black); }
+  .category-select:focus { outline: none; border-color: var(--olilo-sweet-orange); }
+  .category-select.active { background-color: var(--olilo-black); color: var(--olilo-cream); border-color: var(--olilo-black); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='rgba(247,242,224,0.7)' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+
+  /* ── Mobile ──────────────────────────────── */
+  @media (max-width: 640px) {
+    .nav-hide-mobile { display: none !important; }
+    header { padding: 10px 14px; }
+    header img { height: 22px; }
+    #last-updated { display: none; }
+    .btn-refresh { padding: 5px 10px; font-size: 10px; }
+    .board { padding: 14px 12px; gap: 10px; }
+    .col { width: 200px; }
+    .card { padding: 11px 12px; }
+    .card-name { font-size: 13px; }
+    .card-handle { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="/assets/olilo-logo.png" alt="OLILO">
+  <div class="header-right">
+    <span id="last-updated"></span>
+    <button class="btn-refresh" id="btn-refresh">↺ Refresh</button>
+    <a href="/api/export" class="nav-hide-mobile" style="font-family:var(--font-mono);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--olilo-sweet-orange);text-decoration:none;padding:6px 14px;border:2px solid var(--olilo-sweet-orange);border-radius:var(--radius-pill);">↓ Export Kit Queue</a>
+    <a href="/admin" class="nav-link">List View</a>
+    <a href="/kanban" class="nav-link active">Pipeline</a>
+  </div>
+</header>
+
+<div class="tier-toolbar">
+  <button class="tier-tab active" data-tier="all">All Tiers</button>
+  <button class="tier-tab" data-tier="Tier 1">Tier 1</button>
+  <button class="tier-tab" data-tier="Tier 2">Tier 2</button>
+  <button class="tier-tab" data-tier="Tier 3">Tier 3</button>
+  <select class="category-select" id="category-select">
+    <option value="all">All Categories</option>
+    <option value="Beverage">Beverage</option>
+    <option value="Gut Health">Gut Health</option>
+    <option value="Blood Sugar &amp; Metabolic">Blood Sugar &amp; Metabolic</option>
+    <option value="Korean Food">Korean Food</option>
+    <option value="Asian Food">Asian Food</option>
+    <option value="Healthy Recipe">Healthy Recipe</option>
+    <option value="Baking &amp; Dessert">Baking &amp; Dessert</option>
+  </select>
+  <button class="tier-tab active" data-assignee="all">All</button>
+  <button class="tier-tab" data-assignee="Joon">Joon</button>
+  <button class="tier-tab" data-assignee="Rich">Rich</button>
+</div>
+
+<div class="board" id="board">
+  <!-- columns injected by JS -->
+</div>
+
+<!-- Modal -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <p class="modal-eyebrow">Mark as Contacted</p>
+    <p class="modal-name" id="modal-name"></p>
+    <p class="modal-handle" id="modal-handle"></p>
+    <label>Channel</label>
+    <select id="modal-channel">
+      <option value="Instagram DM">Instagram DM</option>
+      <option value="Email">Email</option>
+      <option value="TikTok DM">TikTok DM</option>
+    </select>
+    <label>Sent by</label>
+    <select id="modal-sentby">
+      <option value="Joon">Joon</option>
+      <option value="Rich">Rich</option>
+    </select>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;">
+      <label style="margin-bottom:0;">Message / DM Draft</label>
+      <button id="btn-copy" style="background:transparent;border:none;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--olilo-sweet-orange);cursor:pointer;letter-spacing:0.04em;text-transform:uppercase;">Copy</button>
+    </div>
+    <textarea id="modal-notes" placeholder="No DM draft found for this creator…"></textarea>
+    <div style="margin-top:-10px;margin-bottom:18px;">
+      <a href="https://olilosweet.com/kit" target="_blank" style="font-family:var(--font-mono);font-size:11px;color:var(--olilo-black-40);text-decoration:none;letter-spacing:0.04em;">↗ Intake form link</a>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="btn-cancel">Cancel</button>
+      <button class="btn-confirm" id="btn-confirm">Mark Contacted</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const COLUMNS = [
+    'Not Contacted',
+    'Contacted',
+    'Replied',
+    'Shipped',
+    'Delivered',
+    'Content Posted',
+  ];
+
+  let allRecords = [];
+  let activeTier = 'all';
+  let activeCategory = 'all';
+  let activeAssignee = 'all';
+  let pendingRecord = null;
+
+  async function load() {
+    try {
+      const res = await fetch('/api/creators');
+      const data = await res.json();
+      allRecords = data.records || [];
+      document.getElementById('last-updated').textContent =
+        'Updated ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      render();
+    } catch {
+      document.getElementById('board').innerHTML =
+        '<p style="padding:40px;font-family:var(--font-mono);color:var(--olilo-black-40)">Failed to load. Refresh to try again.</p>';
+    }
+  }
+
+  function render() {
+    const board = document.getElementById('board');
+    board.innerHTML = '';
+
+    COLUMNS.forEach(status => {
+      const records = allRecords.filter(r => {
+        const matchStatus = (r.fields.Status || 'Not Contacted') === status;
+        const matchTier = activeTier === 'all' || r.fields['Outreach Tier'] === activeTier;
+        const matchCategory = activeCategory === 'all'
+          ? true
+          : Array.isArray(r.fields['Category'])
+            ? r.fields['Category'].includes(activeCategory)
+            : r.fields['Category'] === activeCategory;
+        const matchAssignee = activeAssignee === 'all'
+          ? true
+          : r.fields['Assigned To'] === activeAssignee;
+        return matchStatus && matchTier && matchCategory && matchAssignee;
+      });
+
+      const col = document.createElement('div');
+      col.className = 'col';
+      col.dataset.status = status;
+
+      col.innerHTML = `
+        <div class="col-header">
+          <span class="col-title">${status}</span>
+          <span class="col-count">${records.length}</span>
+        </div>
+        <div class="cards" id="cards-${status.replace(/\s+/g,'-')}">
+          ${records.length === 0
+            ? '<div class="empty-col">Empty</div>'
+            : records.map(r => cardHTML(r, status)).join('')
+          }
+        </div>`;
+
+      board.appendChild(col);
+    });
+
+    // Bind contact buttons
+    board.querySelectorAll('.btn-card-contact').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const rec = allRecords.find(r => r.id === btn.dataset.id);
+        const draft = rec ? (rec.fields['DM Draft'] || rec.fields['Email Draft'] || '') : '';
+        pendingRecord = { id: btn.dataset.id, name: btn.dataset.name, ig: btn.dataset.ig, draft };
+        openModal();
+      });
+    });
+  }
+
+  function cardHTML(r, status) {
+    const f = r.fields;
+    const name      = f.Name || '—';
+    const ig        = f['Instagram Handle'] || '';
+    const tier      = f['Outreach Tier'] || '';
+    const affiliate = f['Affiliate Interest'];
+    const showBtn   = status === 'Not Contacted';
+    const showAffiliate = !!affiliate;
+
+    return `<div class="card">
+      <div class="card-name">${name}</div>
+      <div class="card-handle">${ig ? (ig.startsWith('@') ? ig : '@' + ig) : '—'}</div>
+      <div class="card-meta">
+        <span class="card-tier">${tier}</span>
+        ${showAffiliate ? '<span class="affiliate-tag">★ Affiliate</span>' : ''}
+        ${showBtn
+          ? `<button class="btn-card-contact" data-id="${r.id}" data-name="${name.replace(/"/g,'&quot;')}" data-ig="${ig}">Contact</button>`
+          : ''}
+      </div>
+    </div>`;
+  }
+
+  function openModal() {
+    document.getElementById('modal-name').textContent = pendingRecord.name;
+    document.getElementById('modal-handle').textContent = pendingRecord.ig;
+    const INTAKE_URL = 'https://olilo-kit.vercel.app';
+    document.getElementById('modal-notes').value = (pendingRecord.draft || '').replace(/\[INTAKE LINK\]/gi, INTAKE_URL);
+    document.getElementById('overlay').classList.add('open');
+  }
+
+  document.getElementById('btn-copy').addEventListener('click', () => {
+    const txt = document.getElementById('modal-notes').value;
+    if (!txt) return;
+    navigator.clipboard.writeText(txt).then(() => {
+      const btn = document.getElementById('btn-copy');
+      btn.textContent = 'Copied ✓';
+      setTimeout(() => btn.textContent = 'Copy', 2000);
+    });
+  });
+
+  function closeModal() {
+    document.getElementById('overlay').classList.remove('open');
+    pendingRecord = null;
+  }
+
+  document.getElementById('btn-cancel').addEventListener('click', closeModal);
+  document.getElementById('overlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('overlay')) closeModal();
+  });
+
+  document.getElementById('btn-confirm').addEventListener('click', async () => {
+    if (!pendingRecord) return;
+    const btn = document.getElementById('btn-confirm');
+    btn.disabled = true;
+    btn.textContent = 'Saving…';
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          recordId: pendingRecord.id,
+          channel: document.getElementById('modal-channel').value,
+          sentBy: document.getElementById('modal-sentby').value,
+          notes: document.getElementById('modal-notes').value.trim(),
+        }),
+      });
+      if (!res.ok) throw new Error();
+      const rec = allRecords.find(r => r.id === pendingRecord.id);
+      if (rec) rec.fields.Status = 'Contacted';
+      closeModal();
+      render();
+    } catch {
+      alert('Something went wrong. Try again.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Mark Contacted';
+    }
+  });
+
+  document.querySelectorAll('.tier-tab[data-tier]').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tier-tab[data-tier]').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      activeTier = tab.dataset.tier;
+      render();
+    });
+  });
+
+  document.querySelectorAll('.tier-tab[data-assignee]').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tier-tab[data-assignee]').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      activeAssignee = tab.dataset.assignee;
+      render();
+    });
+  });
+
+  document.getElementById('category-select').addEventListener('change', e => {
+    activeCategory = e.target.value;
+    const sel = document.getElementById('category-select');
+    sel.classList.toggle('active', activeCategory !== 'all');
+    render();
+  });
+
+  document.getElementById('btn-refresh').addEventListener('click', () => {
+    document.getElementById('last-updated').textContent = 'Refreshing…';
+    load();
+  });
+
+  load();
+</script>
+</body>
+</html>

@@ -1,0 +1,305 @@
+/* ============================================================
+   OLILO — Sweet Fiber Syrup
+   Core design tokens: color, type, spacing, radii, shadow
+   ------------------------------------------------------------
+   Import this file anywhere:  <link rel="stylesheet" href="/colors_and_type.css">
+   Fonts live in /fonts/. Barlow Semi Condensed + TAY Barro + TAY Basal + TAY QuickDraw.
+   ============================================================ */
+
+/* ---------- Fonts ---------- */
+@font-face {
+  font-family: "Barlow Semi Condensed";
+  src: url("fonts/BarlowSemiCondensed-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Barlow Semi Condensed";
+  src: url("fonts/BarlowSemiCondensed-Black.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "TAY Barro";
+  src: url("fonts/TAYBarro.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "TAY Basal";
+  src: url("fonts/TAYBasal.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "TAY QuickDraw";
+  src: url("fonts/TAYQuickDraw.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* JetBrains Mono via Google Fonts for captions/CTAs (per brand sheet) */
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Barlow+Semi+Condensed:wght@400;500;600;700;900&display=swap");
+
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root {
+  /* ---------- Primary brand colors ---------- */
+  --olilo-sweet-orange: #FB4408;  /* The color. Headlines, logo, accents. */
+  --olilo-day-blue:     #BAEBF7;  /* Hero label background — "pure clean sweetness" */
+  --olilo-dusk-blue:    #60BCDC;  /* Use sparingly, on top of day-blue */
+  --olilo-day-orange:   #F79560;  /* Illustration fill */
+  --olilo-dawn-orange:  #FFC1AA;  /* Soft peach backgrounds */
+  --olilo-day-yellow:   #FFDC85;  /* Syrup golden, illustration fill */
+  --olilo-cream:        #F7F2E0;  /* Hanji paper — heritage nod, default bg */
+  --olilo-hanji:        #EFE7D0;  /* Warmer hanji texture tone */
+  --olilo-black:        #331B0A;  /* NOT true black — warm coffee-brown */
+  --olilo-white:        #FFFFFF;
+
+  /* ---------- Black variants (per usage rules: avoid #000000) ---------- */
+  --olilo-black-88:     rgba(51, 27, 10, 0.88);
+  --olilo-black-64:     rgba(51, 27, 10, 0.64);
+  --olilo-black-40:     rgba(51, 27, 10, 0.40);
+  --olilo-black-16:     rgba(51, 27, 10, 0.16);
+  --olilo-black-08:     rgba(51, 27, 10, 0.08);
+
+  /* ---------- Semantic foreground ---------- */
+  --fg-1:               var(--olilo-black);        /* default text */
+  --fg-2:               var(--olilo-black-64);     /* secondary text, captions */
+  --fg-3:               var(--olilo-black-40);     /* tertiary, dividers */
+  --fg-brand:           var(--olilo-sweet-orange); /* accent text, links */
+  --fg-on-orange:       var(--olilo-white);
+  --fg-on-dark:         var(--olilo-cream);
+
+  /* ---------- Semantic background ---------- */
+  --bg-page:            var(--olilo-cream);
+  --bg-surface:         var(--olilo-white);
+  --bg-brand:           var(--olilo-sweet-orange);
+  --bg-cool:            var(--olilo-day-blue);
+  --bg-warm:            var(--olilo-dawn-orange);
+  --bg-sun:             var(--olilo-day-yellow);
+  --bg-dark:            var(--olilo-black);
+
+  /* ---------- Borders ---------- */
+  --border-1:           var(--olilo-black);        /* thick, primary (2-3px) */
+  --border-2:           var(--olilo-black-16);     /* subtle dividers */
+
+  /* ---------- Radii ---------- */
+  --radius-sm:    6px;
+  --radius-md:    12px;
+  --radius-lg:    20px;
+  --radius-xl:    32px;
+  --radius-pill:  9999px;      /* Capsule / pill — the signature shape */
+
+  /* ---------- Spacing scale (4px base) ---------- */
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:   12px;
+  --space-4:   16px;
+  --space-5:   24px;
+  --space-6:   32px;
+  --space-7:   48px;
+  --space-8:   64px;
+  --space-9:   96px;
+  --space-10: 128px;
+
+  /* ---------- Shadows — warm, brown-tinted, soft ---------- */
+  --shadow-sm:  0 1px 2px rgba(51, 27, 10, 0.08);
+  --shadow-md:  0 4px 12px rgba(51, 27, 10, 0.10);
+  --shadow-lg:  0 12px 32px rgba(51, 27, 10, 0.14);
+  --shadow-pop: 0 6px 0 var(--olilo-black);       /* sticker / bubble drop */
+  --shadow-pop-orange: 0 6px 0 var(--olilo-sweet-orange);
+
+  /* ---------- Stroke (the heavy brand stroke on TAY Barro) ---------- */
+  --stroke-heavy: 8px;  /* TAY Barro "heavy stroke" treatment thickness */
+
+  /* ---------- Transitions ---------- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);   /* subtle bounce */
+  --dur-fast: 120ms;
+  --dur:      200ms;
+  --dur-slow: 400ms;
+
+  /* ---------- Font stacks ---------- */
+  --font-headline: "Barlow Semi Condensed", "Arial Narrow", system-ui, sans-serif;
+  --font-body:     "Barlow Semi Condensed", system-ui, sans-serif;
+  --font-display:  "TAY Barro", "Barlow Semi Condensed", system-ui, sans-serif;
+  --font-script:   "TAY QuickDraw", "TAY Barro", cursive;
+  --font-basal:    "TAY Basal", "TAY Barro", system-ui, sans-serif;
+  --font-mono:     "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+/* ============================================================
+   SEMANTIC TYPE SCALE
+   Barlow Semi Condensed Black for headlines, Bold for body.
+   TAY Barro for display moments (use sparingly). Mono for CTAs/captions.
+   ============================================================ */
+
+.type-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(3rem, 6vw, 6rem);
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  color: var(--fg-1);
+}
+
+.type-h1, h1 {
+  font-family: var(--font-headline);
+  font-weight: 900;
+  font-size: clamp(2.5rem, 4.5vw, 4.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: var(--fg-1);
+  text-wrap: balance;
+  margin: 0;
+}
+
+.type-h2, h2 {
+  font-family: var(--font-headline);
+  font-weight: 900;
+  font-size: clamp(2rem, 3.2vw, 3rem);
+  line-height: 1.0;
+  letter-spacing: -0.015em;
+  color: var(--fg-1);
+  text-wrap: balance;
+  margin: 0;
+}
+
+.type-h3, h3 {
+  font-family: var(--font-headline);
+  font-weight: 900;
+  font-size: clamp(1.5rem, 2.2vw, 2rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--fg-1);
+  text-wrap: balance;
+  margin: 0;
+}
+
+.type-h4, h4 {
+  font-family: var(--font-headline);
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1.15;
+  color: var(--fg-1);
+  margin: 0;
+}
+
+.type-body, p {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 1.0625rem;   /* 17px */
+  line-height: 1.55;
+  color: var(--fg-1);
+  text-wrap: pretty;
+  margin: 0;
+}
+
+.type-body-lg {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  color: var(--fg-1);
+  text-wrap: pretty;
+}
+
+.type-body-bold {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  color: var(--fg-1);
+}
+
+.type-caption {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 0.8125rem;   /* 13px */
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  color: var(--fg-2);
+}
+
+.type-cta {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.type-eyebrow {
+  font-family: var(--font-headline);
+  font-weight: 900;
+  font-size: 0.875rem;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-1);
+}
+
+.type-script {
+  font-family: var(--font-script);
+  font-weight: 400;
+  font-size: 1.5rem;
+  line-height: 1.1;
+  color: var(--olilo-sweet-orange);
+}
+
+/* ============================================================
+   SIGNATURE TEXT TREATMENTS
+   ============================================================ */
+
+/* The "TAY Barro + heavy stroke" lockup — shown on the brand sheet as
+   orange text with a thick dark stroke, used for punchy callouts. */
+.type-stroked {
+  font-family: var(--font-display);
+  color: var(--olilo-sweet-orange);
+  -webkit-text-stroke: 4px var(--olilo-black);
+  paint-order: stroke fill;
+  text-shadow: 0 3px 0 var(--olilo-black);
+  letter-spacing: 0.005em;
+}
+
+/* Speech-bubble inline pill, inspired by "YUM! TASTES LIKE SUGAR!" bubbles. */
+.type-bubble {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  color: var(--olilo-white);
+  background: var(--olilo-sweet-orange);
+  padding: 6px 14px 7px;
+  border-radius: 18px 18px 18px 4px;
+  transform: rotate(-2deg);
+}
+
+/* ============================================================
+   UTILITY — speckle / hanji paper background
+   ============================================================ */
+.bg-speckle {
+  background-color: var(--olilo-day-blue);
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.6) 0 1.2px, transparent 1.6px),
+    radial-gradient(circle at 70% 60%, rgba(255,255,255,0.5) 0 1px, transparent 1.4px),
+    radial-gradient(circle at 85% 20%, rgba(255,255,255,0.4) 0 0.8px, transparent 1.2px),
+    radial-gradient(circle at 35% 80%, rgba(255,255,255,0.5) 0 1px, transparent 1.4px);
+  background-size: 180px 180px, 220px 220px, 140px 140px, 200px 200px;
+}
+
+.bg-hanji {
+  background-color: var(--olilo-cream);
+  background-image:
+    radial-gradient(circle at 15% 25%, rgba(51,27,10,0.06) 0 0.8px, transparent 1.2px),
+    radial-gradient(circle at 70% 70%, rgba(51,27,10,0.05) 0 0.6px, transparent 1px),
+    radial-gradient(circle at 40% 50%, rgba(51,27,10,0.04) 0 0.5px, transparent 0.9px);
+  background-size: 120px 120px, 160px 160px, 90px 90px;
+}

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Outer blob shape -->
+  <rect width="100" height="100" rx="22" fill="#331B0A"/>
+  <!-- White donut counter -->
+  <circle cx="50" cy="50" r="29" fill="white"/>
+  <!-- Center dot -->
+  <circle cx="50" cy="50" r="12" fill="#331B0A"/>
+</svg>
