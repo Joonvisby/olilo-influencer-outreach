@@ -7,6 +7,10 @@ Format per entry:
 
 ---
 
+## 2026-05-06 — Intake form: Terms + Privacy fineprint under submit
+- `web/index.html` — Added a fineprint line under the submit button: "By sending, you agree to OLILO's Terms and Privacy Policy." Links to `https://olilosweet.com/terms-of-use/` and `https://olilosweet.com/privacy-policy-2/` (open in new tab). No checkbox — interest-gauging form, not a full commitment.
+- Added `.fineprint a` and `.legal-note` styles for underlined dark-on-cream links with sweet-orange hover.
+
 ## 2026-05-06 — Intake form copy tweak (kit.olilosweet.com)
 - `web/index.html` — Lede now says "a bottle of OLILO Sweet Fiber Syrup" (added the brand name). Story paragraph trimmed: removed "It took two years to get it right." Final copy: "We made something better than sugar. We want you to taste it first. Just pour it on something you like and tell us what you think."
 
