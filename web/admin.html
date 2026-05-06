@@ -1032,7 +1032,7 @@
   }
 
   function populateDraft() {
-    const INTAKE_URL = 'https://olilo-kit.vercel.app';
+    const INTAKE_URL = 'https://kit.olilosweet.com';
     const channel = document.getElementById('modal-channel').value;
     const isEmail = channel === 'Email';
     const subjectRow = document.getElementById('subject-row');
@@ -1114,7 +1114,7 @@
   });
 
   document.getElementById('btn-copy-intake').addEventListener('click', () => {
-    const INTAKE_URL = 'https://olilo-kit.vercel.app';
+    const INTAKE_URL = 'https://kit.olilosweet.com';
     navigator.clipboard.writeText(INTAKE_URL).then(() => {
       const btn = document.getElementById('btn-copy-intake');
       const orig = btn.textContent;

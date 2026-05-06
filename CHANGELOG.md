@@ -18,6 +18,12 @@ Format per entry:
 - Source had 67 rows; deduped 10 repeats (Jessie Inchauspé, Dr. Amy Shah, Dr. Mindy Pelz, Tallene Hacatoryan, Kylie Sakaida, Rachael DeVaux x2, Dr. Peter Attia x1). Kept Casey Means @caseymeansmd and @drcaseyskitchen as separate rows (likely same person, two accounts) — flagged in Notes for verification.
 - Source size discrepancies flagged: Peter Attia listed 900K and 1.5M in different rows (kept first, 900K=Macro). Lily Soutter size = N/A (Audience Size and Tier left blank).
 
+## 2026-05-06 — Custom domain kit.olilosweet.com live; switch all intake URLs over
+- Added `kit.olilosweet.com` as custom domain on Vercel project (A record `76.76.21.21` in AWS Lightsail DNS zone). SSL provisioned by Vercel via Let's Encrypt.
+- `web/admin.html` — Both `INTAKE_URL` constants (modal draft substitution + Copy Intake Link button) updated from `https://olilo-kit.vercel.app` → `https://kit.olilosweet.com`. DM/email drafts now produce branded URLs.
+- `docs/team-briefing.md` — All references to `olilo-seeding.vercel.app` and the broken `olilosweet.com/kit` redirect replaced with `https://kit.olilosweet.com`. Removed the "Known Issues: olilosweet.com/kit is not working" section since it's resolved.
+- The old `https://olilo-kit.vercel.app` URL still resolves (Vercel keeps it as an alias), so any DMs already sent with that URL continue to work.
+
 ## 2026-05-06 — Reuse gate passcode 07170 as admin token (no double prompt)
 - Changed Vercel `ADMIN_TOKEN` (Production + Development) to `07170` — same as the existing site password gate.
 - `web/admin.html` — On gate success (and on already-authed sessions), now also stores `07170` in localStorage as `olilo-admin-token`. This eliminates the second prompt when clicking Archive: typing 07170 once at the gate is enough.
