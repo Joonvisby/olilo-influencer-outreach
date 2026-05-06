@@ -635,6 +635,7 @@
     const btn = document.getElementById('gate-btn');
 
     if (sessionStorage.getItem('olilo-auth') === '1') {
+      localStorage.setItem('olilo-admin-token', PASS);
       gate.classList.add('hidden');
       return;
     }
@@ -642,6 +643,7 @@
     function attempt() {
       if (input.value === PASS) {
         sessionStorage.setItem('olilo-auth', '1');
+        localStorage.setItem('olilo-admin-token', PASS);
         gate.classList.add('hidden');
       } else {
         input.classList.add('error');

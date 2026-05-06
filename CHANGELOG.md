@@ -18,6 +18,11 @@ Format per entry:
 - Source had 67 rows; deduped 10 repeats (Jessie Inchauspé, Dr. Amy Shah, Dr. Mindy Pelz, Tallene Hacatoryan, Kylie Sakaida, Rachael DeVaux x2, Dr. Peter Attia x1). Kept Casey Means @caseymeansmd and @drcaseyskitchen as separate rows (likely same person, two accounts) — flagged in Notes for verification.
 - Source size discrepancies flagged: Peter Attia listed 900K and 1.5M in different rows (kept first, 900K=Macro). Lily Soutter size = N/A (Audience Size and Tier left blank).
 
+## 2026-05-06 — Reuse gate passcode 07170 as admin token (no double prompt)
+- Changed Vercel `ADMIN_TOKEN` (Production + Development) to `07170` — same as the existing site password gate.
+- `web/admin.html` — On gate success (and on already-authed sessions), now also stores `07170` in localStorage as `olilo-admin-token`. This eliminates the second prompt when clicking Archive: typing 07170 once at the gate is enough.
+- Tradeoff: archive permission is now equivalent to gate access. Acceptable for a 2-person team where the gate already protects the action.
+
 ## 2026-05-06 — Kanban becomes read-only; cards show stage timestamp
 - `web/kanban.html` — Removed the Contact button on cards and the entire Mark-as-Contacted modal (markup, CSS, JS). Kanban is now a pipeline-overview view; all outreach actions live in `/admin`.
 - Added a small timestamp on each card: "Added Xd ago" for Not Contacted; "Contacted Xd ago" (or Today/Yesterday) for everything else. Uses existing `Date Added` and `Last Contacted At` fields.
