@@ -7,6 +7,9 @@ Format per entry:
 
 ---
 
+## 2026-05-06 — Intake form copy tweak (kit.olilosweet.com)
+- `web/index.html` — Lede now says "a bottle of OLILO Sweet Fiber Syrup" (added the brand name). Story paragraph trimmed: removed "It took two years to get it right." Final copy: "We made something better than sugar. We want you to taste it first. Just pour it on something you like and tell us what you think."
+
 ## 2026-05-06 — Revert test outreach (clear Status + Outreach Log)
 - `scripts/revert-test-contacts.mjs` — One-off: reset every Creator whose Status was not "Not Contacted" back to "Not Contacted" and cleared `Last Contacted At`; deleted every row in the Outreach Log table.
 - Reverted 10 creators (8 Contacted, 2 Replied). Deleted 10 Outreach Log rows. Pipeline is now clean for the real outreach push.
