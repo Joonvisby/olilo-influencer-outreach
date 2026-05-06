@@ -7,6 +7,45 @@ Format per entry:
 
 ---
 
+## 2026-05-06 — Revert test outreach (clear Status + Outreach Log)
+- `scripts/revert-test-contacts.mjs` — One-off: reset every Creator whose Status was not "Not Contacted" back to "Not Contacted" and cleared `Last Contacted At`; deleted every row in the Outreach Log table.
+- Reverted 10 creators (8 Contacted, 2 Replied). Deleted 10 Outreach Log rows. Pipeline is now clean for the real outreach push.
+
+## 2026-05-04 — Import Experts (RL26) list, all assigned to Rich
+- `scripts/import-experts-rl26.mjs` — Reusable importer that POSTs CSV rows to the Creators table with typecast=true (handles multi-select and percent fields). Ran successfully: 57/57 records created in 6 batches.
+- `airtable/experts-rl26-import.csv` — 57 unique creators imported from "Experts (RL26)" tab of the source Google Sheet (1odba-k...). All rows: Assigned To = Rich, Status = Not Contacted, Date Added = 2026-05-04, Commission Rate = 10%.
+- Tier mapped by audience size (Mega→1, Macro→2, Micro→3). Categories assigned per creator from existing Airtable options (Gut Health / Blood Sugar / Clean Eating / Healthy Recipe), multi-select where genuinely applicable. Source's "Nutrition Expert" label dropped — categorized by actual content focus instead.
+- Source had 67 rows; deduped 10 repeats (Jessie Inchauspé, Dr. Amy Shah, Dr. Mindy Pelz, Tallene Hacatoryan, Kylie Sakaida, Rachael DeVaux x2, Dr. Peter Attia x1). Kept Casey Means @caseymeansmd and @drcaseyskitchen as separate rows (likely same person, two accounts) — flagged in Notes for verification.
+- Source size discrepancies flagged: Peter Attia listed 900K and 1.5M in different rows (kept first, 900K=Macro). Lily Soutter size = N/A (Audience Size and Tier left blank).
+
+## 2026-05-06 — Kanban becomes read-only; cards show stage timestamp
+- `web/kanban.html` — Removed the Contact button on cards and the entire Mark-as-Contacted modal (markup, CSS, JS). Kanban is now a pipeline-overview view; all outreach actions live in `/admin`.
+- Added a small timestamp on each card: "Added Xd ago" for Not Contacted; "Contacted Xd ago" (or Today/Yesterday) for everything else. Uses existing `Date Added` and `Last Contacted At` fields.
+- `api/creators.js` — Now also fetches `Date Added` (was previously dropped from the response).
+
+## 2026-05-06 — Archive button moved into Mark-as-Contacted modal; intake link → copy button
+- `web/admin.html` — Removed inline ✕ Archive button from row Actions column. Added an "Archive" button inside the modal (left-aligned in modal-actions). Removes Archive from the row UI for non-Not-Contacted statuses; archive now only reachable via the contact decision flow. Unarchive button still inline on Archived-tab rows.
+- `web/admin.html` — Added `archived` count to the stats bar after `★ affiliate`.
+- `web/admin.html` — Replaced "↗ Intake form link" anchor (which pointed to broken `olilosweet.com/kit`) with a "Copy intake link" button that copies `https://olilo-kit.vercel.app` to clipboard. Both Archive button and Copy intake link use the dark `--olilo-black` color for clearer hierarchy.
+
+## 2026-05-06 — Archive creators from admin UI
+- Added `Archived` checkbox field on the Creators table (Airtable Meta API).
+- New `api/update-creator.js` Vercel function — PATCHes a record's allowed fields (currently just `Archived`). Gated by `x-admin-token` header compared to `ADMIN_TOKEN` env var. Anything else is rejected with 401/400.
+- `web/admin.html` — Active/Archived tab toggle (default Active). Each row gets an ✕ Archive button (or Unarchive in the Archived view). One-time prompt for admin token, cached in localStorage. Stats now count active creators only. Confirmation dialog before archiving.
+- `web/kanban.html` — Pipeline filters out `Archived === true` so archived creators never appear in the kanban.
+- `api/creators.js` — Now requests the `Archived` field so the UI can branch on it.
+- `airtable/schema.md` — Documented the new field.
+- **Action required from Joon:** Add `ADMIN_TOKEN=<random_string>` to Vercel env (Production + Preview) and `.env.local`, then redeploy. Suggested: `openssl rand -hex 16`.
+
+## 2026-05-06 — Move list-source attribution from Assigned To → List by
+- Airtable Creators: moved all 56 records that had `Assigned To = Rich` (the imported Experts list) into the existing `List by` multi-select field with value `Rich`. Cleared `Assigned To` on those records so outreach ownership can be assigned separately later.
+- `airtable/schema.md` — Documented `List by` field and clarified Assigned To = outreach owner vs. List by = list sourcer.
+- Downstream impact (NOT yet changed): the "Contacted by" filter on `web/admin.html:863` and `web/kanban.html:554` filters by `Assigned To`. Those tabs will now show 0 records under Rich until outreach is reassigned. If you want the filter to show List-by-Rich instead, that's a separate code change.
+
+## 2026-05-04 — Resolve Casey Means duplicate (Airtable Creators)
+- Verified via web search: @caseymeansmd and @drcaseyskitchen are the same person (Casey Means MD, author of "Good Energy", current U.S. Surgeon General nominee). Kitchen account = recipe-focused secondary at 843K.
+- Deleted @drcaseyskitchen record. Updated @caseymeansmd: Audience Size Macro→Mega, Outreach Tier 2→1, added "Healthy Recipe" to Category, Notes flagged kitchen account, Good Energy book, and SG nominee/MAHA brand-fit caveat.
+
 ## 2026-04-30 — Match List View button style to admin's Pipeline button (kanban.html)
 Added .btn-list-view class mirroring admin's btn-kanban-mobile — inline-flex pill, outlined, with ≡ icon.
 

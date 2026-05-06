@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     do {
       const url = `https://api.airtable.com/v0/${AIRTABLE_BASE}/${TABLE}?` +
         'fields[]=Name&fields[]=Instagram+Handle&fields[]=TikTok+Handle' +
-        '&fields[]=Status&fields[]=Email&fields[]=Assigned+To&fields[]=Affiliate+Interest&fields[]=Outreach+Tier&fields[]=DM+Draft&fields[]=Email+Draft&fields[]=Last+Contacted+At&fields[]=Category' +
+        '&fields[]=Status&fields[]=Email&fields[]=Assigned+To&fields[]=Affiliate+Interest&fields[]=Outreach+Tier&fields[]=DM+Draft&fields[]=Email+Draft&fields[]=Last+Contacted+At&fields[]=Category&fields[]=Archived&fields[]=Date+Added' +
         '&sort[0][field]=Name&sort[0][direction]=asc' +
         (offset ? `&offset=${offset}` : '');
 

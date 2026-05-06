@@ -407,6 +407,27 @@
   .btn-confirm:hover { opacity: 0.88; }
   .btn-confirm:disabled { opacity: 0.4; cursor: default; }
 
+  .btn-archive-modal {
+    margin-right: auto;
+    padding: 10px 18px;
+    border: 2px solid var(--olilo-black-16);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--olilo-black);
+    cursor: pointer;
+    transition: all var(--dur-fast);
+  }
+  .btn-archive-modal:hover {
+    border-color: var(--olilo-sweet-orange);
+    color: var(--olilo-sweet-orange);
+  }
+  .btn-archive-modal:disabled { opacity: 0.4; cursor: default; }
+
   /* ── Password gate ───────────────────────────────────────── */
   #gate {
     position: fixed;
@@ -678,6 +699,10 @@
     <button class="tier-tab" data-assignee="Joon">Joon</button>
     <button class="tier-tab" data-assignee="Rich">Rich</button>
   </div>
+  <div class="tier-tabs" id="archive-tabs">
+    <button class="tier-tab active" data-archive="active">Active</button>
+    <button class="tier-tab" data-archive="archived">Archived</button>
+  </div>
   <div class="spacer"></div>
   <span class="count" id="count"></span>
   <input class="search-box" type="search" placeholder="Search name or handle…" id="search">
@@ -740,10 +765,11 @@
     </div>
     <textarea id="modal-notes" placeholder="No draft found for this creator…" style="height:140px;"></textarea>
     <div style="margin-top:-10px;margin-bottom:18px;">
-      <a href="https://olilosweet.com/kit" target="_blank" style="font-family:var(--font-mono);font-size:11px;color:var(--olilo-black-40);text-decoration:none;letter-spacing:0.04em;">↗ Intake form link</a>
+      <button type="button" id="btn-copy-intake" style="background:transparent;border:none;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--olilo-black);cursor:pointer;letter-spacing:0.04em;text-transform:uppercase;padding:0;">Copy intake link</button>
     </div>
 
     <div class="modal-actions">
+      <button class="btn-archive-modal" id="btn-archive-modal" title="Hide this creator from the active list">Archive</button>
       <button class="btn-cancel" id="btn-cancel">Cancel</button>
       <button class="btn-confirm" id="btn-confirm">Mark Contacted</button>
     </div>
@@ -756,8 +782,34 @@
   let activeTier = 'all';
   let activeCategory = 'all';
   let activeAssignee = 'all';
+  let activeArchive = 'active'; // 'active' (Archived !== true) | 'archived'
   let activeSearch = '';
   let pendingRecord = null;
+
+  function getAdminToken() {
+    let t = localStorage.getItem('olilo-admin-token');
+    if (!t) {
+      t = prompt('Enter admin token to make changes:');
+      if (t) localStorage.setItem('olilo-admin-token', t.trim());
+    }
+    return t ? t.trim() : '';
+  }
+
+  async function setArchived(recordId, archived) {
+    const token = getAdminToken();
+    if (!token) return false;
+    const res = await fetch('/api/update-creator', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'x-admin-token': token },
+      body: JSON.stringify({ id: recordId, fields: { Archived: archived } }),
+    });
+    if (res.status === 401) {
+      localStorage.removeItem('olilo-admin-token');
+      alert('Wrong admin token. Try again.');
+      return false;
+    }
+    return res.ok;
+  }
 
   const STATUS_CLASS = {
     'Not Contacted': 's-not-contacted',
@@ -822,15 +874,17 @@
   }
 
   function renderStats() {
+    const active = allRecords.filter(r => r.fields['Archived'] !== true);
+    const archivedCount = allRecords.length - active.length;
     const counts = {};
-    allRecords.forEach(r => {
+    active.forEach(r => {
       const s = r.fields.Status || 'Not Contacted';
       counts[s] = (counts[s] || 0) + 1;
     });
     const kits = (counts['Shipped']||0) + (counts['Delivered']||0) + (counts['Content Posted']||0);
-    const affiliates = allRecords.filter(r => r.fields['Affiliate Interest']).length;
+    const affiliates = active.filter(r => r.fields['Affiliate Interest']).length;
     document.getElementById('stats-bar').innerHTML =
-      `<span><span class="s-num">${allRecords.length}</span> total</span>
+      `<span><span class="s-num">${active.length}</span> total</span>
        <span class="s-dot">·</span>
        <span><span class="s-num">${counts['Not Contacted']||0}</span> not yet</span>
        <span class="s-dot">·</span>
@@ -840,7 +894,9 @@
        <span class="s-dot">·</span>
        <span><span class="s-num">${kits}</span> kits out</span>
        <span class="s-dot">·</span>
-       <span><span class="s-num">${affiliates}</span> ★ affiliate</span>`;
+       <span><span class="s-num">${affiliates}</span> ★ affiliate</span>
+       <span class="s-dot">·</span>
+       <span><span class="s-num">${archivedCount}</span> archived</span>`;
   }
 
   function render() {
@@ -861,11 +917,13 @@
       const matchAssignee = activeAssignee === 'all'
         ? true
         : f['Assigned To'] === activeAssignee;
+      const isArchived = f['Archived'] === true;
+      const matchArchive = activeArchive === 'archived' ? isArchived : !isArchived;
       const matchSearch = !q ||
         (f.Name || '').toLowerCase().includes(q) ||
         (f['Instagram Handle'] || '').toLowerCase().includes(q) ||
         (f['TikTok Handle'] || '').toLowerCase().includes(q);
-      return matchStatus && matchTier && matchCategory && matchAssignee && matchSearch;
+      return matchStatus && matchTier && matchCategory && matchAssignee && matchArchive && matchSearch;
     });
 
     renderStats();
@@ -881,9 +939,11 @@
         const ig = f['Instagram Handle'] || '—';
         const tt = f['TikTok Handle'] || '';
         const lca = f['Last Contacted At'] || null;
+        const isArchived = f['Archived'] === true;
         const affiliate = f['Affiliate Interest']
           ? '<span style="font-size:11px;color:var(--olilo-sweet-orange);margin-left:5px;">★</span>' : '';
-        return `<tr>
+        const nameAttr = (f.Name || '').replace(/"/g, '&quot;');
+        return `<tr${isArchived ? ' style="opacity:0.55;"' : ''}>
           <td class="name-cell">${f.Name || '—'}${affiliate}</td>
           <td>
             <div>${igLink(ig)}</div>
@@ -892,9 +952,11 @@
           <td>${statusBadge(status)}</td>
           <td>${contactedAtLabel(lca)}${followupTag(status, lca)}</td>
           <td>
-            ${status === 'Not Contacted'
-              ? `<button class="btn-contact" data-id="${r.id}" data-name="${(f.Name||'').replace(/"/g,'&quot;')}" data-ig="${ig}">Contact</button>`
-              : ''}
+            ${isArchived
+              ? `<button class="btn-unarchive" data-id="${r.id}" data-name="${nameAttr}" style="background:transparent;border:2px solid var(--olilo-black-40);border-radius:var(--radius-pill);padding:6px 12px;color:var(--olilo-black-64);cursor:pointer;font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;">Unarchive</button>`
+              : status === 'Not Contacted'
+                ? `<button class="btn-contact" data-id="${r.id}" data-name="${nameAttr}" data-ig="${ig}">Contact</button>`
+                : ''}
           </td>
         </tr>`;
       }).join('');
@@ -911,7 +973,9 @@
         const ig = f['Instagram Handle'] || '—';
         const lca = f['Last Contacted At'] || null;
         const igBare = ig.replace(/^@/, '');
-        return `<div class="creator-card">
+        const isArchived = f['Archived'] === true;
+        const nameAttr = (f.Name || '').replace(/"/g, '&quot;');
+        return `<div class="creator-card"${isArchived ? ' style="opacity:0.55;"' : ''}>
           <div class="creator-card-info">
             <div class="creator-card-name">
               ${f.Name || '—'}
@@ -924,9 +988,11 @@
               ${followupTag(status, lca)}
             </div>
           </div>
-          ${status === 'Not Contacted'
-            ? `<button class="btn-contact" data-id="${r.id}" data-name="${(f.Name||'').replace(/"/g,'&quot;')}" data-ig="${ig}" style="flex-shrink:0;">Contact</button>`
-            : ''}
+          ${isArchived
+            ? `<button class="btn-unarchive" data-id="${r.id}" data-name="${nameAttr}" style="flex-shrink:0;background:transparent;border:2px solid var(--olilo-black-40);border-radius:var(--radius-pill);padding:6px 12px;color:var(--olilo-black-64);cursor:pointer;font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;">Unarchive</button>`
+            : status === 'Not Contacted'
+              ? `<button class="btn-contact" data-id="${r.id}" data-name="${nameAttr}" data-ig="${ig}" style="flex-shrink:0;">Contact</button>`
+              : ''}
         </div>`;
       }).join('');
     }
@@ -946,6 +1012,21 @@
       });
     });
 
+    container.querySelectorAll('.btn-unarchive').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+        btn.disabled = true;
+        const rec = allRecords.find(r => r.id === id);
+        const ok = await setArchived(id, false);
+        if (ok && rec) {
+          rec.fields['Archived'] = false;
+          render();
+        } else if (!ok) {
+          btn.disabled = false;
+          if (localStorage.getItem('olilo-admin-token')) alert('Failed to unarchive. Try again.');
+        }
+      });
+    });
   }
 
   function populateDraft() {
@@ -975,6 +1056,9 @@
     document.getElementById('modal-name').textContent = pendingRecord.name;
     document.getElementById('modal-handle').textContent = pendingRecord.ig;
     document.getElementById('modal-channel').value = 'Instagram DM';
+    const archiveBtn = document.getElementById('btn-archive-modal');
+    archiveBtn.disabled = false;
+    archiveBtn.textContent = 'Archive';
     populateDraft();
     document.getElementById('overlay').classList.add('open');
   }
@@ -1007,6 +1091,35 @@
   }
 
   document.getElementById('btn-cancel').addEventListener('click', closeModal);
+
+  document.getElementById('btn-archive-modal').addEventListener('click', async () => {
+    if (!pendingRecord) return;
+    if (!confirm(`Archive ${pendingRecord.name}? They'll be hidden from the active list.`)) return;
+    const btn = document.getElementById('btn-archive-modal');
+    btn.disabled = true;
+    btn.textContent = 'Archiving…';
+    const ok = await setArchived(pendingRecord.id, true);
+    if (ok) {
+      const rec = allRecords.find(r => r.id === pendingRecord.id);
+      if (rec) rec.fields['Archived'] = true;
+      closeModal();
+      render();
+    } else {
+      btn.disabled = false;
+      btn.textContent = 'Archive';
+      if (localStorage.getItem('olilo-admin-token')) alert('Failed to archive. Try again.');
+    }
+  });
+
+  document.getElementById('btn-copy-intake').addEventListener('click', () => {
+    const INTAKE_URL = 'https://olilo-kit.vercel.app';
+    navigator.clipboard.writeText(INTAKE_URL).then(() => {
+      const btn = document.getElementById('btn-copy-intake');
+      const orig = btn.textContent;
+      btn.textContent = 'Copied ✓';
+      setTimeout(() => { btn.textContent = orig; }, 2000);
+    });
+  });
   document.getElementById('overlay').addEventListener('click', e => {
     if (e.target === document.getElementById('overlay')) closeModal();
   });
@@ -1066,6 +1179,15 @@
       document.querySelectorAll('.tier-tab[data-assignee]').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       activeAssignee = tab.dataset.assignee;
+      render();
+    });
+  });
+
+  document.querySelectorAll('.tier-tab[data-archive]').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tier-tab[data-archive]').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      activeArchive = tab.dataset.archive;
       render();
     });
   });

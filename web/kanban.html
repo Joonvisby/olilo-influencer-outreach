@@ -217,22 +217,14 @@
     color: var(--olilo-black-40);
   }
 
-  .btn-card-contact {
-    padding: 4px 10px;
-    background: var(--olilo-sweet-orange);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-pill);
+  .card-timestamp {
     font-family: var(--font-mono);
     font-size: 10px;
-    font-weight: 700;
+    font-weight: 500;
     letter-spacing: 0.04em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: opacity 0.15s;
+    color: var(--olilo-black-40);
     white-space: nowrap;
   }
-  .btn-card-contact:hover { opacity: 0.85; }
 
   .empty-col {
     text-align: center;
@@ -244,105 +236,6 @@
     border: 2px dashed var(--olilo-black-08);
     border-radius: var(--radius-md);
   }
-
-  /* ── Modal (same as admin) ───────────────── */
-  .overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(51,27,10,0.45);
-    z-index: 200;
-    align-items: center;
-    justify-content: center;
-  }
-  .overlay.open { display: flex; }
-  .modal {
-    background: var(--olilo-white);
-    border-radius: var(--radius-xl);
-    padding: 32px;
-    width: 420px;
-    max-width: 92vw;
-    box-shadow: var(--shadow-lg);
-    border: 2px solid var(--olilo-black-08);
-  }
-  .modal-eyebrow {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--olilo-sweet-orange);
-    margin-bottom: 6px;
-  }
-  .modal-name {
-    font-family: var(--font-headline);
-    font-weight: 900;
-    font-size: 26px;
-    letter-spacing: -0.01em;
-    color: var(--olilo-black);
-    margin-bottom: 2px;
-  }
-  .modal-handle {
-    font-family: var(--font-mono);
-    font-size: 13px;
-    color: var(--olilo-sweet-orange);
-    margin-bottom: 24px;
-  }
-  .modal label {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--olilo-black-64);
-    margin-bottom: 7px;
-  }
-  .modal select, .modal textarea {
-    width: 100%;
-    padding: 11px 14px;
-    border: 2px solid var(--olilo-black-16);
-    border-radius: var(--radius-md);
-    font-family: var(--font-body);
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--olilo-black);
-    background: var(--olilo-white);
-    margin-bottom: 18px;
-    transition: border-color 0.15s;
-    appearance: auto;
-  }
-  .modal select:focus, .modal textarea:focus { outline: none; border-color: var(--olilo-sweet-orange); }
-  .modal textarea { height: 80px; resize: vertical; }
-  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 4px; }
-  .btn-cancel {
-    padding: 10px 20px;
-    border: 2px solid var(--olilo-black-16);
-    border-radius: var(--radius-pill);
-    background: transparent;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--olilo-black-64);
-    cursor: pointer;
-  }
-  .btn-confirm {
-    padding: 10px 22px;
-    background: var(--olilo-black);
-    color: var(--olilo-cream);
-    border: none;
-    border-radius: var(--radius-pill);
-    font-family: var(--font-mono);
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    cursor: pointer;
-    box-shadow: 0 4px 0 rgba(51,27,10,0.25);
-  }
-  .btn-confirm:disabled { opacity: 0.4; cursor: default; }
 
   /* ── Tier toolbar ───────────────────────── */
   .tier-toolbar {
@@ -474,38 +367,6 @@
   <!-- columns injected by JS -->
 </div>
 
-<!-- Modal -->
-<div class="overlay" id="overlay">
-  <div class="modal">
-    <p class="modal-eyebrow">Mark as Contacted</p>
-    <p class="modal-name" id="modal-name"></p>
-    <p class="modal-handle" id="modal-handle"></p>
-    <label>Channel</label>
-    <select id="modal-channel">
-      <option value="Instagram DM">Instagram DM</option>
-      <option value="Email">Email</option>
-      <option value="TikTok DM">TikTok DM</option>
-    </select>
-    <label>Sent by</label>
-    <select id="modal-sentby">
-      <option value="Joon">Joon</option>
-      <option value="Rich">Rich</option>
-    </select>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;">
-      <label style="margin-bottom:0;">Message / DM Draft</label>
-      <button id="btn-copy" style="background:transparent;border:none;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--olilo-sweet-orange);cursor:pointer;letter-spacing:0.04em;text-transform:uppercase;">Copy</button>
-    </div>
-    <textarea id="modal-notes" placeholder="No DM draft found for this creator…"></textarea>
-    <div style="margin-top:-10px;margin-bottom:18px;">
-      <a href="https://olilosweet.com/kit" target="_blank" style="font-family:var(--font-mono);font-size:11px;color:var(--olilo-black-40);text-decoration:none;letter-spacing:0.04em;">↗ Intake form link</a>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-cancel" id="btn-cancel">Cancel</button>
-      <button class="btn-confirm" id="btn-confirm">Mark Contacted</button>
-    </div>
-  </div>
-</div>
-
 <script>
   const COLUMNS = [
     'Not Contacted',
@@ -520,7 +381,23 @@
   let activeTier = 'all';
   let activeCategory = 'all';
   let activeAssignee = 'all';
-  let pendingRecord = null;
+
+  function daysAgo(dateStr) {
+    if (!dateStr) return null;
+    return Math.floor((Date.now() - new Date(dateStr).getTime()) / 86400000);
+  }
+
+  function timestampLabel(status, f) {
+    const lca = f['Last Contacted At'];
+    const added = f['Date Added'];
+    const dateStr = status === 'Not Contacted' ? added : (lca || added);
+    const verb = status === 'Not Contacted' ? 'Added' : 'Contacted';
+    const days = daysAgo(dateStr);
+    if (days === null) return '';
+    if (days === 0) return `${verb} today`;
+    if (days === 1) return `${verb} yesterday`;
+    return `${verb} ${days}d ago`;
+  }
 
   async function load() {
     try {
@@ -542,6 +419,7 @@
 
     COLUMNS.forEach(status => {
       const records = allRecords.filter(r => {
+        if (r.fields['Archived'] === true) return false;
         const matchStatus = (r.fields.Status || 'Not Contacted') === status;
         const matchTier = activeTier === 'all' || r.fields['Outreach Tier'] === activeTier;
         const matchCategory = activeCategory === 'all'
@@ -573,16 +451,6 @@
 
       board.appendChild(col);
     });
-
-    // Bind contact buttons
-    board.querySelectorAll('.btn-card-contact').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const rec = allRecords.find(r => r.id === btn.dataset.id);
-        const draft = rec ? (rec.fields['DM Draft'] || rec.fields['Email Draft'] || '') : '';
-        pendingRecord = { id: btn.dataset.id, name: btn.dataset.name, ig: btn.dataset.ig, draft };
-        openModal();
-      });
-    });
   }
 
   function cardHTML(r, status) {
@@ -591,8 +459,8 @@
     const ig        = f['Instagram Handle'] || '';
     const tier      = f['Outreach Tier'] || '';
     const affiliate = f['Affiliate Interest'];
-    const showBtn   = status === 'Not Contacted';
     const showAffiliate = !!affiliate;
+    const ts        = timestampLabel(status, f);
 
     return `<div class="card">
       <div class="card-name">${name}</div>
@@ -600,69 +468,10 @@
       <div class="card-meta">
         <span class="card-tier">${tier}</span>
         ${showAffiliate ? '<span class="affiliate-tag">★ Affiliate</span>' : ''}
-        ${showBtn
-          ? `<button class="btn-card-contact" data-id="${r.id}" data-name="${name.replace(/"/g,'&quot;')}" data-ig="${ig}">Contact</button>`
-          : ''}
+        ${ts ? `<span class="card-timestamp">${ts}</span>` : ''}
       </div>
     </div>`;
   }
-
-  function openModal() {
-    document.getElementById('modal-name').textContent = pendingRecord.name;
-    document.getElementById('modal-handle').textContent = pendingRecord.ig;
-    const INTAKE_URL = 'https://olilo-kit.vercel.app';
-    document.getElementById('modal-notes').value = (pendingRecord.draft || '').replace(/\[INTAKE LINK\]/gi, INTAKE_URL);
-    document.getElementById('overlay').classList.add('open');
-  }
-
-  document.getElementById('btn-copy').addEventListener('click', () => {
-    const txt = document.getElementById('modal-notes').value;
-    if (!txt) return;
-    navigator.clipboard.writeText(txt).then(() => {
-      const btn = document.getElementById('btn-copy');
-      btn.textContent = 'Copied ✓';
-      setTimeout(() => btn.textContent = 'Copy', 2000);
-    });
-  });
-
-  function closeModal() {
-    document.getElementById('overlay').classList.remove('open');
-    pendingRecord = null;
-  }
-
-  document.getElementById('btn-cancel').addEventListener('click', closeModal);
-  document.getElementById('overlay').addEventListener('click', e => {
-    if (e.target === document.getElementById('overlay')) closeModal();
-  });
-
-  document.getElementById('btn-confirm').addEventListener('click', async () => {
-    if (!pendingRecord) return;
-    const btn = document.getElementById('btn-confirm');
-    btn.disabled = true;
-    btn.textContent = 'Saving…';
-    try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          recordId: pendingRecord.id,
-          channel: document.getElementById('modal-channel').value,
-          sentBy: document.getElementById('modal-sentby').value,
-          notes: document.getElementById('modal-notes').value.trim(),
-        }),
-      });
-      if (!res.ok) throw new Error();
-      const rec = allRecords.find(r => r.id === pendingRecord.id);
-      if (rec) rec.fields.Status = 'Contacted';
-      closeModal();
-      render();
-    } catch {
-      alert('Something went wrong. Try again.');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Mark Contacted';
-    }
-  });
 
   document.querySelectorAll('.tier-tab[data-tier]').forEach(tab => {
     tab.addEventListener('click', () => {
