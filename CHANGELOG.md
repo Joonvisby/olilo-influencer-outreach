@@ -7,6 +7,20 @@ Format per entry:
 
 ---
 
+## 2026-05-08 — Public creator self-apply form
+- New separation between **outbound** (Joon/Rich source the creator → existing `/api/intake` confirmation flow) and **inbound** (random applicants from `olilosweet.com/contact-us/`). Two endpoints, two destinations, zero crossover. Creators table stays a kit-fulfillment system; applicants live in a new Applications table until reviewed.
+- **Airtable schema (via Meta API):**
+  - New table **Applications** (`tblY0ZCn5aqCnwUbz`) — 16 fields: Name, Application Date, Email, Country, Primary Platform, Instagram Handle, TikTok Handle, YouTube Channel, Audience Size, Category, Content Link, Why Olilo, Decision (Pending/Approved/Rejected), Decision Notes, Linked Creator, Reviewed By.
+  - New `Source` field on Creators — single-select Sourced/Self-Apply. Stamps how a creator entered the pipeline.
+- `api/apply.js` — New POST endpoint. Validates required fields + at-least-one-handle, dup-checks Creators by IG handle and email (if matched, no Applications row written and a ⚠️ warning email goes out instead), otherwise creates an Applications row with Decision=Pending. Resend notification to joon@adaptive.kitchen + rich@adaptive.kitchen on every submission.
+- `web/apply.html` — Public creator application form. 10 fields (Name, Email, Country, Primary Platform, IG/TikTok/YouTube, Audience Size, Content Link, Why Olilo). Same brand styling as `web/index.html` (cream bg, day-blue card, sweet-orange accents, neo-brutalist borders/shadows). Client-side validation: email format, URL format on content/yt, at least one handle filled, why-olilo min 10 chars / max 500.
+- `airtable/schema.md` — Documented Applications table and Source field.
+- Env: `AIRTABLE_APPLICATIONS_TABLE_ID` (defaults to `tblY0ZCn5aqCnwUbz` in code if unset, but should be set in Vercel for cleanliness).
+
+## 2026-05-07 — Workflow diagram (Excalidraw)
+- `scripts/generate-workflow-excalidraw.mjs` — Programmatic generator for the workflow scene (rectangles + bound text + arrows). Easier to maintain than hand-rolled JSON; rerun to regenerate.
+- `docs/olilo-workflow.excalidraw` — Three stacked sections: (1) System Architecture — visitor/admin/Tally → form/UI → API → Airtable + n8n; (2) Seeding Pipeline — 9-step linear flow from sourcing creators to affiliate active; (3) Outreach Status Flow — the 8 Status values as a state machine with Declined/No Response branches off Contacted. Drag-drop into excalidraw.com to view/edit. (Distinct from the older `olilo-workflow-blueprint.excalidraw` from April.)
+
 ## 2026-05-06 — Intake form: Terms + Privacy fineprint under submit
 - `web/index.html` — Added a fineprint line under the submit button: "By sending, you agree to OLILO's Terms and Privacy Policy." Links to `https://olilosweet.com/terms-of-use/` and `https://olilosweet.com/privacy-policy-2/` (open in new tab). No checkbox — interest-gauging form, not a full commitment.
 - Added `.fineprint a` and `.legal-note` styles for underlined dark-on-cream links with sweet-orange hover.

@@ -6,6 +6,7 @@
   ],
   "rewrites": [
     { "source": "/admin", "destination": "/admin.html" },
-    { "source": "/kanban", "destination": "/kanban.html" }
+    { "source": "/kanban", "destination": "/kanban.html" },
+    { "source": "/apply", "destination": "/apply.html" }
   ]
 }

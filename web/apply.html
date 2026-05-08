@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OLILO — Apply to the creator program</title>
+<meta name="description" content="Apply to partner with OLILO Sweet Fiber Syrup. We send kits to creators who genuinely love food and clean ingredients.">
+<link rel="icon" href="assets/favicon-o.svg" type="image/svg+xml">
+<link rel="icon" href="assets/olilo-logo.png" type="image/png">
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg-page);
+    background-image:
+      radial-gradient(circle at 15% 25%, rgba(51,27,10,0.06) 0 0.8px, transparent 1.2px),
+      radial-gradient(circle at 70% 70%, rgba(51,27,10,0.05) 0 0.6px, transparent 1px),
+      radial-gradient(circle at 40% 50%, rgba(51,27,10,0.04) 0 0.5px, transparent 0.9px);
+    background-size: 120px 120px, 160px 160px, 90px 90px;
+    color: var(--fg-1);
+    min-height: 100vh;
+  }
+
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 36px;
+    max-width: 1440px; margin: 0 auto;
+  }
+  .topbar img { height: 34px; width: auto; display: block; }
+
+  .stage {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 8px 24px 72px;
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+  @media (max-width: 960px) {
+    .stage { grid-template-columns: 1fr; gap: 28px; padding-bottom: 48px; }
+    .topbar { padding: 18px 20px; }
+  }
+
+  .pitch { padding: 40px 8px 0 12px; position: relative; }
+  .eyebrow-row {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--olilo-sweet-orange);
+    color: #fff;
+    padding: 9px 16px 10px;
+    border-radius: 9999px;
+    font-family: var(--font-mono); font-size: 12px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    font-weight: 500;
+  }
+  .eyebrow-row .dot {
+    width: 8px; height: 8px; border-radius: 9999px; background: #fff;
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.28);
+  }
+  h1.pitch-h {
+    font-family: var(--font-headline); font-weight: 900;
+    font-size: clamp(3rem, 5.6vw, 5.25rem);
+    line-height: 0.9; letter-spacing: -0.025em;
+    margin: 22px 0 0; text-wrap: balance;
+  }
+  h1.pitch-h em {
+    font-style: normal;
+    font-family: var(--font-display);
+    color: var(--olilo-sweet-orange);
+    -webkit-text-stroke: 3.5px var(--olilo-black);
+    paint-order: stroke fill;
+    text-shadow: 0 3px 0 var(--olilo-black);
+    display: inline-block;
+    transform: rotate(-2deg) translateY(-2px);
+    padding: 0 .1em;
+  }
+  .pitch p.lede {
+    font-family: var(--font-body); font-weight: 500;
+    font-size: 19px; line-height: 1.5;
+    max-width: 480px;
+    margin: 24px 0 0;
+    color: var(--olilo-black-88);
+  }
+  .story-text {
+    font-family: var(--font-body); font-weight: 500;
+    font-size: 17px; line-height: 1.55;
+    color: var(--olilo-black-88);
+    max-width: 480px; margin: 20px 0 0;
+    border-left: 3px solid var(--olilo-sweet-orange);
+    padding-left: 14px;
+  }
+
+  .how-it-works {
+    margin-top: 28px;
+    max-width: 480px;
+    background: var(--olilo-white);
+    border: 2px solid var(--olilo-black);
+    border-radius: 18px;
+    padding: 18px 22px 22px;
+  }
+  .how-it-works h3 {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--olilo-black-64); font-weight: 500;
+    margin: 0 0 12px;
+  }
+  .how-step {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding: 10px 0;
+    border-top: 1px solid var(--olilo-black-16);
+  }
+  .how-step:first-of-type { border-top: 0; padding-top: 4px; }
+  .how-num {
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    border-radius: 9999px;
+    background: var(--olilo-sweet-orange);
+    color: #fff;
+    font-family: var(--font-headline); font-weight: 900;
+    font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 1px;
+  }
+  .how-step p {
+    margin: 0;
+    font-family: var(--font-body); font-size: 14px; line-height: 1.45;
+    color: var(--olilo-black-88); font-weight: 500;
+  }
+  .how-step strong { color: var(--olilo-black); font-weight: 700; }
+
+  .pitch-bubble {
+    position: absolute;
+    right: 20px; top: 12px;
+    background: var(--olilo-sweet-orange);
+    color: #fff;
+    border: none;
+    border-radius: 28px;
+    padding: 18px 22px 20px;
+    transform: rotate(3deg);
+    font-family: var(--font-basal);
+    font-weight: 400;
+    font-size: 22px; line-height: 1.1;
+    text-transform: uppercase;
+    text-align: center;
+    max-width: 155px;
+  }
+  .pitch-bubble::before {
+    content: '';
+    position: absolute;
+    top: 16px; left: -22px;
+    width: 0; height: 0;
+    border-style: solid;
+    border-width: 6px 26px 20px 0;
+    border-color: transparent var(--olilo-sweet-orange) transparent transparent;
+  }
+  @media (max-width: 960px) { .pitch-bubble { display: none; } }
+
+  .form-card {
+    position: relative;
+    background: var(--olilo-day-blue);
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(255,255,255,0.65) 0 1.2px, transparent 1.6px),
+      radial-gradient(circle at 70% 60%, rgba(255,255,255,0.55) 0 1px, transparent 1.4px),
+      radial-gradient(circle at 85% 20%, rgba(255,255,255,0.45) 0 0.8px, transparent 1.2px),
+      radial-gradient(circle at 35% 80%, rgba(255,255,255,0.55) 0 1px, transparent 1.4px);
+    background-size: 180px 180px, 220px 220px, 140px 140px, 200px 200px;
+    border: 2.5px solid var(--olilo-black);
+    border-radius: 32px;
+    padding: 36px 36px 32px;
+    box-shadow: 8px 10px 0 var(--olilo-black);
+  }
+  .form-card h2 {
+    font-family: var(--font-headline); font-weight: 900;
+    font-size: 36px; line-height: 0.95; letter-spacing: -0.015em;
+    margin: 0;
+  }
+  .form-card .sub {
+    font-family: var(--font-mono); font-size: 12px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--olilo-black-64);
+    margin: 0 0 6px;
+  }
+
+  form.intake { margin-top: 22px; display: grid; gap: 18px; }
+  .field { display: grid; gap: 6px; }
+  .field label {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--olilo-black); font-weight: 500;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .field label .opt {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--olilo-black-64); text-transform: none; letter-spacing: 0.04em;
+    font-weight: 400;
+  }
+  .field .wrap {
+    display: flex; align-items: center;
+    background: var(--olilo-white);
+    border: 2px solid var(--olilo-black);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: box-shadow var(--dur) var(--ease-out), transform var(--dur) var(--ease-out);
+  }
+  .field .wrap:focus-within {
+    box-shadow: 0 0 0 3px var(--olilo-sweet-orange), 4px 4px 0 var(--olilo-black);
+    transform: translate(-1px, -1px);
+  }
+  .field .wrap .prefix {
+    font-family: var(--font-mono); font-size: 15px; font-weight: 500;
+    color: var(--olilo-black-64);
+    padding: 0 2px 0 14px;
+    user-select: none;
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%; border: 0; outline: 0; background: transparent;
+    padding: 14px 16px;
+    font-family: var(--font-body); font-weight: 500; font-size: 16px;
+    color: var(--olilo-black);
+  }
+  .field textarea {
+    resize: vertical;
+    min-height: 100px;
+    line-height: 1.5;
+  }
+  .field select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none' stroke='%23331B0A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M1 1l5 5 5-5'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+    cursor: pointer;
+  }
+  .field input::placeholder,
+  .field textarea::placeholder { color: var(--olilo-black-40); font-weight: 500; }
+  .field.has-prefix input { padding-left: 4px; }
+
+  .row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  @media (max-width: 540px) {
+    .row-2 { grid-template-columns: 1fr; }
+  }
+
+  .submit-row { display: flex; align-items: center; gap: 14px; margin-top: 8px; flex-wrap: wrap; }
+  button.submit {
+    background: var(--olilo-sweet-orange);
+    color: #fff;
+    border: 2.5px solid var(--olilo-black);
+    border-radius: 9999px;
+    padding: 16px 28px;
+    font-family: var(--font-mono); font-size: 14px;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    font-weight: 500; cursor: pointer;
+    box-shadow: 0 5px 0 var(--olilo-black);
+    transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  button.submit:hover { transform: translateY(-2px); box-shadow: 0 7px 0 var(--olilo-black); }
+  button.submit:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--olilo-black); }
+  button.submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: 0 5px 0 var(--olilo-black); }
+  button.submit svg { width: 18px; height: 18px; }
+
+  .fineprint {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--olilo-black-64);
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+  }
+  .fineprint a {
+    color: var(--olilo-black);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .fineprint a:hover { color: var(--olilo-sweet-orange); }
+  .legal-note { margin: 10px 0 0; text-align: left; }
+
+  .success { display: none; text-align: center; padding: 20px 8px 8px; }
+  .success.on { display: block; }
+  .success .big {
+    font-family: var(--font-display);
+    color: var(--olilo-sweet-orange);
+    -webkit-text-stroke: 3.5px var(--olilo-black);
+    paint-order: stroke fill;
+    text-shadow: 0 3px 0 var(--olilo-black);
+    font-size: 68px; line-height: 0.95;
+    margin: 8px 0 14px;
+  }
+  .success .body {
+    font-family: var(--font-body); font-weight: 600;
+    font-size: 17px; line-height: 1.5; color: var(--olilo-black-88);
+    max-width: 360px; margin: 0 auto;
+  }
+  .success .meta {
+    margin-top: 18px;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--olilo-black-64);
+  }
+
+  footer {
+    max-width: 1320px; margin: 0 auto;
+    padding: 24px 36px 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--olilo-black-40);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    flex-wrap: wrap; gap: 8px;
+  }
+
+  .field .wrap.err { box-shadow: 0 0 0 3px rgba(251,68,8,0.35); }
+  .err-text {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--olilo-sweet-orange); letter-spacing: 0.04em;
+    display: none;
+  }
+  .field.err .err-text { display: block; }
+
+  .global-err {
+    display: none;
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: #fef2f2;
+    border: 1px solid rgba(251,68,8,0.35);
+    border-radius: 10px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--olilo-sweet-orange);
+    letter-spacing: 0.04em;
+  }
+  .global-err.on { display: block; }
+
+  .char-count {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--olilo-black-40);
+    text-align: right;
+    margin-top: -2px;
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="https://olilosweet.com/"><img src="assets/olilo-logo.png" alt="OLILO"></a>
+</header>
+
+<main class="stage">
+
+  <section class="pitch">
+    <span class="eyebrow-row"><span class="dot"></span>Creator Partnerships</span>
+
+    <h1 class="pitch-h">
+      Make something <em>sweet</em> with us.
+    </h1>
+
+    <p class="lede">
+      We work with creators who genuinely love food, cooking, and what we're building. If your work fits, we'll send you a kit and talk partnership.
+    </p>
+
+    <p class="story-text">
+      OLILO Sweet Fiber Syrup is rooted in Korea, made in the USA. 7g of prebiotic fiber per tbsp, 45% fewer calories than sugar, cold-soluble and heat-stable. We want it in real kitchens, made by real people.
+    </p>
+
+    <div class="how-it-works">
+      <h3>How it works</h3>
+      <div class="how-step">
+        <div class="how-num">1</div>
+        <p><strong>Apply below.</strong> Tell us about you and share one piece of content you're proud of.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-num">2</div>
+        <p><strong>We review within 5–7 days.</strong> If it's a fit, you'll hear from Joon or Rich.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-num">3</div>
+        <p><strong>We ship a kit + talk partnership.</strong> Gifted, paid, or affiliate — depends on what fits.</p>
+      </div>
+    </div>
+
+    <span class="pitch-bubble">Made for<br/>real food.</span>
+  </section>
+
+  <section class="form-card" id="card">
+
+    <div id="form-view">
+      <p class="sub">Creator application</p>
+      <h2>Tell us about you.</h2>
+
+      <form class="intake" id="apply-form" novalidate>
+
+        <div class="field" id="f-name">
+          <label for="name">Full name</label>
+          <div class="wrap"><input id="name" name="name" type="text" placeholder="Jamie Park" autocomplete="name" required></div>
+          <span class="err-text">Add your name.</span>
+        </div>
+
+        <div class="field" id="f-email">
+          <label for="email">Email</label>
+          <div class="wrap"><input id="email" name="email" type="email" placeholder="jamie@email.com" autocomplete="email" required></div>
+          <span class="err-text">That doesn't look like an email.</span>
+        </div>
+
+        <div class="row-2">
+          <div class="field" id="f-country">
+            <label for="country">Country</label>
+            <div class="wrap"><select id="country" name="country" required>
+              <option value="" disabled selected>Choose…</option>
+              <option value="US">United States</option>
+              <option value="Canada">Canada</option>
+              <option value="UK">United Kingdom</option>
+              <option value="Australia">Australia</option>
+              <option value="Other">Other</option>
+            </select></div>
+            <span class="err-text">Pick your country.</span>
+          </div>
+
+          <div class="field" id="f-platform">
+            <label for="platform">Primary platform</label>
+            <div class="wrap"><select id="platform" name="primary_platform" required>
+              <option value="" disabled selected>Choose…</option>
+              <option value="IG">Instagram</option>
+              <option value="TikTok">TikTok</option>
+              <option value="YouTube">YouTube</option>
+              <option value="Other">Other</option>
+            </select></div>
+            <span class="err-text">Pick your main platform.</span>
+          </div>
+        </div>
+
+        <div class="field has-prefix" id="f-ig">
+          <label for="ig">Instagram handle <span class="opt">· optional if not your main</span></label>
+          <div class="wrap"><span class="prefix">@</span><input id="ig" name="instagram" type="text" placeholder="jamiepark" autocomplete="off"></div>
+        </div>
+
+        <div class="field has-prefix" id="f-tt">
+          <label for="tt">TikTok handle <span class="opt">· optional</span></label>
+          <div class="wrap"><span class="prefix">@</span><input id="tt" name="tiktok" type="text" placeholder="jamiepark" autocomplete="off"></div>
+        </div>
+
+        <div class="field" id="f-yt">
+          <label for="yt">YouTube channel <span class="opt">· optional</span></label>
+          <div class="wrap"><input id="yt" name="youtube" type="url" placeholder="https://youtube.com/@jamiepark" autocomplete="off"></div>
+        </div>
+
+        <div class="field" id="f-handles-min">
+          <span class="err-text" style="display:none;">Add at least one handle (Instagram, TikTok, or YouTube).</span>
+        </div>
+
+        <div class="field" id="f-audience">
+          <label for="audience">Audience size <span class="opt">· total across platforms</span></label>
+          <div class="wrap"><select id="audience" name="audience_size" required>
+            <option value="" disabled selected>Choose…</option>
+            <option value="Nano 1K–10K">Nano · 1K–10K</option>
+            <option value="Micro 10K–100K">Micro · 10K–100K</option>
+            <option value="Macro 100K–1M">Macro · 100K–1M</option>
+            <option value="Mega 1M+">Mega · 1M+</option>
+          </select></div>
+          <span class="err-text">Pick your audience range.</span>
+        </div>
+
+        <div class="field" id="f-content">
+          <label for="content">A piece of content you're proud of <span class="opt">· link</span></label>
+          <div class="wrap"><input id="content" name="content_link" type="url" placeholder="https://instagram.com/p/…" required></div>
+          <span class="err-text">Paste a link to your work.</span>
+        </div>
+
+        <div class="field" id="f-why">
+          <label for="why">Why OLILO? <span class="opt">· one or two sentences</span></label>
+          <div class="wrap"><textarea id="why" name="why_olilo" maxlength="500" placeholder="Tell us what draws you to what we're building." required></textarea></div>
+          <div class="char-count"><span id="why-count">0</span> / 500</div>
+          <span class="err-text">Tell us a little about why.</span>
+        </div>
+
+        <div class="submit-row">
+          <button type="submit" class="submit">
+            Send application
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12 H19"/><path d="M13 6 L19 12 L13 18"/>
+            </svg>
+          </button>
+          <span class="fineprint">We'll review within 5–7 days.</span>
+        </div>
+
+        <div class="global-err" id="global-err"></div>
+
+        <p class="fineprint legal-note">
+          By applying, you agree to OLILO's
+          <a href="https://www.olilosweet.com/terms-of-use/" target="_blank" rel="noopener">Terms</a>
+          and
+          <a href="https://www.olilosweet.com/privacy-policy/" target="_blank" rel="noopener">Privacy Policy</a>.
+        </p>
+      </form>
+    </div>
+
+    <div class="success" id="success">
+      <svg viewBox="0 0 64 64" fill="var(--olilo-sweet-orange)" style="width:72px;height:72px;filter:drop-shadow(0 4px 0 var(--olilo-black));margin: 10px auto 0;display:block;">
+        <path d="M32 4 C34 22, 42 30, 60 32 C42 34, 34 42, 32 60 C30 42, 22 34, 4 32 C22 30, 30 22, 32 4 Z"/>
+      </svg>
+      <div class="big">GOT IT!</div>
+      <p class="body">Thanks for applying, <span id="success-name">friend</span>. We'll review and get back within 5–7 days. If it's a fit, you'll hear from Joon or Rich.</p>
+      <div class="meta">Application received · OLILO team</div>
+    </div>
+
+  </section>
+</main>
+
+<footer>
+  <span>© OLILO 2026 · Sweet Fiber Syrup</span>
+  <span>Questions? <a href="mailto:creator@olilosweet.com" style="color:inherit;">creator@olilosweet.com</a></span>
+</footer>
+
+<script>
+  const ENDPOINT = '/api/apply';
+
+  const whyEl = document.getElementById('why');
+  const whyCount = document.getElementById('why-count');
+  whyEl.addEventListener('input', () => { whyCount.textContent = whyEl.value.length; });
+
+  ['name','email','country','platform','ig','tt','yt','audience','content','why'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const handler = () => {
+      const f = document.getElementById('f-' + id);
+      if (f) f.classList.remove('err');
+      document.getElementById('global-err').classList.remove('on');
+      const minErr = document.getElementById('f-handles-min').querySelector('.err-text');
+      if (['ig','tt','yt'].includes(id)) minErr.style.display = 'none';
+    };
+    el.addEventListener('input', handler);
+    el.addEventListener('change', handler);
+  });
+
+  const form = document.getElementById('apply-form');
+  const submitBtn = form.querySelector('button.submit');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    document.getElementById('global-err').classList.remove('on');
+
+    const v = (id) => document.getElementById(id).value.trim();
+    const name     = v('name');
+    const email    = v('email');
+    const country  = v('country');
+    const platform = v('platform');
+    const ig       = v('ig').replace(/^@/, '');
+    const tt       = v('tt').replace(/^@/, '');
+    const yt       = v('yt');
+    const audience = v('audience');
+    const content  = v('content');
+    const why      = v('why');
+
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const urlOk = (s) => /^https?:\/\/.+/i.test(s);
+
+    let ok = true;
+    const flag = (id) => { document.getElementById('f-' + id).classList.add('err'); ok = false; };
+    if (!name)                    flag('name');
+    if (!emailOk)                 flag('email');
+    if (!country)                 flag('country');
+    if (!platform)                flag('platform');
+    if (!audience)                flag('audience');
+    if (!content || !urlOk(content)) flag('content');
+    if (!why || why.length < 10)  flag('why');
+    if (!ig && !tt && !yt) {
+      document.getElementById('f-handles-min').querySelector('.err-text').style.display = 'block';
+      ok = false;
+    }
+    if (yt && !urlOk(yt)) flag('yt');
+    if (!ok) return;
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = 'Sending&hellip;';
+
+    try {
+      const res = await fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name, email, country,
+          primary_platform: platform,
+          instagram_handle: ig || null,
+          tiktok_handle: tt || null,
+          youtube_channel: yt || null,
+          audience_size: audience,
+          content_link: content,
+          why_olilo: why,
+        })
+      });
+
+      if (!res.ok) throw new Error(`Server error ${res.status}`);
+
+      document.getElementById('form-view').style.display = 'none';
+      const s = document.getElementById('success');
+      s.classList.add('on');
+      document.getElementById('success-name').textContent = name.split(' ')[0];
+    } catch (err) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'Send application <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12 H19"/><path d="M13 6 L19 12 L13 18"/></svg>';
+      const ge = document.getElementById('global-err');
+      ge.textContent = 'Something went wrong — please try again or email creator@olilosweet.com';
+      ge.classList.add('on');
+    }
+
+    const card = document.getElementById('card');
+    window.scrollTo({ top: card.getBoundingClientRect().top + window.scrollY - 24, behavior: 'smooth' });
+  });
+</script>
+
+</body>
+</html>
