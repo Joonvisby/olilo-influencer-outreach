@@ -89,35 +89,36 @@
 
   /* ---------- Hero ---------- */
   .hero {
-    padding: 40px 0 60px;
+    padding: 0 0 20px;
     text-align: center;
   }
-  .hero .eyebrow {
-    font-family: 'Overpass Mono', monospace;
-    font-size: 13px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--orange);
-    margin-bottom: 18px;
-  }
-  .hero h1 {
-    font-size: 70px;
-    line-height: 1;
-    letter-spacing: -1.5px;
-    margin-bottom: 24px;
-    text-wrap: balance;
-  }
-  .hero .lede {
-    font-size: 24px;
-    line-height: 1.35;
-    color: var(--black);
-    max-width: 640px;
+  .hero-illustration {
+    display: block;
+    width: 100%;
+    max-width: 900px;
+    height: auto;
     margin: 0 auto;
   }
+  .hero .lede {
+    font-size: 20px;
+    line-height: 1.45;
+    color: var(--black);
+    max-width: 560px;
+    margin: -8px auto 0;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
   @media (max-width: 768px) {
-    .hero { padding: 24px 0 40px; }
-    .hero h1 { font-size: 40px; letter-spacing: -1px; }
-    .hero .lede { font-size: 18px; }
+    .hero { padding: 0 0 10px; }
+    .hero-illustration { max-width: 100%; }
+    .hero .lede { font-size: 17px; margin-top: 0; }
   }
 
   /* ---------- How it works ---------- */
@@ -534,8 +535,10 @@
   <section class="hero">
     <div class="outer-margin">
       <div class="inner-margin">
-        <p class="eyebrow">Creator Partnerships</p>
-        <h1>Make something <br>sweet with us.</h1>
+        <h1 class="sr-only">Creator Partnerships — Make Something Sweet With Us</h1>
+        <img class="hero-illustration"
+             src="assets/make-something-sweet.png"
+             alt="Creator Partnerships — Make Something Sweet With Us. Hand-drawn orange illustration of hands cooking, pouring OLILO syrup, and sharing food.">
         <p class="lede">
           We work with creators who genuinely love food, cooking, and what we're building. If your work fits, we'll send a kit and talk partnership.
         </p>
