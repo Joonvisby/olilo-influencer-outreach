@@ -7,6 +7,9 @@ Format per entry:
 
 ---
 
+## 2026-05-17 — scout-creators: capture email + draft outreach email
+- `.claude/skills/scout-creators/SKILL.md` — The skill now also captures the creator's public contact `Email` during research (verified addresses only, never guessed) and writes an `Email Draft`. New "outreach email" section codifies the tier-based pattern from `agents/alice-prompt.md`: Tier 1 = 4-6 sentences with a `Joon` / `Co-founder, OLILO` sign-off, Tier 2 = 3-4 sentences, Tier 3 = 2-3 sentences, both with the `The OLILO Team` sign-off. Procedure, rules, and final-report instructions updated to cover both drafts.
+
 ## 2026-05-17 — Approved → Confirmed automation script
 - `scripts/approved-to-confirmed.airtable.js` — Script for an Airtable "Run a script" automation action that MOVES an approved "Creators (not confirmed)" row into "Creators (confirmed)": copies the 32 fields shared by both tables, then deletes the staging row. The delete only runs after the copy succeeds, so a failed copy never loses the row. Skips Approved/Fill Method/Enrichment Status, attachments, and linked-record fields. Idempotent — if a confirmed row with the same Instagram Handle already exists it neither copies nor deletes, leaving the staging row for manual reconciliation. The automation itself must be wired up in the Airtable UI (no API for automations); setup steps are in the file header.
 
