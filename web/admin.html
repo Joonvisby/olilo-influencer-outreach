@@ -740,11 +740,12 @@
         <th>Handles</th>
         <th>Status</th>
         <th>Contacted</th>
+        <th>Contacted By</th>
         <th>Action</th>
       </tr>
     </thead>
     <tbody id="tbody">
-      <tr class="state-row"><td colspan="5">Loading creators…</td></tr>
+      <tr class="state-row"><td colspan="6">Loading creators…</td></tr>
     </tbody>
   </table>
 </div>
@@ -907,7 +908,7 @@
       render();
     } catch {
       document.getElementById('tbody').innerHTML =
-        '<tr class="state-row"><td colspan="5">Failed to load. Refresh to try again.</td></tr>';
+        '<tr class="state-row"><td colspan="6">Failed to load. Refresh to try again.</td></tr>';
     }
   }
 
@@ -969,7 +970,7 @@
 
     const tbody = document.getElementById('tbody');
     if (!filtered.length) {
-      tbody.innerHTML = '<tr class="state-row"><td colspan="5">No creators found.</td></tr>';
+      tbody.innerHTML = '<tr class="state-row"><td colspan="6">No creators found.</td></tr>';
     } else {
       tbody.innerHTML = filtered.map(r => {
         const f = r.fields;
@@ -989,6 +990,7 @@
           </td>
           <td>${statusBadge(status)}</td>
           <td>${contactedAtLabel(lca)}${followupTag(status, lca)}</td>
+          <td>${f['Contacted By'] || '—'}</td>
           <td>
             ${isArchived
               ? `<button class="btn-unarchive" data-id="${r.id}" data-name="${nameAttr}" style="background:transparent;border:2px solid var(--olilo-black-40);border-radius:var(--radius-pill);padding:6px 12px;color:var(--olilo-black-64);cursor:pointer;font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;">Unarchive</button>`

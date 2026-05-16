@@ -16,7 +16,7 @@ export default async function handler(req, res) {
       {
         method: 'PATCH',
         headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fields: { Status: 'Contacted', 'Last Contacted At': new Date().toISOString().split('T')[0] } }),
+        body: JSON.stringify({ fields: { Status: 'Contacted', 'Last Contacted At': new Date().toISOString().split('T')[0], 'Contacted By': sentBy || 'Joon' } }),
       }
     );
 
