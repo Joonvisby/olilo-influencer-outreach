@@ -102,10 +102,10 @@
     padding-left: 14px;
   }
 
-  /* Fact sheet */
+  /* Fact sheet — stretches to full pitch-column width to align with hero-row above */
   .fact-grid {
     display: grid; grid-template-columns: 1fr 1fr;
-    gap: 10px; max-width: 480px;
+    gap: 10px;
   }
   .fact-card {
     background: var(--olilo-white);
@@ -137,34 +137,56 @@
     color: var(--olilo-black);
   }
 
-  /* bubble near pitch */
-  .pitch-bubble {
-    position: absolute;
-    right: 20px; top: 12px;
-    background: var(--olilo-sweet-orange);
-    color: #fff;
-    border: none;
-    border-radius: 28px;
-    padding: 18px 22px 20px;
-    transform: rotate(3deg);
-    font-family: var(--font-basal);
-    font-weight: 400;
-    font-size: 22px; line-height: 1.1;
-    text-transform: uppercase;
-    text-align: center;
-    max-width: 155px;
-    box-shadow: none;
+  /* Hero row: grid — eyebrow sits in its own row so the video can
+     start one row below, aligning its top edge with the H1. */
+  .hero-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 200px;
+    grid-template-areas:
+      "eyebrow  ."
+      "headline video"
+      "body     video";
+    column-gap: 28px;
+    row-gap: 0;
+    margin-bottom: 4px;
+    align-items: start;
   }
-  .pitch-bubble::before {
-    content: '';
-    position: absolute;
-    top: 16px; left: -22px;
-    width: 0; height: 0;
-    border-style: solid;
-    border-width: 6px 26px 20px 0;
-    border-color: transparent var(--olilo-sweet-orange) transparent transparent;
+  .hero-row > .eyebrow-row { grid-area: eyebrow; }
+  .hero-row .hero-text     { grid-area: headline; min-width: 0; }
+  .hero-row .hero-body     { grid-area: body;     min-width: 0; }
+  .hero-row .founder-video { grid-area: video; margin: 0; }
+  /* When H1 is the first child of .hero-text (no preceding eyebrow), drop its top margin */
+  .hero-text > h1.pitch-h:first-child { margin-top: 0; }
+
+  .founder-video__frame {
+    position: relative;
+    padding-bottom: 177.78%;
+    height: 0;
+    overflow: hidden;
+    border-radius: 16px;
+    border: 2px solid var(--olilo-black);
+    box-shadow: 0 6px 24px rgba(51, 27, 10, 0.12);
+    background: var(--olilo-black);
   }
-  @media (max-width: 960px) { .pitch-bubble { display: none; } }
+  .founder-video__frame iframe {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  }
+
+  @media (max-width: 720px) {
+    .hero-row {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "eyebrow"
+        "headline"
+        "video"
+        "body";
+    }
+    .hero-row .founder-video {
+      width: 100%; max-width: 280px;
+      margin: 12px auto 0;
+      justify-self: center;
+    }
+  }
 
   /* ---------- Right form card ---------- */
   .form-card {
@@ -425,19 +447,41 @@
 
   <!-- LEFT: Pitch -->
   <section class="pitch">
-    <span class="eyebrow-row"><span class="dot"></span>You're on the list</span>
 
-    <h1 class="pitch-h">
-      Send me a <em>sweet</em> kit.
-    </h1>
+    <!-- Hero row: eyebrow (top, left column only), headline + body (left), video (spans headline+body rows on right) -->
+    <div class="hero-row">
+      <span class="eyebrow-row"><span class="dot"></span>You're on the list</span>
 
-    <p class="lede">
-      Drop your details here and we'll ship you a bottle of OLILO Sweet Fiber Syrup.
-    </p>
+      <div class="hero-text">
+        <h1 class="pitch-h">
+          Send me a <em>sweet</em> kit.
+        </h1>
+      </div>
 
-    <p class="story-text">
-      We made something better than sugar. We want you to taste it first. Just pour it on something you like and tell us what you think.
-    </p>
+      <div class="hero-body">
+        <p class="lede">
+          Drop your details here and we'll ship you a bottle of OLILO Sweet Fiber Syrup.
+        </p>
+
+        <p class="story-text">
+          We made something better than sugar. We want you to taste it first. Just pour it on something you like and tell us what you think.
+        </p>
+      </div>
+
+      <!-- Founder intro video (Loom) -->
+      <div class="founder-video">
+        <div class="founder-video__frame">
+          <iframe
+            src="https://www.loom.com/embed/120d2a2af19e404fb34c216b935e60f6?hide_owner=true&amp;hide_share=true&amp;hide_title=true&amp;speed=1"
+            frameborder="0"
+            allow="autoplay; fullscreen"
+            webkitallowfullscreen
+            mozallowfullscreen
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+    </div>
 
     <div class="fact-grid" style="margin-top: 24px;">
       <div class="fact-card">
@@ -456,6 +500,12 @@
         <span class="fact-body">Heat Stable</span>
         <span class="fact-label" style="margin-top:6px;">For cooking &amp; baking</span>
       </div>
+      <div class="fact-card" style="display:flex; align-items:center;">
+        <span class="fact-body">Flows like honey.</span>
+      </div>
+      <div class="fact-card" style="display:flex; align-items:center;">
+        <span class="fact-body">Tastes like sugar.</span>
+      </div>
       <div class="fact-card" style="display:flex; align-items:center; gap:10px;">
         <span style="font-size:20px;">🇰🇷</span>
         <span class="fact-body">Rooted in Korea.</span>
@@ -466,7 +516,6 @@
       </div>
     </div>
 
-    <span class="pitch-bubble">Try it<br/>first.</span>
   </section>
 
   <!-- RIGHT: Form -->
@@ -568,7 +617,6 @@
 
 <script>
   // ── Config ──────────────────────────────────────────────────────────────────
-  // Replace with your live n8n webhook URL before deploying.
   const WEBHOOK_URL = '/api/intake';
 
   // ── Affiliate toggle ────────────────────────────────────────────────────────
