@@ -1,4 +1,4 @@
-const ALLOWED_FIELDS = new Set(['Archived', 'Status', 'Last Contacted At', 'DM Draft']);
+const ALLOWED_FIELDS = new Set(['Archived', 'Status', 'Last Contacted At', 'DM Draft', 'Contacted By']);
 const VALID_STATUSES = new Set([
   'Not Contacted', 'Contacted', 'Replied', 'Deal Agreed',
   'Shipped', 'Delivered', 'Content Posted', 'Declined',

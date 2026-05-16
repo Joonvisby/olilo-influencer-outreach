@@ -1064,10 +1064,11 @@
         btn.disabled = true;
         btn.textContent = 'Saving…';
         const rec = allRecords.find(r => r.id === id);
-        const ok = await setStatus(id, 'Not Contacted', { 'Last Contacted At': null });
+        const ok = await setStatus(id, 'Not Contacted', { 'Last Contacted At': null, 'Contacted By': null });
         if (ok && rec) {
           rec.fields.Status = 'Not Contacted';
           rec.fields['Last Contacted At'] = null;
+          rec.fields['Contacted By'] = null;
           render();
         } else {
           btn.disabled = false;
@@ -1210,6 +1211,7 @@
       if (rec) {
         rec.fields.Status = 'Contacted';
         rec.fields['Last Contacted At'] = new Date().toISOString().split('T')[0];
+        rec.fields['Contacted By'] = document.getElementById('modal-sentby').value;
       }
       closeModal();
       render();
