@@ -7,6 +7,12 @@ Format per entry:
 
 ---
 
+## 2026-05-16 — Allow DM Draft edits via update-creator endpoint
+- `api/update-creator.js` — Added `DM Draft` to `ALLOWED_FIELDS` so the authenticated admin endpoint can write the DM Draft field. Enables batch updates of DM copy without exposing Airtable credentials locally.
+
+## 2026-05-16 — DM sending account: founders' personal IG
+- `agents/alice-prompt.md` — Added a `Sending account` note to the DM section: DMs go out from the founders' personal Instagram accounts (Joon's, Rich's), not the Olilo brand account. Rationale: the copy is first-person founder voice, and a new low-follower brand account sending at volume risks Instagram spam flags. Documents the future switch to the official Olilo account once it has grown enough credibility, with a reminder to review the DM voice at that point.
+
 ## 2026-05-16 — Manual revert: Contacted → Not Contacted
 - `web/admin.html` — Creators with status `Contacted` now show a `↩ Not Contacted` button (table + mobile card) that reverts them. Confirms first, then PATCHes Airtable and clears the `Last Contacted At` date so the row reads as genuinely un-contacted. New `setStatus()` helper and `.btn-revert` style.
 - `api/update-creator.js` — Added `Status` and `Last Contacted At` to `ALLOWED_FIELDS`, plus a `VALID_STATUSES` allowlist that rejects unknown status values. Revert goes through this authenticated endpoint (requires admin token), same as Archive.

@@ -102,6 +102,8 @@ For Tier 2 & 3: Sign as "— The Olilo Team | hello@olilosweet.com | olilosweet.
 
 **Platform:** Write for Instagram DM by default. If the creator is TikTok-only (no IG handle), write for TikTok DM.
 
+**Sending account:** DMs are sent from the founders' personal Instagram accounts (Joon's and Rich's), NOT the Olilo brand account. This is why the copy is first-person founder voice (`Joon here, I co-founded OLILO with Rich`) — the sender and the message must match. A new brand account with few followers sending outreach at volume also risks being flagged by Instagram. **Future state:** once the official Olilo account has grown enough followers and credibility, outreach will move there. At that point the DM voice should be reviewed — the current first-person founder framing assumes a personal sender.
+
 **IMPORTANT — FOUNDER VIDEO LINK GOES IN THE DM:** Every DM includes the founder video link `https://www.loom.com/share/120d2a2af19e404fb34c216b935e60f6` in the body. It's a 15-second founder intro video (Joon + Rich on camera, holding the bottle, saying: *"Hi, I'm Joon. This is Rich. We're about to launch OLILO Sweet Fiber Syrup. It's a product that hasn't been available in the USA yet, and we'd love to send you a free bottle. Hit us up on the DM link and tell us what you think."*). Instagram renders this link as a preview card with the founders' faces and the title "OLILO SWEET FIBER SYRUP - FOR YOU" — that card is what makes recipients tap in.
 
 The video already handles: who we are, what Olilo is, the free-bottle offer, and the CTA. **Do not duplicate any of that in the DM copy.** Your job is the personalization layer + the two links.
