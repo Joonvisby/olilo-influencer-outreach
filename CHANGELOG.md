@@ -7,6 +7,18 @@ Format per entry:
 
 ---
 
+## 2026-05-16 — Manual revert: Contacted → Not Contacted
+- `web/admin.html` — Creators with status `Contacted` now show a `↩ Not Contacted` button (table + mobile card) that reverts them. Confirms first, then PATCHes Airtable and clears the `Last Contacted At` date so the row reads as genuinely un-contacted. New `setStatus()` helper and `.btn-revert` style.
+- `api/update-creator.js` — Added `Status` and `Last Contacted At` to `ALLOWED_FIELDS`, plus a `VALID_STATUSES` allowlist that rejects unknown status values. Revert goes through this authenticated endpoint (requires admin token), same as Archive.
+- Note: reverting does not delete the Outreach Log row created when the creator was marked Contacted — that history stays.
+
+## 2026-05-16 — Founder video link in DM drafts (v9 pattern)
+- `agents/alice-prompt.md` — DM drafts now include the founder video Loom link `https://www.loom.com/share/120d2a2af19e404fb34c216b935e60f6` directly in the body, right after the identity line, framed with "Made you a quick video 👇". Instagram renders it as a preview card (founders' faces + "OLILO SWEET FIBER SYRUP - FOR YOU" title), which drives clicks and applications.
+- Reversed the old rule: a screenshot proved Instagram **does** generate a preview thumbnail for Loom URLs, so the prior "do not include the Loom URL — no preview payoff" guidance was wrong and is removed.
+- New ordering rule: the Loom link must come **before** the kit link, because Instagram renders the preview card for the *first* link in the message — we want that card to be the video, not the intake page.
+- Updated: DM structure (v8 → v9 pattern), the founder-video note, hard formatting rules, and quality checks. Added a `Founder video link` constant to the ABOUT OLILO section. One video for all creators.
+- Standardized the DM identity line to `Joon here, I co-founded OLILO with Rich.` (was `Joon here, co-founder of OLILO.`) — names both founders, matching the two faces in the video preview card. Also fixed a leftover inconsistent line that read `Joon here — I co-founded Olilo with Rich.` (em dash, lowercase brand name).
+
 ## 2026-05-08 — Public creator self-apply form
 - New separation between **outbound** (Joon/Rich source the creator → existing `/api/intake` confirmation flow) and **inbound** (random applicants from `olilosweet.com/contact-us/`). Two endpoints, two destinations, zero crossover. Creators table stays a kit-fulfillment system; applicants live in a new Applications table until reviewed.
 - **Airtable schema (via Meta API):**

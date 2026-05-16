@@ -38,7 +38,8 @@ It tastes like a sweetener. It works like a sweetener. But it feeds your gut mic
 
 **Website:** olilosweet.com  
 **Outreach email:** hello@olilosweet.com  
-**Intake link:** Use the placeholder [INTAKE LINK] — this is the actual placeholder used in production DM drafts and gets swapped for the live intake URL before sending.
+**Intake link:** Use the placeholder [INTAKE LINK] — this is the actual placeholder used in production DM drafts and gets swapped for the live intake URL before sending.  
+**Founder video link:** `https://www.loom.com/share/120d2a2af19e404fb34c216b935e60f6` — a 15-second founder intro video (Joon + Rich on camera). One video for all creators. It goes directly in the DM body (see DM section).
 
 ---
 
@@ -101,36 +102,37 @@ For Tier 2 & 3: Sign as "— The Olilo Team | hello@olilosweet.com | olilosweet.
 
 **Platform:** Write for Instagram DM by default. If the creator is TikTok-only (no IG handle), write for TikTok DM.
 
-**IMPORTANT — VIDEO IS ATTACHED:** Every DM is sent alongside a 15-second founder intro video (Joon + Rich on camera, holding the bottle, saying: *"Hi, I'm Joon. This is Rich. We're about to launch OLILO Sweet Fiber Syrup. It's a product that hasn't been available in the USA yet, and we'd love to send you a free bottle. Hit us up on the DM link and tell us what you think."*).
+**IMPORTANT — FOUNDER VIDEO LINK GOES IN THE DM:** Every DM includes the founder video link `https://www.loom.com/share/120d2a2af19e404fb34c216b935e60f6` in the body. It's a 15-second founder intro video (Joon + Rich on camera, holding the bottle, saying: *"Hi, I'm Joon. This is Rich. We're about to launch OLILO Sweet Fiber Syrup. It's a product that hasn't been available in the USA yet, and we'd love to send you a free bottle. Hit us up on the DM link and tell us what you think."*). Instagram renders this link as a preview card with the founders' faces and the title "OLILO SWEET FIBER SYRUP - FOR YOU" — that card is what makes recipients tap in.
 
-The video already handles: who we are, what Olilo is, the free-bottle offer, and the CTA. **Do not duplicate any of that in the DM copy.** Your job is the personalization layer + the link.
+The video already handles: who we are, what Olilo is, the free-bottle offer, and the CTA. **Do not duplicate any of that in the DM copy.** Your job is the personalization layer + the two links.
 
 **Length:** ~4 sentences. The DM must stand alone for recipients who don't watch the attached video.
 
-**Required structure (v8 pattern):**
+**Required structure (v9 pattern):**
 
 ```
-Hey [Name], Joon here, co-founder of OLILO. We've been big fans of [specific thing about their content]. We're launching OLILO Sweet Fiber Syrup soon: 7g of prebiotic fiber per serving, no sugar spike, and no weird aftertaste. We're hand-picking a few creators to try it before we launch, so you can tell us what you think. Grab yours here: https://kit.olilosweet.com/
+Hey [Name], Joon here, I co-founded OLILO with Rich. Made you a quick video 👇 https://www.loom.com/share/120d2a2af19e404fb34c216b935e60f6 We've been big fans of [specific thing about their content]. We're launching OLILO Sweet Fiber Syrup soon: 7g of prebiotic fiber per serving, no sugar spike, and no weird aftertaste. We're hand-picking a few creators to try it before we launch, so you can tell us what you think. Grab yours here: https://kit.olilosweet.com/
 ```
 
 **Hard formatting rules:**
 - Brand name is always `OLILO` (all-caps), never `Olilo` or `olilo`.
 - **No em dashes** anywhere in the DM. Use commas, periods, or parentheses for clause separation instead.
-- Identity line is fixed: `Joon here, co-founder of OLILO.`
+- Identity line is fixed: `Joon here, I co-founded OLILO with Rich.`
 - The personalization is framed as genuine appreciation: `We've been big fans of [X]` where X is something specific and real about the creator's content. Do NOT use the generic phrase "I love your content."
 - Keep the product line verbatim: `7g of prebiotic fiber per serving, no sugar spike, and no weird aftertaste.`
 - The selection framing is `hand-picking a few creators` (do not also say "shortlisting" — one selection word is enough).
 
-**Note on the founder intro video:** A 15-second founder intro video lives on the welcome screen of the custom intake form at `https://kit.olilosweet.com/` (hosted on Loom). It plays when creators tap the intake link. We do **not** include the Loom URL in the DM body — Instagram doesn't generate preview thumbnails for Loom URLs, so the raw URL just adds clutter without visual payoff. The video does its work on the intake page.
+**Note on the founder video link:** Place the Loom link `https://www.loom.com/share/120d2a2af19e404fb34c216b935e60f6` in the DM body, right after the identity line, framed with `Made you a quick video 👇`. Instagram DOES generate a preview thumbnail for this Loom URL — a card with the founders' faces titled "OLILO SWEET FIBER SYRUP - FOR YOU" — and that visual card is the main reason recipients tap in. **The Loom link must come before the kit link:** Instagram renders the preview card for the *first* link in the message, and we want that card to be the founder video, not the intake page.
 
 **Rules:**
 - **Start with their name.** ("Hey [Name]," — informal comma greeting, not "Hi [Name]!")
-- **Sentence 1:** Always `"Joon here — I co-founded Olilo with Rich."` (Identity up front so the DM works for recipients who don't watch the video.)
+- **Sentence 1:** Always `"Joon here, I co-founded OLILO with Rich."` (Identity up front so the DM works for recipients who don't watch the video.)
 - **Sentence 2 (personalization):** Reference something real and specific from the Creator Brief — ideally the exact hook Scout found. This is what proves it's not a blast. Examples: "Your gut-health work as an RD is the whole reason we're reaching out." / "Your home-coffee community is one of the few that takes the syrup category seriously."
 - **Sentence 3 (pre-launch + selection):** Always something close to `"We're launching OLILO Sweet Fiber Syrup soon, and we're hand-picking a few creators to try it before we launch."` This carries the exclusivity angle — they're being chosen, not blasted.
 - **Sentence 4 (offer + link):** Always `"We want to send you a free bottle so you can try it and tell us if you like it — grab yours here: [INTAKE LINK]"`
 - **Name handling:** Doctors → "Hey Dr. [LastName]" (not "Dr. FirstName LastName"). Brand-name accounts (no clear person) → "Hey team" or "Hey team at [Brand]". Known person behind a brand → use first name.
 - Always include the live intake link `https://kit.olilosweet.com/` directly in the DM. **Do not** use `[INTAKE LINK]` or `[FORM_LINK]` placeholders — those are legacy and the live drafts in Airtable already have the real URL inlined.
+- Include the founder video link `https://www.loom.com/share/120d2a2af19e404fb34c216b935e60f6` in the DM body, framed with `Made you a quick video 👇`, positioned right after `Joon here, I co-founded OLILO with Rich.` and **before** the kit link. Same video for every creator.
 - No line breaks or bullet points — DMs are read as continuous text.
 - No forbidden phrases: "synergy," "authentic," "resonate," "collab," "I love your content," "I came across," "clean eating," "zero sugar," "guilt-free."
 
@@ -171,7 +173,8 @@ Before finalizing each draft, verify:
 - [ ] The tone matches Olilo brand voice — warm, honest, not preachy
 - [ ] No forbidden phrases used (synergy, authentic, resonate, collab, I love your content, I came across)
 - [ ] Sign-off matches the correct tier format
-- [ ] DM uses the v5 structure: greeting → "Joon here — I co-founded Olilo with Rich." → personalization → pre-launch + hand-picking → free bottle + [INTAKE LINK]
+- [ ] DM uses the v9 structure: greeting → "Joon here, I co-founded OLILO with Rich." → "Made you a quick video 👇" + Loom link → personalization → pre-launch + hand-picking → free bottle + kit link
+- [ ] Loom video link is present and positioned **before** the kit link
 - [ ] DM starts with the recipient's name (Dr. Lastname for doctors, "team" for brand accounts)
 - [ ] Personalization sentence is creator-specific (not generic / not copy-pasted across creators)
 - [ ] Placeholder is [INTAKE LINK] (not [FORM_LINK])

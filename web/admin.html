@@ -278,6 +278,25 @@
     cursor: default;
   }
 
+  /* Revert-to-Not-Contacted button */
+  .btn-revert {
+    padding: 6px 12px;
+    background: transparent;
+    border: 2px solid var(--olilo-black-40);
+    border-radius: var(--radius-pill);
+    color: var(--olilo-black-64);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity var(--dur-fast);
+  }
+  .btn-revert:hover { opacity: 0.7; }
+  .btn-revert:disabled { opacity: 0.4; cursor: default; }
+
   /* Empty / loading states */
   .state-row td {
     text-align: center;
@@ -814,6 +833,22 @@
     return res.ok;
   }
 
+  async function setStatus(recordId, status, extra) {
+    const token = getAdminToken();
+    if (!token) return false;
+    const res = await fetch('/api/update-creator', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'x-admin-token': token },
+      body: JSON.stringify({ id: recordId, fields: Object.assign({ Status: status }, extra || {}) }),
+    });
+    if (res.status === 401) {
+      localStorage.removeItem('olilo-admin-token');
+      alert('Wrong admin token. Try again.');
+      return false;
+    }
+    return res.ok;
+  }
+
   const STATUS_CLASS = {
     'Not Contacted': 's-not-contacted',
     'Contacted':     's-contacted',
@@ -959,7 +994,9 @@
               ? `<button class="btn-unarchive" data-id="${r.id}" data-name="${nameAttr}" style="background:transparent;border:2px solid var(--olilo-black-40);border-radius:var(--radius-pill);padding:6px 12px;color:var(--olilo-black-64);cursor:pointer;font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;">Unarchive</button>`
               : status === 'Not Contacted'
                 ? `<button class="btn-contact" data-id="${r.id}" data-name="${nameAttr}" data-ig="${ig}">Contact</button>`
-                : ''}
+                : status === 'Contacted'
+                  ? `<button class="btn-revert" data-id="${r.id}" data-name="${nameAttr}" title="Move back to Not Contacted">↩ Not Contacted</button>`
+                  : ''}
           </td>
         </tr>`;
       }).join('');
@@ -995,7 +1032,9 @@
             ? `<button class="btn-unarchive" data-id="${r.id}" data-name="${nameAttr}" style="flex-shrink:0;background:transparent;border:2px solid var(--olilo-black-40);border-radius:var(--radius-pill);padding:6px 12px;color:var(--olilo-black-64);cursor:pointer;font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;">Unarchive</button>`
             : status === 'Not Contacted'
               ? `<button class="btn-contact" data-id="${r.id}" data-name="${nameAttr}" data-ig="${ig}" style="flex-shrink:0;">Contact</button>`
-              : ''}
+              : status === 'Contacted'
+                ? `<button class="btn-revert" data-id="${r.id}" data-name="${nameAttr}" title="Move back to Not Contacted" style="flex-shrink:0;">↩ Not Contacted</button>`
+                : ''}
         </div>`;
       }).join('');
     }
@@ -1012,6 +1051,27 @@
         const emailDraft = rec ? (rec.fields['Email Draft'] || '') : '';
         pendingRecord = { id: btn.dataset.id, name: btn.dataset.name, ig: btn.dataset.ig, draft, emailDraft };
         openModal();
+      });
+    });
+
+    container.querySelectorAll('.btn-revert').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+        const name = btn.dataset.name;
+        if (!confirm(`Move ${name} back to Not Contacted?`)) return;
+        btn.disabled = true;
+        btn.textContent = 'Saving…';
+        const rec = allRecords.find(r => r.id === id);
+        const ok = await setStatus(id, 'Not Contacted', { 'Last Contacted At': null });
+        if (ok && rec) {
+          rec.fields.Status = 'Not Contacted';
+          rec.fields['Last Contacted At'] = null;
+          render();
+        } else {
+          btn.disabled = false;
+          btn.textContent = '↩ Not Contacted';
+          if (localStorage.getItem('olilo-admin-token')) alert('Failed to update. Try again.');
+        }
       });
     });
 

@@ -1,4 +1,8 @@
-const ALLOWED_FIELDS = new Set(['Archived']);
+const ALLOWED_FIELDS = new Set(['Archived', 'Status', 'Last Contacted At']);
+const VALID_STATUSES = new Set([
+  'Not Contacted', 'Contacted', 'Replied', 'Deal Agreed',
+  'Shipped', 'Delivered', 'Content Posted', 'Declined',
+]);
 
 export default async function handler(req, res) {
   if (req.method !== 'PATCH' && req.method !== 'POST') {
@@ -21,6 +25,9 @@ export default async function handler(req, res) {
   }
   if (!Object.keys(safeFields).length) {
     return res.status(400).json({ error: 'No editable fields provided' });
+  }
+  if ('Status' in safeFields && !VALID_STATUSES.has(safeFields.Status)) {
+    return res.status(400).json({ error: `Invalid status value: ${safeFields.Status}` });
   }
 
   const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN;
