@@ -63,7 +63,7 @@ export default async function handler(req, res) {
             fields: {
               Creator: [recordId],
               'Request Date': new Date().toISOString().split('T')[0],
-              Product: 'Olilo Sweet Fiber Syrup',
+              Product: 'OLILO Sweet Fiber Syrup',
               Quantity: 1,
               'Shipping Address': shipping_address,
               Email: email,
