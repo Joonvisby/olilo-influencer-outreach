@@ -955,7 +955,7 @@
           : f['Category'] === activeCategory;
       const matchAssignee = activeAssignee === 'all'
         ? true
-        : f['Assigned To'] === activeAssignee;
+        : f['Contacted By'] === activeAssignee;
       const isArchived = f['Archived'] === true;
       const matchArchive = activeArchive === 'archived' ? isArchived : !isArchived;
       const matchSearch = !q ||
