@@ -7,6 +7,10 @@ Format per entry:
 
 ---
 
+## 2026-05-17 — Send outreach emails from the admin contact modal
+- `api/send-email.js` — New admin-only endpoint (requires `x-admin-token`) that sends an outreach email via Resend, `from` `OLILO <hello@olilosweet.com>` with matching `reply_to`. Sends only — the caller logs the contact separately via `/api/contact`.
+- `web/admin.html` — The contact modal now actually sends email. When the channel is `Email`, the confirm button becomes `Send Email`: it shows the recipient address (from the creator's `Email` field), lets Joon/Rich edit the subject and body, sends via `/api/send-email`, then logs the contact (status → Contacted + Outreach Log) just like Mark Contacted. The button is disabled with a hint when no email address is on file. DM/TikTok channels are unchanged — still log-only.
+
 ## 2026-05-17 — scout-creators: capture email + draft outreach email
 - `.claude/skills/scout-creators/SKILL.md` — The skill now also captures the creator's public contact `Email` during research (verified addresses only, never guessed) and writes an `Email Draft`. New "outreach email" section codifies the tier-based pattern from `agents/alice-prompt.md`: Tier 1 = 4-6 sentences with a `Joon` / `Co-founder, OLILO` sign-off, Tier 2 = 3-4 sentences, Tier 3 = 2-3 sentences, both with the `The OLILO Team` sign-off. Procedure, rules, and final-report instructions updated to cover both drafts.
 
