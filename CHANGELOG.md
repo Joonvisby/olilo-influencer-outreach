@@ -7,6 +7,12 @@ Format per entry:
 
 ---
 
+## 2026-05-17 — Approved → Confirmed automation script
+- `scripts/approved-to-confirmed.airtable.js` — Script for an Airtable "Run a script" automation action that MOVES an approved "Creators (not confirmed)" row into "Creators (confirmed)": copies the 32 fields shared by both tables, then deletes the staging row. The delete only runs after the copy succeeds, so a failed copy never loses the row. Skips Approved/Fill Method/Enrichment Status, attachments, and linked-record fields. Idempotent — if a confirmed row with the same Instagram Handle already exists it neither copies nor deletes, leaving the staging row for manual reconciliation. The automation itself must be wired up in the Airtable UI (no API for automations); setup steps are in the file header.
+
+## 2026-05-17 — scout-creators: mandatory confirmed-roster dedup
+- `.claude/skills/scout-creators/SKILL.md` — Added a "Step 0" that loads the full "Creators (confirmed)" table and builds a normalized handle/name dedup index before any research. `find` candidates are filtered against it before web research, per-row procedure checks it first, and the Rules section now requires it. Prevents the skill from re-researching or re-adding creators already on the live campaign list.
+
 ## 2026-05-16 — Allow DM Draft edits via update-creator endpoint
 - `api/update-creator.js` — Added `DM Draft` to `ALLOWED_FIELDS` so the authenticated admin endpoint can write the DM Draft field. Enables batch updates of DM copy without exposing Airtable credentials locally.
 

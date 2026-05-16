@@ -35,10 +35,32 @@ keepers.
   table name — do not hardcode an ID.
 - Canonical DM pattern reference: `agents/alice-prompt.md` (v10).
 
+## Step 0 — load the confirmed roster (always, before any research)
+Before researching, finding, or adding ANY creator, pull the full
+**"Creators (confirmed)"** table (`tblbBNgHxp6YNOJOQ`) and build a dedup index:
+- Resolve the table ID via the meta API by name; page through ALL records.
+- For every confirmed record, capture **Instagram Handle** and **Name**,
+  normalized for matching: lowercase, strip a leading `@`, strip whitespace.
+- Keep this index in memory for the whole run.
+
+This roster is the source of truth for "who we already have." A creator that
+matches the index by handle (or unambiguously by name) is a duplicate — never
+research them, never add a row, never draft a DM for them. When `/scout-creators
+find ...` generates candidates, filter them against this index BEFORE doing any
+web research, so no effort is spent on creators already confirmed. Also skip
+anyone already present in "Creators (not confirmed)".
+
+In the final report, list any candidates skipped as already-confirmed dupes.
+
 ## Procedure — for each creator row
-1. Set `Enrichment Status` = `Researching`.
-2. Web-search the creator. Confirm their REAL current Instagram account.
-3. Fill the research fields:
+1. Check the creator against the Step 0 dedup index. If they match a confirmed
+   creator by handle or name, set `Enrichment Status` = `Failed`, note "Already
+   in Creators (confirmed)" in `Why Olilo`, skip research and the DM.
+2. Set `Enrichment Status` = `Researching`.
+3. Web-search the creator. Confirm their REAL current Instagram account. If the
+   confirmed handle turns out to match the dedup index, treat it as a duplicate
+   per step 1.
+4. Fill the research fields:
    - **Instagram Handle** — corrected if wrong; always store with a leading `@`.
    - **Instagram Link** — `https://instagram.com/<handle>`.
    - **Audience Size** — from the *Instagram* follower count, bucketed:
@@ -53,11 +75,11 @@ keepers.
      raw material for the DM hook.
    - **Fill Method** — set to `AI Agent` for rows this skill created; leave the
      existing value for manually-added rows.
-4. Write the **DM Draft** (see the DM section below).
-5. If follower count is under 1,000, or the account cannot be confirmed:
+5. Write the **DM Draft** (see the DM section below).
+6. If follower count is under 1,000, or the account cannot be confirmed:
    set `Enrichment Status` = `Failed`, explain why in `Why Olilo`, and
    skip the DM.
-6. Otherwise set `Enrichment Status` = `Done`.
+7. Otherwise set `Enrichment Status` = `Done`.
 
 ## The v10 DM — write into the `DM Draft` field
 
@@ -97,8 +119,8 @@ Write exactly this shape. Everything is fixed EXCEPT the greeting name and `[HOO
   (commas only); keep the product line and CTA verbatim; banned phrases —
   synergy, authentic, resonate, collab, "I love your content", "I came across",
   "clean eating", "zero sugar", "guilt-free", and any diet-culture language.
-- Before adding a new creator, check they are not already in "Creators
-  (confirmed)" — skip duplicates.
+- Never research or add a creator without first checking the Step 0 dedup
+  index — creators already in "Creators (confirmed)" are skipped, not re-done.
 - For batches over ~15 creators, fan research out across parallel subagents
   (~15 each) and apply results here.
 - When done, report: count filled (Done), count Failed and why.
