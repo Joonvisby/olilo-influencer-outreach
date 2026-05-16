@@ -107,11 +107,13 @@ The video already handles: who we are, what Olilo is, the free-bottle offer, and
 
 **Length:** ~4 sentences. The DM must stand alone for recipients who don't watch the attached video.
 
-**Required structure (v8 pattern):**
+**Required structure (v10 pattern):**
 
 ```
-Hey [Name], Joon here, co-founder of OLILO. We've been big fans of [specific thing about their content]. We're launching OLILO Sweet Fiber Syrup soon: 7g of prebiotic fiber per serving, no sugar spike, and no weird aftertaste. We're hand-picking a few creators to try it before we launch, so you can tell us what you think. Grab yours here: https://kit.olilosweet.com/
+Hey [Name], Joon here, co-founder of OLILO. Here's a quick 15-sec hello from me and Rich: https://www.loom.com/share/120d2a2af19e404fb34c216b935e60f6 We've been big fans of [specific, conversational thing about their content], which is why you came to mind. We're launching OLILO Sweet Fiber Syrup soon: 7g of prebiotic fiber per serving, no sugar spike, and no weird aftertaste. We're hand-picking a few creators to try it before we launch, so you can tell us what you think. Grab yours here: https://kit.olilosweet.com/
 ```
+
+**Writing the hook (the `[specific, conversational thing]` slot):** This must sound like a human, not a blurb. Pick ONE real thing the creator is known for and say it the way you'd say it out loud. Do NOT fact-stack (e.g. avoid "your foolproof Korean comfort-food recipes made with easy-to-find ingredients" — three qualifiers crammed together reads like a machine). Good: "your Korean comfort food, that pork belly bossam especially". Drop blurb-words ("content", "recipes built around", "as a registered dietitian"). Base it on real research of the creator, not a category tag. The fixed bridge `, which is why you came to mind` always follows the hook.
 
 **Hard formatting rules:**
 - Brand name is always `OLILO` (all-caps), never `Olilo` or `olilo`.
@@ -121,7 +123,7 @@ Hey [Name], Joon here, co-founder of OLILO. We've been big fans of [specific thi
 - Keep the product line verbatim: `7g of prebiotic fiber per serving, no sugar spike, and no weird aftertaste.`
 - The selection framing is `hand-picking a few creators` (do not also say "shortlisting" — one selection word is enough).
 
-**Note on the founder intro video:** A 15-second founder intro video lives on the welcome screen of the custom intake form at `https://kit.olilosweet.com/` (hosted on Loom). It plays when creators tap the intake link. We do **not** include the Loom URL in the DM body — Instagram doesn't generate preview thumbnails for Loom URLs, so the raw URL just adds clutter without visual payoff. The video does its work on the intake page.
+**Note on the founder intro video:** A 15-second founder intro video (Joon + Rich) is hosted on Loom at `https://www.loom.com/share/120d2a2af19e404fb34c216b935e60f6`. As of v9, the Loom link is included directly in the DM body, placed right after the identity line (`co-founder of OLILO.`) and before the personalization sentence. The same video also lives on the welcome screen of the intake form at `https://kit.olilosweet.com/`.
 
 **Rules:**
 - **Start with their name.** ("Hey [Name]," — informal comma greeting, not "Hi [Name]!")
@@ -171,7 +173,7 @@ Before finalizing each draft, verify:
 - [ ] The tone matches Olilo brand voice — warm, honest, not preachy
 - [ ] No forbidden phrases used (synergy, authentic, resonate, collab, I love your content, I came across)
 - [ ] Sign-off matches the correct tier format
-- [ ] DM uses the v5 structure: greeting → "Joon here — I co-founded Olilo with Rich." → personalization → pre-launch + hand-picking → free bottle + [INTAKE LINK]
+- [ ] DM uses the v10 structure: greeting → "Joon here, co-founder of OLILO." → Loom intro link → humanized personalization hook → ", which is why you came to mind" bridge → pre-launch + hand-picking → "Grab yours here:" + kit link
 - [ ] DM starts with the recipient's name (Dr. Lastname for doctors, "team" for brand accounts)
 - [ ] Personalization sentence is creator-specific (not generic / not copy-pasted across creators)
 - [ ] Placeholder is [INTAKE LINK] (not [FORM_LINK])
