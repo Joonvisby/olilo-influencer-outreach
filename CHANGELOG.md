@@ -7,6 +7,12 @@ Format per entry:
 
 ---
 
+## 2026-05-17 — Fix awkward wrap on the 7g fact-card subtext
+- `web/index.html` — The "Prebiotic fiber per serving (1 tbsp)" label was wrapping mid-parenthetical ("(1" / "tbsp)"). Added an explicit `<br>` before "(1 tbsp)" and a non-breaking space inside it so it always breaks cleanly into two lines.
+
+## 2026-05-17 — Add subtext to the honey/taste/Korea/USA fact cards
+- `web/index.html` — The four fact cards in the intake-page fact grid now carry a `fact-label` subtext line, matching the Cold Soluble / Heat Stable cards: "Flows like honey." → Smooth, easy pour; "Tastes like sugar." → No weird aftertaste; "Rooted in Korea." → Pantry staple in Korea; "Made in USA." → Upgraded for US consumers. Cards switched from vertically-centered flex to the default stacked layout; the flag emoji + headline now sit in an inner flex row so the subtext stacks below.
+
 ## 2026-05-17 — Add "Here's our story" link to the intake page
 - `web/index.html` — After the story paragraph ("We made something better than sugar...") on the kit.olilosweet.com intake page, added a "Here's our story →" link to `https://olilosweet.com/our-story/` (opens in a new tab). Added a `.story-text a` style rule in the brand orange.
 
