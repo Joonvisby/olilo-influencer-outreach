@@ -7,6 +7,9 @@ Format per entry:
 
 ---
 
+## 2026-05-17 — Drop trailing periods from fact-card titles
+- `web/index.html` — Removed the trailing period from the four fact-card headlines: "Flows like honey", "Tastes like sugar", "Rooted in Korea", "Made in USA".
+
 ## 2026-05-17 — Fix awkward wrap on the 7g fact-card subtext
 - `web/index.html` — The "Prebiotic fiber per serving (1 tbsp)" label was wrapping mid-parenthetical ("(1" / "tbsp)"). Added an explicit `<br>` before "(1 tbsp)" and a non-breaking space inside it so it always breaks cleanly into two lines.
 
