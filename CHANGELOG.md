@@ -7,6 +7,12 @@ Format per entry:
 
 ---
 
+## 2026-05-17 — Add "Here's our story" link to the intake page
+- `web/index.html` — After the story paragraph ("We made something better than sugar...") on the kit.olilosweet.com intake page, added a "Here's our story →" link to `https://olilosweet.com/our-story/` (opens in a new tab). Added a `.story-text a` style rule in the brand orange.
+
+## 2026-05-17 — Link the OLILO logo to olilosweet.com
+- `web/index.html` — The OLILO logo in the top bar (kit.olilosweet.com intake page) is now wrapped in an `<a href="https://olilosweet.com/">` so clicking it goes to the main site. Matches the existing footer/header logo links in `apply.html`. Added a `.topbar a` rule (`display: block; line-height: 0`) to keep the layout unchanged.
+
 ## 2026-05-17 — Send outreach emails from the admin contact modal
 - `api/send-email.js` — New admin-only endpoint (requires `x-admin-token`) that sends an outreach email via Resend, `from` `OLILO <hello@olilosweet.com>` with matching `reply_to`. Sends only — the caller logs the contact separately via `/api/contact`.
 - `web/admin.html` — The contact modal now actually sends email. When the channel is `Email`, the confirm button becomes `Send Email`: it shows the recipient address (from the creator's `Email` field), lets Joon/Rich edit the subject and body, sends via `/api/send-email`, then logs the contact (status → Contacted + Outreach Log) just like Mark Contacted. The button is disabled with a hint when no email address is on file. DM/TikTok channels are unchanged — still log-only.

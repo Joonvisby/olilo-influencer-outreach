@@ -46,6 +46,7 @@
     padding: 22px 36px;
     max-width: 1440px; margin: 0 auto;
   }
+  .topbar a { display: block; line-height: 0; }
   .topbar img { height: 34px; width: auto; display: block; }
   .topbar .kicker {
     font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em;
@@ -120,6 +121,12 @@
     border-left: 3px solid var(--olilo-sweet-orange);
     padding-left: 14px;
   }
+  .story-text a {
+    color: var(--olilo-sweet-orange); font-weight: 700;
+    text-decoration: underline; text-underline-offset: 2px;
+    white-space: nowrap;
+  }
+  .story-text a:hover { color: var(--olilo-black); }
 
   /* Fact sheet — stretches to full pitch-column width to align with hero-row above */
   .fact-grid {
@@ -458,7 +465,9 @@
 <body>
 
 <header class="topbar">
-  <img src="assets/olilo-logo.png" alt="OLILO">
+  <a href="https://olilosweet.com/" aria-label="OLILO home">
+    <img src="assets/olilo-logo.png" alt="OLILO">
+  </a>
 
 </header>
 
@@ -483,7 +492,7 @@
         </p>
 
         <p class="story-text">
-          We made something better than sugar. We want you to taste it first. Just pour it on something you like and tell us what you think.
+          We made something better than sugar. We want you to taste it first. Just pour it on something you like and tell us what you think. <a href="https://olilosweet.com/our-story/" target="_blank" rel="noopener">Here's our story&nbsp;&rarr;</a>
         </p>
       </div>
 
