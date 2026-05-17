@@ -7,6 +7,9 @@ Format per entry:
 
 ---
 
+## 2026-05-17 — scout-creators: Loom founder video in the email draft
+- `.claude/skills/scout-creators/SKILL.md` — The outreach email must now include the fixed founder intro Loom video (`https://www.loom.com/share/120d2a2af19e404fb34c216b935e60f6`), placed right after the OLILO description, same video already used in the DM. Added as step 3 of the email's required elements.
+
 ## 2026-05-17 — Send outreach emails from the admin contact modal
 - `api/send-email.js` — New admin-only endpoint (requires `x-admin-token`) that sends an outreach email via Resend, `from` `OLILO <hello@olilosweet.com>` with matching `reply_to`. Sends only — the caller logs the contact separately via `/api/contact`.
 - `web/admin.html` — The contact modal now actually sends email. When the channel is `Email`, the confirm button becomes `Send Email`: it shows the recipient address (from the creator's `Email` field), lets Joon/Rich edit the subject and body, sends via `/api/send-email`, then logs the contact (status → Contacted + Outreach Log) just like Mark Contacted. The button is disabled with a hint when no email address is on file. DM/TikTok channels are unchanged — still log-only.

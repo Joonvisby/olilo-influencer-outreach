@@ -143,9 +143,12 @@ Every email must include, in plain order:
    our eye. Not "I love your content".
 2. What OLILO is, in one plain sentence (Sweet Fiber Syrup: 7g prebiotic fiber
    per serving, no sugar spike, no weird aftertaste).
-3. Why it specifically fits this creator, tied to their actual content.
-4. The intake link `https://kit.olilosweet.com/`.
-5. A soft CTA, e.g. "if it sounds like a fit, here's where to grab your kit" or
+3. The founder intro video, right after the OLILO sentence — the fixed Loom
+   link `https://www.loom.com/share/120d2a2af19e404fb34c216b935e60f6`, phrased
+   e.g. "Here's a quick 15-second hello from our founders, Joon and Rich: <link>".
+4. Why it specifically fits this creator, tied to their actual content.
+5. The intake link `https://kit.olilosweet.com/`.
+6. A soft CTA, e.g. "if it sounds like a fit, here's where to grab your kit" or
    "happy to answer anything, just reply here". Not "Would you be interested?".
 
 Email copy rules: brand is always `OLILO`; NO em dashes (commas only); at most
