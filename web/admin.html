@@ -366,7 +366,8 @@
     margin-bottom: 7px;
   }
 
-  .modal select, .modal textarea {
+  .modal select, .modal textarea,
+  .modal input[type="text"], .modal input[type="email"] {
     width: 100%;
     padding: 11px 14px;
     border: 2px solid var(--olilo-black-16);
@@ -380,7 +381,8 @@
     transition: border-color var(--dur-fast);
     appearance: auto;
   }
-  .modal select:focus, .modal textarea:focus {
+  .modal select:focus, .modal textarea:focus,
+  .modal input[type="text"]:focus, .modal input[type="email"]:focus {
     outline: none;
     border-color: var(--olilo-sweet-orange);
   }
@@ -681,6 +683,7 @@
   <img src="/assets/olilo-logo.png" alt="OLILO">
   <div class="header-right">
     <span id="last-updated"></span>
+    <button id="btn-add-creator" style="background:var(--olilo-sweet-orange);border:2px solid var(--olilo-sweet-orange);border-radius:var(--radius-pill);padding:6px 12px;color:var(--olilo-white);cursor:pointer;font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;">+ Add creator</button>
     <button id="btn-refresh" style="background:transparent;border:2px solid var(--olilo-black-40);border-radius:var(--radius-pill);padding:6px 12px;color:var(--olilo-black);cursor:pointer;font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;">↺ Refresh</button>
     <a href="/kanban" class="btn-kanban-mobile">⠿ Pipeline</a>
     <a href="/api/export" class="nav-hide-mobile" style="color:var(--olilo-sweet-orange);text-decoration:none;padding:6px 12px;border:2px solid var(--olilo-sweet-orange);border-radius:var(--radius-pill);">↓ Export</a>
@@ -797,6 +800,38 @@
       <button class="btn-archive-modal" id="btn-archive-modal" title="Hide this creator from the active list">Archive</button>
       <button class="btn-cancel" id="btn-cancel">Cancel</button>
       <button class="btn-confirm" id="btn-confirm">Mark Contacted</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add creator modal (manual entry) -->
+<div class="overlay" id="add-overlay">
+  <div class="modal">
+    <p class="modal-eyebrow">Manual entry</p>
+    <p class="modal-name" style="margin-bottom:18px;">Add a creator</p>
+
+    <label>Name <span style="color:var(--olilo-sweet-orange);">*</span></label>
+    <input id="add-name" type="text" autocomplete="off">
+
+    <label>Shipping address <span style="color:var(--olilo-sweet-orange);">*</span></label>
+    <textarea id="add-address" placeholder="Street, City, State ZIP, Country"></textarea>
+
+    <label>Instagram handle</label>
+    <input id="add-ig" type="text" placeholder="@handle — optional" autocomplete="off">
+
+    <label>Email</label>
+    <input id="add-email" type="email" placeholder="optional" autocomplete="off">
+
+    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-family:var(--font-body);font-size:14px;font-weight:500;text-transform:none;letter-spacing:0;color:var(--olilo-black);margin-bottom:4px;">
+      <input id="add-queue-kit" type="checkbox" checked style="width:auto;margin:0;">
+      Queue a kit shipment now
+    </label>
+
+    <p id="add-error" style="color:#c0392b;font-family:var(--font-mono);font-size:12px;min-height:16px;margin:8px 0 0;"></p>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" id="add-cancel">Cancel</button>
+      <button class="btn-confirm" id="add-confirm">Add creator</button>
     </div>
   </div>
 </div>
@@ -1215,6 +1250,73 @@
   });
   document.getElementById('overlay').addEventListener('click', e => {
     if (e.target === document.getElementById('overlay')) closeModal();
+  });
+
+  // ── Add creator (manual entry) ───────────────────────────
+  const addOverlay = document.getElementById('add-overlay');
+
+  function openAddModal() {
+    ['add-name', 'add-address', 'add-ig', 'add-email'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    document.getElementById('add-queue-kit').checked = true;
+    document.getElementById('add-error').textContent = '';
+    addOverlay.classList.add('open');
+    document.getElementById('add-name').focus();
+  }
+  function closeAddModal() { addOverlay.classList.remove('open'); }
+
+  document.getElementById('btn-add-creator').addEventListener('click', openAddModal);
+  document.getElementById('add-cancel').addEventListener('click', closeAddModal);
+  addOverlay.addEventListener('click', e => {
+    if (e.target === addOverlay) closeAddModal();
+  });
+
+  document.getElementById('add-confirm').addEventListener('click', async () => {
+    const name = document.getElementById('add-name').value.trim();
+    const address = document.getElementById('add-address').value.trim();
+    const ig = document.getElementById('add-ig').value.trim();
+    const email = document.getElementById('add-email').value.trim();
+    const queueKit = document.getElementById('add-queue-kit').checked;
+    const errEl = document.getElementById('add-error');
+
+    if (!name || !address) {
+      errEl.textContent = 'Name and shipping address are required.';
+      return;
+    }
+    const token = getAdminToken();
+    if (!token) return;
+
+    const btn = document.getElementById('add-confirm');
+    btn.disabled = true;
+    btn.textContent = 'Adding…';
+    errEl.textContent = '';
+    try {
+      const res = await fetch('/api/create-creator', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-token': token },
+        body: JSON.stringify({
+          name, shipping_address: address,
+          instagram_handle: ig, email, queue_kit: queueKit,
+        }),
+      });
+      if (res.status === 401) {
+        localStorage.removeItem('olilo-admin-token');
+        errEl.textContent = 'Wrong admin token. Try again.';
+        return;
+      }
+      if (!res.ok) {
+        errEl.textContent = 'Failed to add creator. Try again.';
+        return;
+      }
+      closeAddModal();
+      await load();
+    } catch {
+      errEl.textContent = 'Network error. Try again.';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Add creator';
+    }
   });
 
   function applyContactedLocally() {

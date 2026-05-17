@@ -7,6 +7,12 @@ Format per entry:
 
 ---
 
+## 2026-05-18 — Handle off-list kit submissions + manual creator entry
+- `api/intake.js` — The kit intake form no longer drops submissions from people who aren't on the outreach list. On a no-match, it now auto-creates a Creators record tagged `Source = Manual Invite`, then queues a Shipments/kit row — the same as a matched creator. Shipment creation was hoisted out of the matched branch so both paths share it. The notification email's "new creator" banner changed from a red "no record was created" warning to an amber "record created and tagged Manual Invite" confirmation.
+- `api/create-creator.js` — New admin-only endpoint (`x-admin-token`). Creates a Creators record from name + shipping address (Instagram/email optional), tagged `Source = Manual Add`, and queues a kit shipment unless `queue_kit: false`. For shipping to someone who never fills the form.
+- `web/admin.html` — New "+ Add creator" button in the header opens a manual-entry modal (name, shipping address, optional Instagram/email, "Queue a kit shipment now" checkbox) wired to `/api/create-creator`. Added text/email input styling to the shared `.modal` rules.
+- `airtable/schema.md` — Documented the two new `Source` options (`Manual Invite`, `Manual Add`) on the Creators table.
+
 ## 2026-05-17 — Drop trailing periods from fact-card titles
 - `web/index.html` — Removed the trailing period from the four fact-card headlines: "Flows like honey", "Tastes like sugar", "Rooted in Korea", "Made in USA".
 
