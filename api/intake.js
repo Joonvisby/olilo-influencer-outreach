@@ -40,11 +40,13 @@ export default async function handler(req, res) {
     };
     if (tiktok_handle) updateFields['TikTok Handle'] = `@${tiktok_handle}`;
 
+    let creatorId = null;
+
     if (searchData.records && searchData.records.length > 0) {
-      // Update existing creator record
-      const recordId = searchData.records[0].id;
+      // Matched an outreach-list creator — update the existing record
+      creatorId = searchData.records[0].id;
       await fetch(
-        `https://api.airtable.com/v0/${AIRTABLE_BASE}/${AIRTABLE_TABLE}/${recordId}`,
+        `https://api.airtable.com/v0/${AIRTABLE_BASE}/${AIRTABLE_TABLE}/${creatorId}`,
         {
           method: 'PATCH',
           headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}`, 'Content-Type': 'application/json' },
@@ -52,40 +54,9 @@ export default async function handler(req, res) {
         }
       );
 
-      // Create a Shipments record for kit queue
-      const SHIPMENTS_TABLE = 'tblGdJUGUXxFwHkKX';
-      await fetch(
-        `https://api.airtable.com/v0/${AIRTABLE_BASE}/${SHIPMENTS_TABLE}`,
-        {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            fields: {
-              Creator: [recordId],
-              'Request Date': new Date().toISOString().split('T')[0],
-              Product: 'OLILO Sweet Fiber Syrup',
-              Quantity: 1,
-              'Shipping Address': shipping_address,
-              Email: email,
-              Phone: phone || '',
-              Status: 'Preparing',
-              Notes: [
-                `Name: ${name}`,
-                `Email: ${email}`,
-                `Phone: ${phone || '—'}`,
-                `Instagram: ${igHandle}`,
-                tiktok_handle ? `TikTok: @${tiktok_handle}` : null,
-                `Ship to: ${shipping_address}`,
-                `Affiliate Interest: ${affiliate_opt_in ? 'Yes' : 'No'}`,
-              ].filter(Boolean).join('\n'),
-            },
-          }),
-        }
-      );
-
       // Update the most recent Outreach Log entry for this creator, if one exists
       const OUTREACH_TABLE = 'tblwAnhjZ010eEIu6';
-      const logFormula = encodeURIComponent(`FIND("${recordId}", ARRAYJOIN({Creator}))`);
+      const logFormula = encodeURIComponent(`FIND("${creatorId}", ARRAYJOIN({Creator}))`);
       const logRes = await fetch(
         `https://api.airtable.com/v0/${AIRTABLE_BASE}/${OUTREACH_TABLE}?filterByFormula=${logFormula}&sort[0][field]=Date&sort[0][direction]=desc&maxRecords=1`,
         { headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}` } }
@@ -108,9 +79,67 @@ export default async function handler(req, res) {
         );
       }
     } else {
-      // No match — email only, nothing written to Airtable
+      // No match — not on the outreach list. Auto-create a Creators record
+      // tagged "Manual Invite" so a manually-sent kit link still lands in the
+      // CRM and kit queue instead of being dropped.
       isNew = true;
+      const createRes = await fetch(
+        `https://api.airtable.com/v0/${AIRTABLE_BASE}/${AIRTABLE_TABLE}`,
+        {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fields: {
+              ...updateFields,
+              Name: name,
+              'Instagram Handle': igHandle,
+              Source: 'Manual Invite',
+              'Date Added': new Date().toISOString().split('T')[0],
+            },
+            typecast: true,
+          }),
+        }
+      );
+      const createData = await createRes.json();
+      if (!createRes.ok) {
+        console.error('intake create failed:', createRes.status, createData);
+        return res.status(500).json({ error: 'Failed to create creator record' });
+      }
+      creatorId = createData.id;
     }
+
+    // Create a Shipments record for the kit queue — both the matched and the
+    // manual-invite paths land here, so every submission gets a kit queued.
+    const SHIPMENTS_TABLE = 'tblGdJUGUXxFwHkKX';
+    await fetch(
+      `https://api.airtable.com/v0/${AIRTABLE_BASE}/${SHIPMENTS_TABLE}`,
+      {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fields: {
+            Creator: [creatorId],
+            'Request Date': new Date().toISOString().split('T')[0],
+            Product: 'OLILO Sweet Fiber Syrup',
+            Quantity: 1,
+            'Shipping Address': shipping_address,
+            Email: email,
+            Phone: phone || '',
+            Status: 'Preparing',
+            Notes: [
+              `Name: ${name}`,
+              `Email: ${email}`,
+              `Phone: ${phone || '—'}`,
+              `Instagram: ${igHandle}`,
+              tiktok_handle ? `TikTok: @${tiktok_handle}` : null,
+              `Ship to: ${shipping_address}`,
+              `Affiliate Interest: ${affiliate_opt_in ? 'Yes' : 'No'}`,
+              isNew ? 'Source: Manual invite (not on outreach list)' : null,
+            ].filter(Boolean).join('\n'),
+          },
+        }),
+      }
+    );
 
     // Notify Joon via email
     await fetch('https://api.resend.com/emails', {
@@ -119,7 +148,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         from: 'OLILO Seeding <noreply@olilosweet.com>',
         to: [NOTIFY_EMAIL, 'rich@adaptive.kitchen'],
-        subject: `${isNew ? '⚠️ New creator' : '✅ Kit requested'} — ${igHandle}`,
+        subject: `${isNew ? '🆕 Manual invite — kit requested' : '✅ Kit requested'} — ${igHandle}`,
         html: buildEmail({ name, igHandle, tiktok_handle, email, phone, shipping_address, affiliate_opt_in, isNew }),
       }),
     });
@@ -133,7 +162,7 @@ export default async function handler(req, res) {
 
 function buildEmail({ name, igHandle, tiktok_handle, email, phone, shipping_address, affiliate_opt_in, isNew }) {
   const flag = isNew
-    ? '⚠️ NEW — no matching outreach record.'
+    ? '🆕 Manual invite — new record created, tagged "Manual Invite".'
     : '✅ Matched to existing record. Status → Replied.';
   const tdKey = 'padding:8px 0;border-bottom:1px solid #eee;font-weight:600;width:140px;vertical-align:top;';
   const tdVal = 'padding:8px 0;border-bottom:1px solid #eee;';
@@ -145,7 +174,7 @@ function buildEmail({ name, igHandle, tiktok_handle, email, phone, shipping_addr
 <div style="font-family:sans-serif;max-width:560px;margin:0 auto;color:#331B0A;padding:24px;">
   <h2 style="color:#FB4408;margin:0 0 4px;font-size:22px;">${igHandle}</h2>
   <p style="margin:0 0 8px;font-size:13px;color:#888;">${flag}</p>
-  ${isNew ? `<p style="margin:0 0 20px;font-size:13px;color:#c0392b;background:#fef2f2;padding:10px 12px;border-radius:6px;line-height:1.5;">This person wasn't in your outreach list. <strong>No Airtable record was created</strong> — the admin page and kit queue will not be updated. Review this email and add them manually if needed.</p>` : '<div style="margin-bottom:20px;"></div>'}
+  ${isNew ? `<p style="margin:0 0 20px;font-size:13px;color:#92400e;background:#fffbeb;padding:10px 12px;border-radius:6px;line-height:1.5;">This person wasn't on your outreach list. A <strong>new Creators record was created and tagged "Manual Invite"</strong>, and a kit was added to the queue. No action needed — just review the details below.</p>` : '<div style="margin-bottom:20px;"></div>'}
   <table style="width:100%;border-collapse:collapse;font-size:15px;">
     <tr><td style="${tdKey}">Name</td><td style="${tdVal}">${name}</td></tr>
     <tr><td style="${tdKey}">Email</td><td style="${tdVal}">${email}</td></tr>

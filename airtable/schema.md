@@ -36,7 +36,7 @@ Master record for every influencer in the pipeline. One row per creator.
 | Notes | Long text | Freeform internal notes. |
 | Date Added | Date | Date creator was added to the base. |
 | Archived | Checkbox | Hides creator from active outreach views (admin list, kanban). Toggle from web/admin.html. |
-| Source | Single select | Options: Sourced, Self-Apply. Distinguishes outbound (added by Joon/Rich) from inbound (promoted from Applications). |
+| Source | Single select | Options: Sourced, Self-Apply, Manual Invite, Manual Add. `Sourced` = outbound, added by Joon/Rich. `Self-Apply` = inbound, promoted from Applications. `Manual Invite` = submitted the kit form (`kit.olilosweet.com`) without being on the outreach list — auto-created by `api/intake.js`. `Manual Add` = entered by hand via the admin "Add creator" button — created by `api/create-creator.js`. |
 
 **Setup note:** Set "Status" as the grouping field for the Pipeline Kanban view. Set a default value of "Not Contacted" for Status and "10%" for Commission Rate.
 
