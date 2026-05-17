@@ -83,6 +83,14 @@ Produce exactly two drafts, clearly labeled. Do not combine them. Do not add com
 4. The intake link: `https://kit.olilosweet.com/`
 5. A soft CTA — not "Would you be interested?" but something like "If it sounds like a fit, here's where to grab your kit" or "Happy to answer any questions — just reply here"
 
+**Body formatting — write it to be read on a phone:**
+Never write the email body as one dense block. Break it into short paragraphs, each separated by a blank line:
+- Put the greeting (`Hi [Name],`) on its own line.
+- Keep each paragraph to 1–3 sentences.
+- Give the founder intro-video link and the kit link their own short paragraph — do not bury them mid-sentence in a wall of text.
+- The sign-off is its own block.
+A reader should be able to skim the whole email in about five seconds. The branded send template (`api/send-email.js`) turns every blank line into a paragraph break, so this structure is what the recipient actually sees.
+
 **Never do:**
 - Use "I came across your profile" or "I've been following your journey"
 - Open with a compliment sandwich

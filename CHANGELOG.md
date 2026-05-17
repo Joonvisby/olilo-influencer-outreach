@@ -7,6 +7,10 @@ Format per entry:
 
 ---
 
+## 2026-05-18 — Branded HTML outreach email
+- `api/send-email.js` — Outreach emails now send as branded HTML, not plain text. Added `renderEmailHtml()`: a Day Blue (`#BAEBF7`) header band with the OLILO logo, a white card, brand fonts and colors, and paragraph splitting on blank lines. The fixed Loom and kit links render as inline text links ("watch the video here" / "grab your kit here"); email addresses and bare domains become `mailto:` / `https://` links. A plain-text `text:` version is still sent alongside as the fallback. The admin still types a plain-text body — the template wraps it at send time.
+- `agents/alice-prompt.md` — The email spec now tells the copywriter to break the body into short, blank-line-separated paragraphs (greeting on its own line, link sentences on their own line) so drafts are readable on a phone and render as paragraphs in the branded template.
+
 ## 2026-05-17 — Drop trailing periods from fact-card titles
 - `web/index.html` — Removed the trailing period from the four fact-card headlines: "Flows like honey", "Tastes like sugar", "Rooted in Korea", "Made in USA".
 
