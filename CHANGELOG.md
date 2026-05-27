@@ -49,6 +49,21 @@ Format per entry:
 ## 2026-05-17 — scout-creators: Loom founder video in the email draft
 - `.claude/skills/scout-creators/SKILL.md` — The outreach email must now include the fixed founder intro Loom video (`https://www.loom.com/share/120d2a2af19e404fb34c216b935e60f6`), placed right after the OLILO description, same video already used in the DM. Added as step 3 of the email's required elements.
 
+## 2026-05-17 — Drop trailing periods from fact-card titles
+- `web/index.html` — Removed the trailing period from the four fact-card headlines: "Flows like honey", "Tastes like sugar", "Rooted in Korea", "Made in USA".
+
+## 2026-05-17 — Fix awkward wrap on the 7g fact-card subtext
+- `web/index.html` — The "Prebiotic fiber per serving (1 tbsp)" label was wrapping mid-parenthetical ("(1" / "tbsp)"). Added an explicit `<br>` before "(1 tbsp)" and a non-breaking space inside it so it always breaks cleanly into two lines.
+
+## 2026-05-17 — Add subtext to the honey/taste/Korea/USA fact cards
+- `web/index.html` — The four fact cards in the intake-page fact grid now carry a `fact-label` subtext line, matching the Cold Soluble / Heat Stable cards: "Flows like honey." → Smooth, easy pour; "Tastes like sugar." → No weird aftertaste; "Rooted in Korea." → Pantry staple in Korea; "Made in USA." → Upgraded for US consumers. Cards switched from vertically-centered flex to the default stacked layout; the flag emoji + headline now sit in an inner flex row so the subtext stacks below.
+
+## 2026-05-17 — Add "Here's our story" link to the intake page
+- `web/index.html` — After the story paragraph ("We made something better than sugar...") on the kit.olilosweet.com intake page, added a "Here's our story →" link to `https://olilosweet.com/our-story/` (opens in a new tab). Added a `.story-text a` style rule in the brand orange.
+
+## 2026-05-17 — Link the OLILO logo to olilosweet.com
+- `web/index.html` — The OLILO logo in the top bar (kit.olilosweet.com intake page) is now wrapped in an `<a href="https://olilosweet.com/">` so clicking it goes to the main site. Matches the existing footer/header logo links in `apply.html`. Added a `.topbar a` rule (`display: block; line-height: 0`) to keep the layout unchanged.
+
 ## 2026-05-17 — Send outreach emails from the admin contact modal
 - `api/send-email.js` — New admin-only endpoint (requires `x-admin-token`) that sends an outreach email via Resend, `from` `OLILO <hello@olilosweet.com>` with matching `reply_to`. Sends only — the caller logs the contact separately via `/api/contact`.
 - `web/admin.html` — The contact modal now actually sends email. When the channel is `Email`, the confirm button becomes `Send Email`: it shows the recipient address (from the creator's `Email` field), lets Joon/Rich edit the subject and body, sends via `/api/send-email`, then logs the contact (status → Contacted + Outreach Log) just like Mark Contacted. The button is disabled with a hint when no email address is on file. DM/TikTok channels are unchanged — still log-only.

@@ -46,6 +46,7 @@
     padding: 22px 36px;
     max-width: 1440px; margin: 0 auto;
   }
+  .topbar a { display: block; line-height: 0; }
   .topbar img { height: 34px; width: auto; display: block; }
   .topbar .kicker {
     font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em;
@@ -120,6 +121,12 @@
     border-left: 3px solid var(--olilo-sweet-orange);
     padding-left: 14px;
   }
+  .story-text a {
+    color: var(--olilo-sweet-orange); font-weight: 700;
+    text-decoration: underline; text-underline-offset: 2px;
+    white-space: nowrap;
+  }
+  .story-text a:hover { color: var(--olilo-black); }
 
   /* Fact sheet — stretches to full pitch-column width to align with hero-row above */
   .fact-grid {
@@ -458,7 +465,9 @@
 <body>
 
 <header class="topbar">
-  <img src="assets/olilo-logo.png" alt="OLILO">
+  <a href="https://olilosweet.com/" aria-label="OLILO home">
+    <img src="assets/olilo-logo.png" alt="OLILO">
+  </a>
 
 </header>
 
@@ -483,7 +492,7 @@
         </p>
 
         <p class="story-text">
-          We made something better than sugar. We want you to taste it first. Just pour it on something you like and tell us what you think.
+          We made something better than sugar. We want you to taste it first. Just pour it on something you like and tell us what you think. <a href="https://olilosweet.com/our-story/" target="_blank" rel="noopener">Here's our story&nbsp;&rarr;</a>
         </p>
       </div>
 
@@ -505,7 +514,7 @@
     <div class="fact-grid" style="margin-top: 24px;">
       <div class="fact-card">
         <span class="fact-num">7g</span>
-        <span class="fact-label">Prebiotic fiber per serving (1 tbsp)</span>
+        <span class="fact-label">Prebiotic fiber per serving<br>(1&nbsp;tbsp)</span>
       </div>
       <div class="fact-card">
         <span class="fact-num">45%</span>
@@ -519,19 +528,27 @@
         <span class="fact-body">Heat Stable</span>
         <span class="fact-label" style="margin-top:6px;">For cooking &amp; baking</span>
       </div>
-      <div class="fact-card" style="display:flex; align-items:center;">
-        <span class="fact-body">Flows like honey.</span>
+      <div class="fact-card">
+        <span class="fact-body">Flows like honey</span>
+        <span class="fact-label" style="margin-top:6px;">Smooth, easy pour</span>
       </div>
-      <div class="fact-card" style="display:flex; align-items:center;">
-        <span class="fact-body">Tastes like sugar.</span>
+      <div class="fact-card">
+        <span class="fact-body">Tastes like sugar</span>
+        <span class="fact-label" style="margin-top:6px;">No weird aftertaste</span>
       </div>
-      <div class="fact-card" style="display:flex; align-items:center; gap:10px;">
-        <span style="font-size:20px;">🇰🇷</span>
-        <span class="fact-body">Rooted in Korea.</span>
+      <div class="fact-card">
+        <span style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:20px;">🇰🇷</span>
+          <span class="fact-body">Rooted in Korea</span>
+        </span>
+        <span class="fact-label" style="margin-top:6px;">Pantry staple in Korea</span>
       </div>
-      <div class="fact-card" style="display:flex; align-items:center; gap:10px;">
-        <span style="font-size:20px;">🇺🇸</span>
-        <span class="fact-body">Made in USA.</span>
+      <div class="fact-card">
+        <span style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:20px;">🇺🇸</span>
+          <span class="fact-body">Made in USA</span>
+        </span>
+        <span class="fact-label" style="margin-top:6px;">Upgraded for US consumers</span>
       </div>
     </div>
 
