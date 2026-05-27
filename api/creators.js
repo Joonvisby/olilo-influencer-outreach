@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     do {
       const url = `https://api.airtable.com/v0/${AIRTABLE_BASE}/${TABLE}?` +
         'fields[]=Name&fields[]=Instagram+Handle&fields[]=TikTok+Handle' +
-        '&fields[]=Status&fields[]=Email&fields[]=Assigned+To&fields[]=Affiliate+Interest&fields[]=Outreach+Tier&fields[]=DM+Draft&fields[]=Email+Draft&fields[]=Last+Contacted+At&fields[]=Category&fields[]=Archived&fields[]=Date+Added&fields[]=Contacted+By' +
+        '&fields[]=Status&fields[]=Email&fields[]=Assigned+To&fields[]=Affiliate+Interest&fields[]=Outreach+Tier&fields[]=DM+Draft&fields[]=Email+Draft&fields[]=Last+Contacted+At&fields[]=Category&fields[]=Archived&fields[]=Date+Added&fields[]=Contacted+By&fields[]=Nurturing+Started' +
         '&sort[0][field]=Name&sort[0][direction]=asc' +
         (offset ? `&offset=${offset}` : '');
 
@@ -22,6 +22,38 @@ export default async function handler(req, res) {
       allRecords = allRecords.concat(data.records || []);
       offset = data.offset || '';
     } while (offset);
+
+    // Derive per-channel contact state from the Outreach Log so the admin and
+    // kanban views can show "by Email" / "by DM" without a schema change on
+    // Creators. Each log row carries a Channel; Email → email, anything else
+    // (Instagram DM / TikTok DM) → dm. We keep the latest date per channel.
+    const OUTREACH_TABLE = 'tblwAnhjZ010eEIu6';
+    const channelByCreator = {};
+    try {
+      let logOffset = '';
+      do {
+        const logUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE}/${OUTREACH_TABLE}?` +
+          'fields[]=Creator&fields[]=Date&fields[]=Channel' +
+          (logOffset ? `&offset=${logOffset}` : '');
+        const logResp = await fetch(logUrl, { headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}` } });
+        const logData = await logResp.json();
+        for (const row of logData.records || []) {
+          const day = (row.fields.Date || '').split('T')[0];
+          if (!day) continue;
+          const key = row.fields.Channel === 'Email' ? 'email' : 'dm';
+          for (const creatorId of (row.fields.Creator || [])) {
+            const slot = channelByCreator[creatorId] || (channelByCreator[creatorId] = { email: null, dm: null });
+            if (!slot[key] || day > slot[key]) slot[key] = day;
+          }
+        }
+        logOffset = logData.offset || '';
+      } while (logOffset);
+    } catch (e) {
+      console.error('creators: outreach log fetch failed', e);
+    }
+    for (const r of allRecords) {
+      r.channels = channelByCreator[r.id] || { email: null, dm: null };
+    }
 
     res.setHeader('Access-Control-Allow-Origin', '*');
     return res.status(200).json({ records: allRecords });

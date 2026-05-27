@@ -244,6 +244,7 @@
     white-space: nowrap;
   }
   .s-not-contacted  { background: var(--olilo-hanji);      color: var(--olilo-black-64); }
+  .s-nurturing      { background: #fff0d0;                  color: #8a5a00; }
   .s-contacted      { background: var(--olilo-day-yellow); color: #5a3d00; }
   .s-replied        { background: #d4f0e0;                  color: #1a5c2a; }
   .s-deal-agreed    { background: var(--olilo-dawn-orange); color: #7a2800; }
@@ -296,6 +297,158 @@
   }
   .btn-revert:hover { opacity: 0.7; }
   .btn-revert:disabled { opacity: 0.4; cursor: default; }
+
+  /* Nurture (claim) button — start the warm-up */
+  .btn-nurture {
+    padding: 7px 14px;
+    background: var(--olilo-white);
+    border: 2px solid var(--olilo-sweet-orange);
+    border-radius: var(--radius-pill);
+    color: var(--olilo-sweet-orange);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all var(--dur-fast);
+  }
+  .btn-nurture:hover { background: var(--olilo-sweet-orange); color: #fff; }
+  .btn-nurture:disabled { opacity: 0.4; cursor: default; }
+
+  /* Unclaim (release a Nurturing creator) — compact ✕ */
+  .btn-unclaim {
+    padding: 6px 10px;
+    background: transparent;
+    border: 2px solid var(--olilo-black-16);
+    border-radius: var(--radius-pill);
+    color: var(--olilo-black-40);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    line-height: 1;
+    transition: all var(--dur-fast);
+  }
+  .btn-unclaim:hover { border-color: #c05000; color: #c05000; }
+  .btn-unclaim:disabled { opacity: 0.4; cursor: default; }
+
+  /* Smaller, lighter Contact button used as the secondary action on rows */
+  .btn-contact-sm {
+    padding: 6px 12px;
+    background: transparent;
+    border: 2px solid var(--olilo-black-16);
+    border-radius: var(--radius-pill);
+    color: var(--olilo-black-64);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all var(--dur-fast);
+  }
+  .btn-contact-sm:hover { border-color: var(--olilo-black-40); color: var(--olilo-black); }
+
+  /* Nurture progress / ready tags */
+  .nurture-day, .nurture-ready {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    border-radius: var(--radius-pill);
+    padding: 2px 8px;
+    white-space: nowrap;
+  }
+  .nurture-day   { color: #8a5a00; background: #fff0d0; border: 1.5px solid #e0b060; }
+  .nurture-ready { color: #1a5c2a; background: #d4f0e0; border: 1.5px solid #6cc090; }
+
+  /* "I'm …" identity picker */
+  .me-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--olilo-black-40);
+    align-self: center;
+    margin-right: 2px;
+  }
+
+  /* ── Quick-add creator bar ───────────────────────────────── */
+  .add-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 12px 20px;
+    background: var(--olilo-hanji);
+    border-bottom: 1px solid var(--olilo-black-16);
+  }
+  .add-label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--olilo-black);
+  }
+  .add-by-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--olilo-black-40);
+    text-transform: uppercase;
+  }
+  #add-handle {
+    flex: 1 1 240px;
+    min-width: 180px;
+    padding: 8px 14px;
+    border: 2px solid var(--olilo-black-16);
+    border-radius: var(--radius-pill);
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--olilo-black);
+    background: var(--olilo-white);
+  }
+  #add-handle:focus { outline: none; border-color: var(--olilo-sweet-orange); }
+  #add-by {
+    padding: 8px 12px;
+    border: 2px solid var(--olilo-black-16);
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--olilo-black);
+    background: var(--olilo-white);
+    cursor: pointer;
+  }
+  #add-btn {
+    padding: 8px 16px;
+    background: var(--olilo-sweet-orange);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  #add-btn:hover { opacity: 0.88; }
+  #add-btn:disabled { background: var(--olilo-black-16); color: var(--olilo-black-40); cursor: default; }
+  #add-status {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    flex-basis: 100%;
+  }
 
   /* Empty / loading states */
   .state-row td {
@@ -624,6 +777,38 @@
     white-space: nowrap;
   }
 
+  /* ── Per-channel contact badges (Contacted column) ───────── */
+  .chan-cell { display: inline-flex; gap: 14px; align-items: flex-start; }
+  .chan-badge { display: inline-flex; flex-direction: column; gap: 1px; line-height: 1.25; }
+  .chan-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+  .chan-badge.done .chan-label    { color: #2a7a4a; }
+  .chan-badge.pending .chan-label { color: var(--olilo-black-40); }
+  .chan-date {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--olilo-black-40);
+    white-space: nowrap;
+  }
+
+  /* ── Email-on-file marker (Handles column) ───────────────── */
+  .email-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .email-tag.has        { color: #2a7a4a; }
+  .email-tag.has:hover  { text-decoration: underline; }
+  .email-tag.none       { color: var(--olilo-black-40); }
+
   /* ── Clickable handle links ──────────────────────────────── */
   a.handle-link {
     color: var(--olilo-sweet-orange);
@@ -694,6 +879,7 @@
   <div class="filter-tabs">
     <button class="tab active" data-status="all">All</button>
     <button class="tab" data-status="Not Contacted">Not Contacted</button>
+    <button class="tab" data-status="Nurturing">Nurturing</button>
     <button class="tab" data-status="Contacted">Contacted</button>
     <button class="tab" data-status="Replied">Replied</button>
     <button class="tab" data-status="Shipped">Shipped</button>
@@ -721,6 +907,11 @@
     <button class="tier-tab" data-assignee="Joon">Joon</button>
     <button class="tier-tab" data-assignee="Rich">Rich</button>
   </div>
+  <div class="tier-tabs" id="me-tabs">
+    <span class="me-label">I'm</span>
+    <button class="tier-tab" data-me="Joon">Joon</button>
+    <button class="tier-tab" data-me="Rich">Rich</button>
+  </div>
   <div class="tier-tabs" id="archive-tabs">
     <button class="tier-tab active" data-archive="active">Active</button>
     <button class="tier-tab" data-archive="archived">Archived</button>
@@ -728,6 +919,18 @@
   <div class="spacer"></div>
   <span class="count" id="count"></span>
   <input class="search-box" type="search" placeholder="Search name or handle…" id="search">
+</div>
+
+<div class="add-bar">
+  <span class="add-label">+ Add creator</span>
+  <input id="add-handle" type="text" placeholder="paste Instagram handle, e.g. @name" autocomplete="off">
+  <span class="add-by-label">by</span>
+  <select id="add-by">
+    <option value="Joon">Joon</option>
+    <option value="Rich">Rich</option>
+  </select>
+  <button id="add-btn">Add to Manual</button>
+  <span id="add-status"></span>
 </div>
 
 <div class="stats-bar" id="stats-bar"></div>
@@ -740,7 +943,7 @@
         <th>Handles</th>
         <th>Status</th>
         <th>Contacted</th>
-        <th>Contacted By</th>
+        <th>Owner</th>
         <th>Action</th>
       </tr>
     </thead>
@@ -810,6 +1013,8 @@
   let activeArchive = 'active'; // 'active' (Archived !== true) | 'archived'
   let activeSearch = '';
   let pendingRecord = null;
+  let me = localStorage.getItem('olilo-me') || ''; // who's at this browser: 'Joon' | 'Rich'
+  const NURTURE_DAYS = 2; // warm-up days before a creator is "Ready to DM"
 
   function getAdminToken() {
     let t = localStorage.getItem('olilo-admin-token');
@@ -852,8 +1057,22 @@
     return res.ok;
   }
 
+  // Deletes the creator's Outreach Log rows. Called whenever a creator is
+  // reverted to Not Contacted so old log entries don't pile up as duplicates.
+  async function clearOutreachLog(recordId) {
+    const token = getAdminToken();
+    if (!token) return false;
+    const res = await fetch('/api/uncontact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-token': token },
+      body: JSON.stringify({ recordId }),
+    });
+    return res.ok;
+  }
+
   const STATUS_CLASS = {
     'Not Contacted': 's-not-contacted',
+    'Nurturing':     's-nurturing',
     'Contacted':     's-contacted',
     'Replied':       's-replied',
     'Deal Agreed':   's-deal-agreed',
@@ -880,6 +1099,17 @@
     return `<a class="handle-link" href="https://tiktok.com/@${bare}" target="_blank" rel="noopener">${handle}</a>`;
   }
 
+  // At-a-glance email marker for the list: green ✉ + the address (mailto) when
+  // one's on file, greyed "no email" otherwise.
+  function emailTag(f) {
+    const email = (f.Email || '').trim();
+    if (email) {
+      const safe = email.replace(/"/g, '&quot;');
+      return `<a class="email-tag has" href="mailto:${safe}" title="${safe}">✉ Email</a>`;
+    }
+    return `<span class="email-tag none" title="No email on file">✉ No email</span>`;
+  }
+
   function statusBadge(current) {
     const cls = STATUS_CLASS[current] || 's-not-contacted';
     return `<span class="badge ${cls}">${current}</span>`;
@@ -890,6 +1120,87 @@
     const days = daysAgo(lastContactedAt);
     if (days === null || days < 5) return '';
     return `<span class="followup-flag">⚑ ${days}d</span>`;
+  }
+
+  // Warm-up state for a Nurturing creator: 🌱 + the date claimed, then "Ready to DM" once the timer's up.
+  function nurtureTag(status, nurturingStarted) {
+    if (status !== 'Nurturing') return '';
+    const days = daysAgo(nurturingStarted);
+    if (days === null) return '<span class="nurture-day">🌱 claimed</span>';
+    if (days >= NURTURE_DAYS) return `<span class="nurture-ready">✓ Ready to DM</span>`;
+    const d = new Date(nurturingStarted + 'T00:00:00');
+    const label = isNaN(d) ? nurturingStarted : d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+    return `<span class="nurture-day">🌱 ${label}</span>`;
+  }
+
+  function dateLabelShort(dateStr) {
+    const days = daysAgo(dateStr);
+    if (days === null) return '—';
+    if (days === 0) return 'Today';
+    if (days === 1) return 'Yesterday';
+    return `${days}d ago`;
+  }
+
+  // A creator's channel state: which channels are done (with dates) + whether
+  // an email address is on file. Channels are derived from the Outreach Log by
+  // the /api/creators endpoint and attached as r.channels.
+  function channelInfo(r) {
+    const ch = r.channels || { email: null, dm: null };
+    const hasEmail = !!((r.fields.Email || '').trim());
+    return { ch, hasEmail };
+  }
+
+  function channelBadge(label, dateStr, done) {
+    return `<span class="chan-badge ${done ? 'done' : 'pending'}">
+      <span class="chan-label">${done ? '✓ ' : ''}by ${label}</span>
+      <span class="chan-date">${done ? dateLabelShort(dateStr) : '—'}</span>
+    </span>`;
+  }
+
+  // Badges for a Contacted creator: always show DM; show Email only when it was
+  // sent or there's an address on file (no-email creators don't need an email).
+  function contactedChannels(r) {
+    const { ch, hasEmail } = channelInfo(r);
+    const badges = [];
+    if (ch.email)       badges.push(channelBadge('Email', ch.email, true));
+    else if (hasEmail)  badges.push(channelBadge('Email', null, false));
+    badges.push(channelBadge('DM', ch.dm, !!ch.dm));
+    return `<span class="chan-cell">${badges.join('')}</span>`;
+  }
+
+  // The channel still owed for a Contacted creator, or null when fully done
+  // (DM sent, and email sent or no address on file). Drives the Contact button.
+  function outstandingChannel(r) {
+    const { ch, hasEmail } = channelInfo(r);
+    if (!ch.dm) return 'Instagram DM';
+    if (hasEmail && !ch.email) return 'Email';
+    return null;
+  }
+
+  // The timeline cell shows nurture progress for Nurturing rows, per-channel
+  // badges for Contacted rows, else the contacted-at label.
+  function timelineCell(r) {
+    const status = r.fields.Status || 'Not Contacted';
+    const lca = r.fields['Last Contacted At'] || null;
+    if (status === 'Nurturing') return nurtureTag(status, r.fields['Nurturing Started'] || null);
+    if (status === 'Contacted') return contactedChannels(r) + followupTag(status, lca);
+    return contactedAtLabel(lca) + followupTag(status, lca);
+  }
+
+  // Claim a creator for the warm-up: status -> Nurturing, owner = current user, start the timer.
+  async function claimNurture(id) {
+    if (!me) { alert('Set who you are first — click your name next to “I\'m”.'); return false; }
+    const today = new Date().toISOString().split('T')[0];
+    const ok = await setStatus(id, 'Nurturing', { 'Contacted By': me, 'Nurturing Started': today });
+    if (ok) {
+      const rec = allRecords.find(r => r.id === id);
+      if (rec) {
+        rec.fields.Status = 'Nurturing';
+        rec.fields['Contacted By'] = me;
+        rec.fields['Nurturing Started'] = today;
+      }
+    }
+    return ok;
   }
 
   function contactedAtLabel(lastContactedAt) {
@@ -929,6 +1240,8 @@
        <span class="s-dot">·</span>
        <span><span class="s-num">${counts['Not Contacted']||0}</span> not yet</span>
        <span class="s-dot">·</span>
+       <span><span class="s-num">${counts['Nurturing']||0}</span> nurturing</span>
+       <span class="s-dot">·</span>
        <span><span class="s-num">${counts['Contacted']||0}</span> contacted</span>
        <span class="s-dot">·</span>
        <span><span class="s-num">${counts['Replied']||0}</span> replied</span>
@@ -940,7 +1253,31 @@
        <span><span class="s-num">${archivedCount}</span> archived</span>`;
   }
 
+  // Rebuild the category filter from live data: every category with creators, biggest first, with counts.
+  // Counts respect the active/archived scope but not the other filters, so it reads as a roster overview.
+  function buildCategoryOptions() {
+    const sel = document.getElementById('category-select');
+    if (document.activeElement === sel) return; // don't disrupt an open dropdown
+    const inScope = allRecords.filter(r => {
+      const arch = r.fields['Archived'] === true;
+      return activeArchive === 'archived' ? arch : !arch;
+    });
+    const counts = {};
+    inScope.forEach(r => {
+      const cat = r.fields['Category'];
+      const cats = Array.isArray(cat) ? cat : (cat ? [cat] : []);
+      cats.forEach(c => { counts[c] = (counts[c] || 0) + 1; });
+    });
+    if (activeCategory !== 'all' && !(activeCategory in counts)) counts[activeCategory] = 0; // keep selection visible
+    const cats = Object.keys(counts).sort((a, b) => counts[b] - counts[a] || a.localeCompare(b));
+    sel.innerHTML =
+      `<option value="all">All Categories (${inScope.length})</option>` +
+      cats.map(c => `<option value="${c.replace(/"/g, '&quot;')}">${c} (${counts[c]})</option>`).join('');
+    sel.value = activeCategory;
+  }
+
   function render() {
+    buildCategoryOptions();
     const q = activeSearch.toLowerCase();
     const filtered = allRecords.filter(r => {
       const f = r.fields;
@@ -989,18 +1326,33 @@
           <td>
             <div>${igLink(ig)}</div>
             ${tt ? `<div style="margin-top:3px;">${ttLink(tt)}</div>` : ''}
+            <div style="margin-top:3px;">${emailTag(f)}</div>
           </td>
           <td>${statusBadge(status)}</td>
-          <td>${contactedAtLabel(lca)}${followupTag(status, lca)}</td>
+          <td>${timelineCell(r)}</td>
           <td>${f['Contacted By'] || '—'}</td>
           <td>
             ${isArchived
               ? `<button class="btn-unarchive" data-id="${r.id}" data-name="${nameAttr}" style="background:transparent;border:2px solid var(--olilo-black-40);border-radius:var(--radius-pill);padding:6px 12px;color:var(--olilo-black-64);cursor:pointer;font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;">Unarchive</button>`
               : status === 'Not Contacted'
-                ? `<button class="btn-contact" data-id="${r.id}" data-name="${nameAttr}" data-ig="${ig}">Contact</button>`
-                : status === 'Contacted'
-                  ? `<button class="btn-revert" data-id="${r.id}" data-name="${nameAttr}" title="Move back to Not Contacted">↩ Not Contacted</button>`
-                  : ''}
+                ? `<span style="display:inline-flex;gap:6px;align-items:center;">
+                     <button class="btn-nurture" data-id="${r.id}" data-name="${nameAttr}" title="Start the 2-day warm-up — follow, like, comment before DMing">🌱 Nurture</button>
+                     <button class="btn-contact-sm" data-id="${r.id}" data-name="${nameAttr}" data-ig="${ig}">Contact</button>
+                   </span>`
+                : status === 'Nurturing'
+                  ? `<span style="display:inline-flex;gap:6px;align-items:center;">
+                       <button class="btn-contact" data-id="${r.id}" data-name="${nameAttr}" data-ig="${ig}">Contact</button>
+                       <button class="btn-unclaim" data-id="${r.id}" data-name="${nameAttr}" title="Release — back to Not Contacted">✕</button>
+                     </span>`
+                  : status === 'Contacted'
+                    ? (() => {
+                        const outstanding = outstandingChannel(r);
+                        return `<span style="display:inline-flex;gap:6px;align-items:center;">
+                          <button class="btn-revert" data-id="${r.id}" data-name="${nameAttr}" title="Move back to Not Contacted">↩ Revert</button>
+                          ${outstanding ? `<button class="btn-contact-sm" data-id="${r.id}" data-name="${nameAttr}" data-ig="${ig}" data-channel="${outstanding}">Contact</button>` : ''}
+                        </span>`;
+                      })()
+                    : ''}
           </td>
         </tr>`;
       }).join('');
@@ -1026,19 +1378,34 @@
               ${f['Affiliate Interest'] ? '<span style="font-size:12px;color:var(--olilo-sweet-orange);margin-left:4px;">★</span>' : ''}
             </div>
             <a class="creator-card-handle handle-link" href="https://instagram.com/${igBare}" target="_blank" rel="noopener">${ig}</a>
+            <span style="margin-left:8px;">${emailTag(f)}</span>
             <div class="creator-card-footer" style="gap:6px;flex-wrap:wrap;">
               ${statusBadge(status)}
-              ${contactedAtLabel(lca)}
-              ${followupTag(status, lca)}
+              ${timelineCell(r)}
+              ${f['Contacted By'] ? `<span class="contacted-at">· ${f['Contacted By']}</span>` : ''}
             </div>
           </div>
           ${isArchived
             ? `<button class="btn-unarchive" data-id="${r.id}" data-name="${nameAttr}" style="flex-shrink:0;background:transparent;border:2px solid var(--olilo-black-40);border-radius:var(--radius-pill);padding:6px 12px;color:var(--olilo-black-64);cursor:pointer;font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;">Unarchive</button>`
             : status === 'Not Contacted'
-              ? `<button class="btn-contact" data-id="${r.id}" data-name="${nameAttr}" data-ig="${ig}" style="flex-shrink:0;">Contact</button>`
-              : status === 'Contacted'
-                ? `<button class="btn-revert" data-id="${r.id}" data-name="${nameAttr}" title="Move back to Not Contacted" style="flex-shrink:0;">↩ Not Contacted</button>`
-                : ''}
+              ? `<span style="flex-shrink:0;display:inline-flex;flex-direction:column;gap:6px;">
+                   <button class="btn-nurture" data-id="${r.id}" data-name="${nameAttr}">🌱 Nurture</button>
+                   <button class="btn-contact-sm" data-id="${r.id}" data-name="${nameAttr}" data-ig="${ig}">Contact</button>
+                 </span>`
+              : status === 'Nurturing'
+                ? `<span style="flex-shrink:0;display:inline-flex;flex-direction:column;gap:6px;">
+                     <button class="btn-contact" data-id="${r.id}" data-name="${nameAttr}" data-ig="${ig}">Contact</button>
+                     <button class="btn-unclaim" data-id="${r.id}" data-name="${nameAttr}" title="Release — back to Not Contacted">✕ Release</button>
+                   </span>`
+                : status === 'Contacted'
+                  ? (() => {
+                      const outstanding = outstandingChannel(r);
+                      return `<span style="flex-shrink:0;display:inline-flex;flex-direction:column;gap:6px;">
+                        <button class="btn-revert" data-id="${r.id}" data-name="${nameAttr}" title="Move back to Not Contacted">↩ Revert</button>
+                        ${outstanding ? `<button class="btn-contact-sm" data-id="${r.id}" data-name="${nameAttr}" data-ig="${ig}" data-channel="${outstanding}">Contact</button>` : ''}
+                      </span>`;
+                    })()
+                  : ''}
         </div>`;
       }).join('');
     }
@@ -1048,14 +1415,46 @@
   }
 
   function bindEvents(container) {
-    container.querySelectorAll('.btn-contact').forEach(btn => {
+    container.querySelectorAll('.btn-contact, .btn-contact-sm').forEach(btn => {
       btn.addEventListener('click', () => {
         const rec = allRecords.find(r => r.id === btn.dataset.id);
         const draft = rec ? (rec.fields['DM Draft'] || '') : '';
         const emailDraft = rec ? (rec.fields['Email Draft'] || '') : '';
         const email = rec ? (rec.fields['Email'] || '') : '';
-        pendingRecord = { id: btn.dataset.id, name: btn.dataset.name, ig: btn.dataset.ig, draft, emailDraft, email };
+        const owner = rec ? (rec.fields['Contacted By'] || '') : '';
+        pendingRecord = { id: btn.dataset.id, name: btn.dataset.name, ig: btn.dataset.ig, draft, emailDraft, email, owner, channel: btn.dataset.channel || '' };
         openModal();
+      });
+    });
+
+    container.querySelectorAll('.btn-nurture').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!me) { alert('First click your name next to “I\'m” so claims show who\'s nurturing.'); return; }
+        btn.disabled = true;
+        btn.textContent = 'Claiming…';
+        const ok = await claimNurture(btn.dataset.id);
+        if (ok) { render(); }
+        else { btn.disabled = false; btn.textContent = '🌱 Nurture'; if (localStorage.getItem('olilo-admin-token')) alert('Failed to claim. Try again.'); }
+      });
+    });
+
+    container.querySelectorAll('.btn-unclaim').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+        if (!confirm(`Release ${btn.dataset.name} back to Not Contacted?`)) return;
+        btn.disabled = true;
+        const rec = allRecords.find(r => r.id === id);
+        const ok = await setStatus(id, 'Not Contacted', { 'Contacted By': null, 'Nurturing Started': null });
+        if (ok && rec) {
+          await clearOutreachLog(id);
+          rec.fields.Status = 'Not Contacted';
+          rec.fields['Contacted By'] = null;
+          rec.fields['Nurturing Started'] = null;
+          render();
+        } else if (!ok) {
+          btn.disabled = false;
+          if (localStorage.getItem('olilo-admin-token')) alert('Failed to release. Try again.');
+        }
       });
     });
 
@@ -1069,13 +1468,15 @@
         const rec = allRecords.find(r => r.id === id);
         const ok = await setStatus(id, 'Not Contacted', { 'Last Contacted At': null, 'Contacted By': null });
         if (ok && rec) {
+          await clearOutreachLog(id);
           rec.fields.Status = 'Not Contacted';
           rec.fields['Last Contacted At'] = null;
           rec.fields['Contacted By'] = null;
+          rec.channels = { email: null, dm: null };
           render();
         } else {
           btn.disabled = false;
-          btn.textContent = '↩ Not Contacted';
+          btn.textContent = '↩ Revert';
           if (localStorage.getItem('olilo-admin-token')) alert('Failed to update. Try again.');
         }
       });
@@ -1148,7 +1549,8 @@
   function openModal() {
     document.getElementById('modal-name').textContent = pendingRecord.name;
     document.getElementById('modal-handle').textContent = pendingRecord.ig;
-    document.getElementById('modal-channel').value = 'Instagram DM';
+    document.getElementById('modal-channel').value = pendingRecord.channel || 'Instagram DM';
+    document.getElementById('modal-sentby').value = pendingRecord.owner || me || 'Joon';
     const archiveBtn = document.getElementById('btn-archive-modal');
     archiveBtn.disabled = false;
     archiveBtn.textContent = 'Archive';
@@ -1217,12 +1619,16 @@
     if (e.target === document.getElementById('overlay')) closeModal();
   });
 
-  function applyContactedLocally() {
+  function applyContactedLocally(channel) {
     const rec = allRecords.find(r => r.id === pendingRecord.id);
     if (rec) {
+      const today = new Date().toISOString().split('T')[0];
       rec.fields.Status = 'Contacted';
-      rec.fields['Last Contacted At'] = new Date().toISOString().split('T')[0];
+      rec.fields['Last Contacted At'] = today;
       rec.fields['Contacted By'] = document.getElementById('modal-sentby').value;
+      rec.channels = rec.channels || { email: null, dm: null };
+      if (channel === 'Email') rec.channels.email = today;
+      else rec.channels.dm = today;
     }
   }
 
@@ -1243,7 +1649,7 @@
         }),
       });
       if (!res.ok) throw new Error();
-      applyContactedLocally();
+      applyContactedLocally(document.getElementById('modal-channel').value);
       closeModal();
       render();
     } catch {
@@ -1295,7 +1701,7 @@
         }),
       });
       if (logRes.ok) {
-        applyContactedLocally();
+        applyContactedLocally('Email');
       } else {
         alert('Email sent, but logging the contact failed. Mark this creator contacted manually.');
       }
@@ -1354,6 +1760,19 @@
     });
   });
 
+  function paintMeTabs() {
+    document.querySelectorAll('#me-tabs .tier-tab[data-me]').forEach(t =>
+      t.classList.toggle('active', t.dataset.me === me));
+  }
+  document.querySelectorAll('#me-tabs .tier-tab[data-me]').forEach(tab => {
+    tab.addEventListener('click', () => {
+      me = tab.dataset.me;
+      localStorage.setItem('olilo-me', me);
+      paintMeTabs();
+    });
+  });
+  paintMeTabs();
+
   document.getElementById('category-select').addEventListener('change', e => {
     activeCategory = e.target.value;
     const sel = document.getElementById('category-select');
@@ -1371,7 +1790,63 @@
     load();
   });
 
+  // Quick-add: paste a handle -> Creators (Manual) as Pending, stamped with who added it.
+  if (me) document.getElementById('add-by').value = me;
+  async function addManual() {
+    const input = document.getElementById('add-handle');
+    const statusEl = document.getElementById('add-status');
+    const handle = input.value.trim();
+    if (!handle) { input.focus(); return; }
+    const token = getAdminToken();
+    if (!token) return;
+    const addedBy = document.getElementById('add-by').value;
+    const btn = document.getElementById('add-btn');
+    btn.disabled = true;
+    statusEl.style.color = 'var(--olilo-black-40)';
+    statusEl.textContent = 'Adding…';
+    try {
+      const res = await fetch('/api/add-manual', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-token': token },
+        body: JSON.stringify({ handle, addedBy }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.status === 401) {
+        localStorage.removeItem('olilo-admin-token');
+        alert('Admin token rejected. Reload the page and re-enter it.');
+        return;
+      }
+      if (res.status === 409) {
+        statusEl.style.color = '#c05000';
+        statusEl.textContent = '⚠ ' + (data.error || 'Already in your pipeline.');
+        return;
+      }
+      if (!res.ok) throw new Error(data.error || 'failed');
+      statusEl.style.color = '#1a5c2a';
+      statusEl.textContent = `✓ @${data.handle} added to Manual (${data.addedBy}) — appears here once enriched`;
+      input.value = '';
+      input.focus();
+    } catch {
+      statusEl.style.color = '#c05000';
+      statusEl.textContent = 'Failed to add. Try again.';
+    } finally {
+      btn.disabled = false;
+    }
+  }
+  document.getElementById('add-btn').addEventListener('click', addManual);
+  document.getElementById('add-handle').addEventListener('keydown', e => {
+    if (e.key === 'Enter') addManual();
+  });
+
   load();
+
+  // Auto-refresh every 30s so Joon and Rich see each other's claims without manual reload.
+  // Skipped while a modal is open, the search box is focused, or the tab is hidden.
+  setInterval(() => {
+    const modalOpen = document.getElementById('overlay').classList.contains('open');
+    const searching = document.activeElement === document.getElementById('search');
+    if (!modalOpen && !searching && !document.hidden) load();
+  }, 30000);
 </script>
 </body>
 </html>

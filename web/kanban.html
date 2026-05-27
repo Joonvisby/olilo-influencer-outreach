@@ -136,6 +136,8 @@
   /* Column accent colors */
   .col[data-status="Not Contacted"]  .col-header { background: var(--olilo-hanji); }
   .col[data-status="Not Contacted"]  .col-count  { background: var(--olilo-black-40); }
+  .col[data-status="Nurturing"]      .col-header { background: #fff0d0; }
+  .col[data-status="Nurturing"]      .col-count  { background: #b07a10; }
   .col[data-status="Contacted"]      .col-header { background: #fff8dc; }
   .col[data-status="Contacted"]      .col-count  { background: #c8960a; }
   .col[data-status="Replied"]        .col-header { background: #d4f0e0; }
@@ -226,6 +228,17 @@
     color: var(--olilo-black-40);
     white-space: nowrap;
   }
+
+  .card-channels { display: inline-flex; gap: 8px; }
+  .card-channels span {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+  .card-channels .chan-done    { color: #2a7a4a; }
+  .card-channels .chan-pending { color: var(--olilo-black-40); }
 
   .empty-col {
     text-align: center;
@@ -371,6 +384,7 @@
 <script>
   const COLUMNS = [
     'Not Contacted',
+    'Nurturing',
     'Contacted',
     'Replied',
     'Shipped',
@@ -391,6 +405,15 @@
   function timestampLabel(status, f) {
     const lca = f['Last Contacted At'];
     const added = f['Date Added'];
+    if (status === 'Nurturing') {
+      const started = f['Nurturing Started'];
+      const days = daysAgo(started);
+      if (days === null) return 'Nurturing';
+      if (days >= 2) return 'Ready to DM';
+      const d = new Date(started + 'T00:00:00');
+      const label = isNaN(d) ? started : d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+      return `Nurturing · ${label}`;
+    }
     const dateStr = status === 'Not Contacted' ? added : (lca || added);
     const verb = status === 'Not Contacted' ? 'Added' : 'Contacted';
     const days = daysAgo(dateStr);
@@ -454,6 +477,19 @@
     });
   }
 
+  // For Contacted cards, show which channels are done (✓ Email / ✓ DM) instead
+  // of a single timestamp. Email only appears when sent or an address is on file.
+  function channelBadges(r) {
+    const f = r.fields;
+    const ch = r.channels || { email: null, dm: null };
+    const hasEmail = !!((f.Email || '').trim());
+    const parts = [];
+    if (ch.email)      parts.push('<span class="chan-done">✓ Email</span>');
+    else if (hasEmail) parts.push('<span class="chan-pending">Email</span>');
+    parts.push(ch.dm ? '<span class="chan-done">✓ DM</span>' : '<span class="chan-pending">DM</span>');
+    return `<span class="card-channels">${parts.join('')}</span>`;
+  }
+
   function cardHTML(r, status) {
     const f = r.fields;
     const name      = f.Name || '—';
@@ -462,6 +498,9 @@
     const affiliate = f['Affiliate Interest'];
     const showAffiliate = !!affiliate;
     const ts        = timestampLabel(status, f);
+    const trailing  = status === 'Contacted'
+      ? channelBadges(r)
+      : (ts ? `<span class="card-timestamp">${ts}</span>` : '');
 
     return `<div class="card">
       <div class="card-name">${name}</div>
@@ -469,7 +508,7 @@
       <div class="card-meta">
         <span class="card-tier">${tier}</span>
         ${showAffiliate ? '<span class="affiliate-tag">★ Affiliate</span>' : ''}
-        ${ts ? `<span class="card-timestamp">${ts}</span>` : ''}
+        ${trailing}
       </div>
     </div>`;
   }
