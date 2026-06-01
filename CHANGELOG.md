@@ -7,6 +7,14 @@ Format per entry:
 
 ---
 
+## 2026-06-01 — Intake form now captures off-list submitters instead of dropping them
+- **Why** — When someone filled the intake form but wasn't on the outreach list, `api/intake.js` wrote nothing to Airtable (email notification only), so real inbound creators like @esthefoodie and @Carla.craves vanished from the admin page and kit queue. Per Joon: non-list submitters should still be added and set Active.
+- `api/intake.js` — Restructured the match branches so both paths resolve a `recordId`. Matched creators still PATCH to `Replied` + update the Outreach Log. The no-match branch now POSTs a new Creators (confirmed) record (`tblbBNgHxp6YNOJOQ`) with `Status: Active` (`typecast: true`) carrying Name/Email/Phone/Instagram/TikTok/Shipping/Affiliate. The Shipments kit-queue row (`tblGdJUGUXxFwHkKX`, `Preparing`) is now created once for both paths off `recordId`. Notification email copy for new creators changed from a red "no record was created" warning to a green "added as Active + queued" confirmation.
+- `scripts/add-dropped-intake.mjs` — One-off backfill of intake submitters dropped before this fix, deduped against the Creators table first:
+  - @esthefoodie (Esther Song → `recZrrNeh8N1PdvMa`) and @Carla.craves (Carla Luna → `recfSRuPOFD1gTI1k`) — real contact info, created Active + a Shipments row each.
+  - @AmandaCiprich and @downshiftology — real creators, but their forms carried placeholder contact info (Joon's email + a test address). Found already in the Creators list under their real handles (@t1d.nutritionist `recZnP4fMuTQvW4WV` / Not Contacted; @downshiftology `recHQLAYf4WgSZ7R1` / Contacted). Set both to **Active**; no kit queued (no real shipping address yet).
+  - Excluded as tests: @olilo_seoul (Rich/Olilo's own), @2322, @no123, @Joonyg.
+
 ## 2026-05-27 — Track per-channel outreach (Email + DM) and split the Contacted action into Revert / Contact
 - **Why** — There was no way to see *how* a creator was contacted, and creators with an email address should get both an email *and* a DM. Previously any one contact flipped a creator to "Contacted" with a single `↩ Not Contacted` revert button, so a half-finished outreach (email sent, DM still owed) looked done.
 - `api/creators.js` — After loading creators, fetch the Outreach Log (`tblwAnhjZ010eEIu6`, paginated) and derive per-creator channel state: `Channel = Email` → email, anything else (Instagram/TikTok DM) → dm, keeping the latest date per channel. Attached to each record as `r.channels = { email, dm }`. No Airtable schema change — the log already records every send, and `api/uncontact.js` already wipes it on revert.

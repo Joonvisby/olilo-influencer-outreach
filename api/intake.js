@@ -31,18 +31,19 @@ export default async function handler(req, res) {
     const searchData = await searchRes.json();
 
     let isNew = false;
-    const updateFields = {
-      Email: email,
-      'Phone': phone || '',
-      'Shipping Address': shipping_address,
-      Status: 'Replied',
-      'Affiliate Interest': Boolean(affiliate_opt_in),
-    };
-    if (tiktok_handle) updateFields['TikTok Handle'] = `@${tiktok_handle}`;
+    let recordId;
 
     if (searchData.records && searchData.records.length > 0) {
       // Update existing creator record
-      const recordId = searchData.records[0].id;
+      recordId = searchData.records[0].id;
+      const updateFields = {
+        Email: email,
+        'Phone': phone || '',
+        'Shipping Address': shipping_address,
+        Status: 'Replied',
+        'Affiliate Interest': Boolean(affiliate_opt_in),
+      };
+      if (tiktok_handle) updateFields['TikTok Handle'] = `@${tiktok_handle}`;
       await fetch(
         `https://api.airtable.com/v0/${AIRTABLE_BASE}/${AIRTABLE_TABLE}/${recordId}`,
         {
@@ -52,7 +53,58 @@ export default async function handler(req, res) {
         }
       );
 
-      // Create a Shipments record for kit queue
+      // Update the most recent Outreach Log entry for this creator, if one exists
+      const OUTREACH_TABLE = 'tblwAnhjZ010eEIu6';
+      const logFormula = encodeURIComponent(`FIND("${recordId}", ARRAYJOIN({Creator}))`);
+      const logRes = await fetch(
+        `https://api.airtable.com/v0/${AIRTABLE_BASE}/${OUTREACH_TABLE}?filterByFormula=${logFormula}&sort[0][field]=Date&sort[0][direction]=desc&maxRecords=1`,
+        { headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}` } }
+      );
+      const logData = await logRes.json();
+      if (logData.records && logData.records.length > 0) {
+        const logId = logData.records[0].id;
+        await fetch(
+          `https://api.airtable.com/v0/${AIRTABLE_BASE}/${OUTREACH_TABLE}/${logId}`,
+          {
+            method: 'PATCH',
+            headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              fields: {
+                'Response Status': 'Positive',
+                'Response Text': `Filled intake form. Ship to: ${shipping_address}`,
+              },
+            }),
+          }
+        );
+      }
+    } else {
+      // No match — still capture them. Create a new confirmed creator record as Active
+      // so they flow through to the admin page and kit queue instead of being dropped.
+      isNew = true;
+      const createFields = {
+        Name: name,
+        Email: email,
+        'Phone': phone || '',
+        'Instagram Handle': igHandle,
+        'Shipping Address': shipping_address,
+        Status: 'Active',
+        'Affiliate Interest': Boolean(affiliate_opt_in),
+      };
+      if (tiktok_handle) createFields['TikTok Handle'] = `@${tiktok_handle}`;
+      const createRes = await fetch(
+        `https://api.airtable.com/v0/${AIRTABLE_BASE}/${AIRTABLE_TABLE}`,
+        {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ typecast: true, fields: createFields }),
+        }
+      );
+      const createData = await createRes.json();
+      recordId = createData.id;
+    }
+
+    // Create a Shipments record for the kit queue (both matched and newly-created creators)
+    if (recordId) {
       const SHIPMENTS_TABLE = 'tblGdJUGUXxFwHkKX';
       await fetch(
         `https://api.airtable.com/v0/${AIRTABLE_BASE}/${SHIPMENTS_TABLE}`,
@@ -82,34 +134,6 @@ export default async function handler(req, res) {
           }),
         }
       );
-
-      // Update the most recent Outreach Log entry for this creator, if one exists
-      const OUTREACH_TABLE = 'tblwAnhjZ010eEIu6';
-      const logFormula = encodeURIComponent(`FIND("${recordId}", ARRAYJOIN({Creator}))`);
-      const logRes = await fetch(
-        `https://api.airtable.com/v0/${AIRTABLE_BASE}/${OUTREACH_TABLE}?filterByFormula=${logFormula}&sort[0][field]=Date&sort[0][direction]=desc&maxRecords=1`,
-        { headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}` } }
-      );
-      const logData = await logRes.json();
-      if (logData.records && logData.records.length > 0) {
-        const logId = logData.records[0].id;
-        await fetch(
-          `https://api.airtable.com/v0/${AIRTABLE_BASE}/${OUTREACH_TABLE}/${logId}`,
-          {
-            method: 'PATCH',
-            headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              fields: {
-                'Response Status': 'Positive',
-                'Response Text': `Filled intake form. Ship to: ${shipping_address}`,
-              },
-            }),
-          }
-        );
-      }
-    } else {
-      // No match — email only, nothing written to Airtable
-      isNew = true;
     }
 
     // Notify Joon via email
@@ -133,7 +157,7 @@ export default async function handler(req, res) {
 
 function buildEmail({ name, igHandle, tiktok_handle, email, phone, shipping_address, affiliate_opt_in, isNew }) {
   const flag = isNew
-    ? '⚠️ NEW — no matching outreach record.'
+    ? '🆕 New creator — not on your outreach list. Created as Active + added to kit queue.'
     : '✅ Matched to existing record. Status → Replied.';
   const tdKey = 'padding:8px 0;border-bottom:1px solid #eee;font-weight:600;width:140px;vertical-align:top;';
   const tdVal = 'padding:8px 0;border-bottom:1px solid #eee;';
@@ -145,7 +169,7 @@ function buildEmail({ name, igHandle, tiktok_handle, email, phone, shipping_addr
 <div style="font-family:sans-serif;max-width:560px;margin:0 auto;color:#331B0A;padding:24px;">
   <h2 style="color:#FB4408;margin:0 0 4px;font-size:22px;">${igHandle}</h2>
   <p style="margin:0 0 8px;font-size:13px;color:#888;">${flag}</p>
-  ${isNew ? `<p style="margin:0 0 20px;font-size:13px;color:#c0392b;background:#fef2f2;padding:10px 12px;border-radius:6px;line-height:1.5;">This person wasn't in your outreach list. <strong>No Airtable record was created</strong> — the admin page and kit queue will not be updated. Review this email and add them manually if needed.</p>` : '<div style="margin-bottom:20px;"></div>'}
+  ${isNew ? `<p style="margin:0 0 20px;font-size:13px;color:#1e7d34;background:#f0fdf4;padding:10px 12px;border-radius:6px;line-height:1.5;">This person wasn't on your outreach list. They've been <strong>added to your Creators list as Active</strong> and queued for a kit. No action needed unless you want to remove them.</p>` : '<div style="margin-bottom:20px;"></div>'}
   <table style="width:100%;border-collapse:collapse;font-size:15px;">
     <tr><td style="${tdKey}">Name</td><td style="${tdVal}">${name}</td></tr>
     <tr><td style="${tdKey}">Email</td><td style="${tdVal}">${email}</td></tr>
