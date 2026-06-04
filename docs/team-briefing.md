@@ -31,16 +31,24 @@ Everything runs through two pages: **Admin** (list + actions) and **Kanban** (vi
 
 ## The Pipeline — How a Creator Moves Through It
 
+Everyone lives in **one** `Creators` table. Where they are in the funnel is just the
+`Status` field — no separate tables. The full visual is
+`docs/Creator Pipeline - How It Works.excalidraw`.
+
 ```
-Not Contacted → Contacted → Replied → Shipped → Delivered → Content Posted
+New → Enriching → Needs Review → Not Contacted → Contacted → Replied → Shipped → Delivered → Content Posted
 ```
 
-1. **Not Contacted** — Creator is loaded and ready. Drafts are written. No outreach yet.
-2. **Contacted** — You sent the DM or email. Platform logs the date and channel.
-3. **Replied** — Creator filled out the intake form OR replied positively. Address is captured.
-4. **Shipped** — Kit is on its way.
-5. **Delivered** — Kit arrived.
-6. **Content Posted** — Creator published content featuring OLILO.
+1. **New** — Just added (admin quick-add, or an AI-scout find). Hidden until enriched.
+2. **Enriching** — `/scout-creators` is researching and writing the DM + email drafts.
+3. **Needs Review** — AI-scouted and enriched, waiting for you to **Approve** in the admin Review tab. (Manually-added creators skip this and go straight to Not Contacted.)
+4. **Not Contacted** — On the live list, drafts written, no outreach yet.
+5. **Contacted** — You sent the DM or email. Platform logs the date and channel.
+6. **Replied** — Creator filled out the intake form OR replied positively. Address is captured.
+7. **Shipped → Delivered → Content Posted** — Kit ships, arrives, creator posts.
+
+A 🔗 **Inbound** badge means the creator came in via the kit link without being on the
+outreach list (`Source = Inbound`).
 
 ---
 
