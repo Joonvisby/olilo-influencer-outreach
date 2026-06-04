@@ -878,6 +878,7 @@
   <span class="page-title">Creators</span>
   <div class="filter-tabs">
     <button class="tab active" data-status="all">All</button>
+    <button class="tab" data-status="Needs Review">📋 Review</button>
     <button class="tab" data-status="Not Contacted">Not Contacted</button>
     <button class="tab" data-status="Nurturing">Nurturing</button>
     <button class="tab" data-status="Contacted">Contacted</button>
@@ -1115,6 +1116,12 @@
     return `<span class="badge ${cls}">${current}</span>`;
   }
 
+  // Flags a creator who came in via the kit link (not from our outreach list).
+  function sourceTag(f) {
+    if (f.Source !== 'Inbound') return '';
+    return `<span class="email-tag none" style="border-color:#7048e8;color:#7048e8;margin-left:6px;" title="Came in via the kit link — was not on the outreach list">🔗 Inbound</span>`;
+  }
+
   function followupTag(status, lastContactedAt) {
     if (status !== 'Contacted') return '';
     const days = daysAgo(lastContactedAt);
@@ -1281,11 +1288,18 @@
     const q = activeSearch.toLowerCase();
     const filtered = allRecords.filter(r => {
       const f = r.fields;
-      const matchStatus = activeStatus === 'all'
-        ? true
-        : activeStatus === 'affiliate'
-          ? !!f['Affiliate Interest']
-          : f.Status === activeStatus;
+      // "Needs Review" (AI-scouted, awaiting approval) lives only in the Review
+      // tab; every other tab hides it so the outreach list stays clean.
+      const isReview = f.Status === 'Needs Review';
+      const matchStatus = activeStatus === 'Needs Review'
+        ? isReview
+        : isReview
+          ? false
+          : activeStatus === 'all'
+            ? true
+            : activeStatus === 'affiliate'
+              ? !!f['Affiliate Interest']
+              : f.Status === activeStatus;
       const matchTier = activeTier === 'all' ? true : f['Outreach Tier'] === activeTier;
       const matchCategory = activeCategory === 'all'
         ? true
@@ -1326,7 +1340,7 @@
           <td>
             <div>${igLink(ig)}</div>
             ${tt ? `<div style="margin-top:3px;">${ttLink(tt)}</div>` : ''}
-            <div style="margin-top:3px;">${emailTag(f)}</div>
+            <div style="margin-top:3px;">${emailTag(f)}${sourceTag(f)}</div>
           </td>
           <td>${statusBadge(status)}</td>
           <td>${timelineCell(r)}</td>
@@ -1334,7 +1348,9 @@
           <td>
             ${isArchived
               ? `<button class="btn-unarchive" data-id="${r.id}" data-name="${nameAttr}" style="background:transparent;border:2px solid var(--olilo-black-40);border-radius:var(--radius-pill);padding:6px 12px;color:var(--olilo-black-64);cursor:pointer;font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;">Unarchive</button>`
-              : status === 'Not Contacted'
+              : status === 'Needs Review'
+                ? `<button class="btn-approve" data-id="${r.id}" data-name="${nameAttr}" style="flex-shrink:0;background:#2f9e44;color:#fff;border:none;border-radius:var(--radius-pill);padding:6px 14px;cursor:pointer;font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;" title="Approve — add to the live outreach list">✓ Approve</button>`
+                : status === 'Not Contacted'
                 ? `<span style="display:inline-flex;gap:6px;align-items:center;">
                      <button class="btn-nurture" data-id="${r.id}" data-name="${nameAttr}" title="Start the 2-day warm-up — follow, like, comment before DMing">🌱 Nurture</button>
                      <button class="btn-contact-sm" data-id="${r.id}" data-name="${nameAttr}" data-ig="${ig}">Contact</button>
@@ -1378,7 +1394,7 @@
               ${f['Affiliate Interest'] ? '<span style="font-size:12px;color:var(--olilo-sweet-orange);margin-left:4px;">★</span>' : ''}
             </div>
             <a class="creator-card-handle handle-link" href="https://instagram.com/${igBare}" target="_blank" rel="noopener">${ig}</a>
-            <span style="margin-left:8px;">${emailTag(f)}</span>
+            <span style="margin-left:8px;">${emailTag(f)}${sourceTag(f)}</span>
             <div class="creator-card-footer" style="gap:6px;flex-wrap:wrap;">
               ${statusBadge(status)}
               ${timelineCell(r)}
@@ -1387,7 +1403,9 @@
           </div>
           ${isArchived
             ? `<button class="btn-unarchive" data-id="${r.id}" data-name="${nameAttr}" style="flex-shrink:0;background:transparent;border:2px solid var(--olilo-black-40);border-radius:var(--radius-pill);padding:6px 12px;color:var(--olilo-black-64);cursor:pointer;font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;">Unarchive</button>`
-            : status === 'Not Contacted'
+            : status === 'Needs Review'
+              ? `<button class="btn-approve" data-id="${r.id}" data-name="${nameAttr}" style="flex-shrink:0;background:#2f9e44;color:#fff;border:none;border-radius:var(--radius-pill);padding:6px 14px;cursor:pointer;font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;" title="Approve — add to the live outreach list">✓ Approve</button>`
+              : status === 'Not Contacted'
               ? `<span style="flex-shrink:0;display:inline-flex;flex-direction:column;gap:6px;">
                    <button class="btn-nurture" data-id="${r.id}" data-name="${nameAttr}">🌱 Nurture</button>
                    <button class="btn-contact-sm" data-id="${r.id}" data-name="${nameAttr}" data-ig="${ig}">Contact</button>
@@ -1478,6 +1496,24 @@
           btn.disabled = false;
           btn.textContent = '↩ Revert';
           if (localStorage.getItem('olilo-admin-token')) alert('Failed to update. Try again.');
+        }
+      });
+    });
+
+    container.querySelectorAll('.btn-approve').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+        btn.disabled = true;
+        btn.textContent = 'Saving…';
+        const rec = allRecords.find(r => r.id === id);
+        const ok = await setStatus(id, 'Not Contacted');
+        if (ok && rec) {
+          rec.fields.Status = 'Not Contacted';
+          render();
+        } else {
+          btn.disabled = false;
+          btn.textContent = '✓ Approve';
+          if (localStorage.getItem('olilo-admin-token')) alert('Failed to approve. Try again.');
         }
       });
     });
@@ -1823,7 +1859,7 @@
       }
       if (!res.ok) throw new Error(data.error || 'failed');
       statusEl.style.color = '#1a5c2a';
-      statusEl.textContent = `✓ @${data.handle} added to Manual (${data.addedBy}) — appears here once enriched`;
+      statusEl.textContent = `✓ @${data.handle} added (${data.addedBy}) — appears here once enriched`;
       input.value = '';
       input.focus();
     } catch {

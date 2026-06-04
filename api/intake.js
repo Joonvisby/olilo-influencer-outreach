@@ -87,7 +87,8 @@ export default async function handler(req, res) {
         'Phone': phone || '',
         'Instagram Handle': igHandle,
         'Shipping Address': shipping_address,
-        Status: 'Active',
+        Status: 'Not Contacted',
+        Source: 'Inbound',
         'Affiliate Interest': Boolean(affiliate_opt_in),
       };
       if (tiktok_handle) createFields['TikTok Handle'] = `@${tiktok_handle}`;

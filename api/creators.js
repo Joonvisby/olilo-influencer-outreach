@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     do {
       const url = `https://api.airtable.com/v0/${AIRTABLE_BASE}/${TABLE}?` +
         'fields[]=Name&fields[]=Instagram+Handle&fields[]=TikTok+Handle' +
-        '&fields[]=Status&fields[]=Email&fields[]=Assigned+To&fields[]=Affiliate+Interest&fields[]=Outreach+Tier&fields[]=DM+Draft&fields[]=Email+Draft&fields[]=Last+Contacted+At&fields[]=Category&fields[]=Archived&fields[]=Date+Added&fields[]=Contacted+By&fields[]=Nurturing+Started' +
+        '&fields[]=Status&fields[]=Source&fields[]=Email&fields[]=Assigned+To&fields[]=Affiliate+Interest&fields[]=Outreach+Tier&fields[]=DM+Draft&fields[]=Email+Draft&fields[]=Last+Contacted+At&fields[]=Category&fields[]=Archived&fields[]=Date+Added&fields[]=Contacted+By&fields[]=Nurturing+Started' +
         '&sort[0][field]=Name&sort[0][direction]=asc' +
         (offset ? `&offset=${offset}` : '');
 
@@ -22,6 +22,13 @@ export default async function handler(req, res) {
       allRecords = allRecords.concat(data.records || []);
       offset = data.offset || '';
     } while (offset);
+
+    // Single-table pipeline: the Creators table now also holds pre-live rows
+    // (New / Enriching — awaiting the scout) and parked rows (Failed). Hide those
+    // from every admin/kanban view. "Needs Review" rows are kept so the Review
+    // tab can surface AI-scouted creators awaiting approval.
+    const HIDDEN = new Set(['New', 'Enriching', 'Failed']);
+    allRecords = allRecords.filter(r => !HIDDEN.has(r.fields.Status));
 
     // Derive per-channel contact state from the Outreach Log so the admin and
     // kanban views can show "by Email" / "by DM" without a schema change on

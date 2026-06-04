@@ -1,12 +1,8 @@
-// Admin-only: capture a single Instagram handle into the "Creators (Manual)" staging
-// table as Pending. Dedups against the confirmed list and both staging tables first.
-// Enrichment (DM draft, tier, etc.) happens later via the scout-creators skill; once
-// Enrichment Status flips to Done, an Airtable automation copies the row to Confirmed.
-const TABLES = {
-  confirmed:    'tblbBNgHxp6YNOJOQ',
-  notConfirmed: 'tblUK3lHXp1h49PKd',
-  manual:       'tbldVttdjmkcKEQ5z',
-};
+// Admin-only: capture a single Instagram handle into the Creators table as Status
+// "New" (Source "Manual"). Dedups against the table first. Enrichment (DM draft,
+// tier, etc.) happens later via the scout-creators skill, which flips New -> Not
+// Contacted once done — no second table, no copy automation.
+const CREATORS = 'tblbBNgHxp6YNOJOQ';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
@@ -28,22 +24,17 @@ export default async function handler(req, res) {
   const formula = `LOWER(SUBSTITUTE({Instagram Handle},"@",""))="${lc}"`;
 
   try {
-    // 1. Dedup — reject if this handle is already anywhere in the pipeline.
-    for (const [label, tid] of Object.entries(TABLES)) {
-      const url = `https://api.airtable.com/v0/${BASE}/${tid}?filterByFormula=${encodeURIComponent(formula)}&maxRecords=1&fields[]=Instagram+Handle`;
-      const r = await fetch(url, { headers: { Authorization: `Bearer ${TOKEN}` } });
-      const d = await r.json();
-      if (r.ok && Array.isArray(d.records) && d.records.length) {
-        const where = label === 'confirmed' ? 'your live Creators list'
-          : label === 'manual' ? 'the Manual queue'
-          : 'the scouting list (not confirmed)';
-        return res.status(409).json({ error: `@${clean} is already in ${where}.`, where: label });
-      }
+    // 1. Dedup — reject if this handle is already in the Creators table.
+    const dedupUrl = `https://api.airtable.com/v0/${BASE}/${CREATORS}?filterByFormula=${encodeURIComponent(formula)}&maxRecords=1&fields[]=Instagram+Handle`;
+    const dr = await fetch(dedupUrl, { headers: { Authorization: `Bearer ${TOKEN}` } });
+    const dd = await dr.json();
+    if (dr.ok && Array.isArray(dd.records) && dd.records.length) {
+      return res.status(409).json({ error: `@${clean} is already in your Creators list.`, where: 'confirmed' });
     }
 
-    // 2. Create the Pending row in Creators (Manual).
+    // 2. Create the New row in Creators, ready for the scout to enrich.
     const today = new Date().toISOString().split('T')[0];
-    const create = await fetch(`https://api.airtable.com/v0/${BASE}/${TABLES.manual}`, {
+    const create = await fetch(`https://api.airtable.com/v0/${BASE}/${CREATORS}`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${TOKEN}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -52,8 +43,7 @@ export default async function handler(req, res) {
           Name: clean,
           'Instagram Handle': clean,
           'Instagram Link': `https://instagram.com/${clean}`,
-          'Fill Method': 'Manual',
-          'Enrichment Status': 'Pending',
+          Status: 'New',
           'Assigned To': by,
           Source: 'Manual',
           'Date Added': today,
