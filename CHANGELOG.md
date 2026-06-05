@@ -7,6 +7,11 @@ Format per entry:
 
 ---
 
+## 2026-06-05 — scout-creators verifies via Apify (real follower counts + bio emails)
+- **Why** — Web-search snippets gave stale/approximate follower counts and hid disqualifiers. Scouting 4 creators, Apify caught a sub-1K account (@eyesandhour, 750) and two non-US accounts (@thematchatalk DE, @foodnsnackreviews DE/UK) that snippets made look fine, and pulled a verified bio email for @butterbeready — none of which plain search surfaced.
+- `scripts/apify-ig.mjs` — New helper. `node scripts/apify-ig.mjs <handle> [handle ...]` returns real per-profile data (followers, posts, verified, private, bio email, bio) via the `apify/instagram-scraper` actor using the existing `APIFY_TOKEN`.
+- `.claude/skills/scout-creators/SKILL.md` — Apify is now the verification backbone: step 3 runs `apify-ig.mjs` first; Audience Size + Email come from Apify, not snippets; the Failed criteria add private/not-found and non-US (US-only kit shipping); the `find` flow sources via Apify hashtag scraping and verifies each handle before adding.
+
 ## 2026-06-04 — Collapse the 3 creator tables into one (Status-driven pipeline)
 - **Why** — Creators lived across 3 same-shaped tables (Confirmed + 2 staging) glued by copy/delete automations (one was broken, stranding enriched creators). The "which table is this person in?" sprawl was confusing and fragile. Now there is one `Creators` table and a creator's funnel position is just the `Status` field — no staging, no automations.
 - **Data migration** (`backups/creators-backup-*.json` taken first): folded the 8 Manual + 1 not-confirmed rows into `Creators` (`tblbBNgHxp6YNOJOQ`), deduped by handle. Enriched manual rows → `Not Contacted`, AI-scouted → `Needs Review`, failed → `Failed`; the 2 already-confirmed dups skipped. Extended the `Status` field with `New`/`Enriching`/`Needs Review`/`Failed` (via typecast). Table went 231 → 238 rows. (A throwaway `Stage` field was used during migration; delete it in the Airtable UI.)

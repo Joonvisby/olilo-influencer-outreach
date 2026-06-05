@@ -27,9 +27,11 @@ Run it as a slash command inside a Claude Code session opened in this project
   `New`). To keep these picked up hands-free, run it on a loop:
   `/loop 5m /scout-creators`.
 - **`/scout-creators @somehandle`** — adds and fills that one creator.
-- **`/scout-creators find 15 gut-health creators`** — researches and finds
-  matching creators, adds a `New` row for each (`Source = AI Scout`), then fills
-  them.
+- **`/scout-creators find 15 gut-health creators`** — sources candidates (web
+  research and/or Apify hashtag scraping), verifies each handle with
+  `scripts/apify-ig.mjs` BEFORE adding (drops sub-1K, private, and non-US
+  accounts up front), adds a `New` row for each survivor (`Source = AI Scout`),
+  then fills them.
 
 Typical flow: handles land as `New` (quick-add or `find`) -> run
 `/scout-creators` -> AI-scouted rows become `Needs Review` for you to approve in
@@ -39,6 +41,11 @@ the admin Review tab; manually-added rows go straight onto the live list.
 - Airtable base `appubVom4JyZ3mCEL`; token `AIRTABLE_TOKEN` in `.env.production`.
 - Single table: **"Creators"** (`tblbBNgHxp6YNOJOQ`). The no-arg run scans it for
   rows with `Status = New` and enriches each with the procedure below.
+- **Apify is the verification backbone** (`APIFY_TOKEN` in `.env.production`).
+  Run `node scripts/apify-ig.mjs <handle> [handle ...]` to get **real** profile
+  data per handle (one JSON line each): `followers`, `posts`, `verified`,
+  `private`, `email` (from bio), `bio`. Use this for follower count and email —
+  never trust web-search snippets for those. Actor: `apify/instagram-scraper`.
 - Canonical DM + email pattern reference: `agents/alice-prompt.md` (v10).
 
 ## Step 0 — load the roster (always, before any research)
@@ -63,13 +70,16 @@ In the final report, list any candidates skipped as already-on-the-list dupes.
    live creator by handle or name, set `Status` = `Failed`, note "Already in
    Creators" in `Why Olilo`, skip research and the DM.
 2. Set `Status` = `Enriching`.
-3. Web-search the creator. Confirm their REAL current Instagram account. If the
-   confirmed handle turns out to match the dedup index, treat it as a duplicate
-   per step 1.
+3. **Verify with Apify FIRST**: `node scripts/apify-ig.mjs <handle>`. This
+   confirms the account is real, public, and active, and returns the exact
+   follower count and bio email. Then web-search for context (what they are
+   known for). If the confirmed handle matches the dedup index, treat it as a
+   duplicate per step 1. If Apify shows the account private or not found, go to
+   step 6.
 4. Fill the research fields:
    - **Instagram Handle** — corrected if wrong; always store with a leading `@`.
    - **Instagram Link** — `https://instagram.com/<handle>`.
-   - **Audience Size** — from the *Instagram* follower count, bucketed:
+   - **Audience Size** — from the *Apify* follower count, bucketed:
      `Nano 1K–10K` / `Micro 10K–100K` / `Macro 100K–1M` / `Mega 1M+`.
    - **Outreach Tier** — by follower count: 1M+ -> `Tier 1`; 100K-1M -> `Tier 2`;
      under 100K -> `Tier 3`.
@@ -79,17 +89,18 @@ In the final report, list any candidates skipped as already-on-the-list dupes.
    - **Why Olilo** — 1-2 plain, specific sentences on what the creator is
      genuinely known for (signature content, a cookbook, a series). This is the
      raw material for the DM hook.
-   - **Email** — the creator's public business or contact email, IF one is
-     genuinely findable: the Instagram bio "Email" button, their website
-     about/contact page, link-in-bio, or media kit. Store only a real, verified
-     address. If none is publicly listed, leave it empty. NEVER guess, infer, or
-     construct an email (no `name@gmail.com` guesses, no `info@` assumptions).
+   - **Email** — prefer the `email` Apify pulled from the bio (a real, verified
+     address). If Apify returns none, check the website about/contact page or
+     link-in-bio. Store only a real, verified address; if none is public, leave
+     it empty. NEVER guess, infer, or construct an email.
    - **Source** — leave as-is (`Manual` for quick-adds, `AI Scout` for `find`);
      it decides where the row lands in step 7.
 5. Write the **DM Draft** and the **Email Draft** (see the two sections below).
-6. If follower count is under 1,000, or the account cannot be confirmed:
-   set `Status` = `Failed`, explain why in `Why Olilo`, and skip the DM and the
-   Email Draft.
+6. Set `Status` = `Failed` (explain why in `Why Olilo`, skip the DM + Email) if
+   Apify shows any of: follower count under 1,000; the account is private or not
+   found; or the audience is clearly non-US (bio language/location indicates
+   another country) — OLILO seeds physical kits in the US, so non-US creators
+   are a poor fit. Note non-US ones as "revive if you want international."
 7. Otherwise set the row live by `Source`:
    - `Source = AI Scout` -> `Status` = `Needs Review` (waits for Joon/Rich to
      approve in the admin Review tab).
