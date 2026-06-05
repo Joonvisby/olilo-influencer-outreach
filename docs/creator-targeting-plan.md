@@ -60,7 +60,13 @@ baking, desserts. Hooks: drink sweetener · prebiotic fiber/gut health · no sug
   that ideal small drink creators are often sub-1K means volume is thin.
 - **The on-target matcha/latte creators keep landing sub-1K** (e.g. @drinksby_anna 85,
   @ninysmatcha 642). With the 1,000 floor held, hashtags rarely clear the bar.
-- **Implication:** lead with seed handles + brand tagged-feeds, not cold hashtags.
+- **Brand TAGGED-feeds also low-yield.** Scraping who @olipop/@drinkpoppi/@lakanto
+  tagged returned mostly their own designers/employees, lifestyle/fashion creators,
+  and storefront businesses — not niche food/drink creators. Zero clean fits.
+- **Implication:** automated cold discovery (hashtags + tagged-feeds) is low-yield
+  for this ICP. **Lead with Joon/Rich seed handles**, then look-alikes around them
+  and around our confirmed fits (@carla.craves, @snacklikeachamp, @butterbeready).
+  Reserve cold scraping as a supplement, not the primary engine.
 
 ## Process
 Discover → `node scripts/apify-ig.mjs` to verify each (real followers, email, bio) →
