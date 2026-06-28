@@ -180,11 +180,20 @@
   .hero-row .hero-text     { grid-area: headline; min-width: 0; }
   .hero-row .hero-body     { grid-area: body;     min-width: 0; }
   .hero-row .hero-product  { grid-area: product; margin: 0; }
-  .hero-product img {
-    display: block; width: 100%; height: auto;
+  .hero-product {
     border-radius: 16px;
     border: 2px solid var(--olilo-black);
     box-shadow: 0 6px 24px rgba(51, 27, 10, 0.12);
+    background: url("assets/hero-gradient.jpg") center / cover no-repeat;
+    aspect-ratio: 2 / 3;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hero-product img {
+    display: block;
+    height: 152%; width: auto; max-width: 100%;
+    object-fit: contain;
+    transform: translateY(12%);
   }
   /* When H1 is the first child of .hero-text (no preceding eyebrow), drop its top margin */
   .hero-text > h1.pitch-h:first-child { margin-top: 0; }
@@ -508,9 +517,9 @@
         </p>
       </div>
 
-      <!-- Product photo -->
+      <!-- Product photo: bottle (with reflection) on gradient panel -->
       <div class="hero-product">
-        <img src="assets/product-bottle.jpg" alt="OLILO Sweet Fiber Syrup bottle" width="760" height="1140" loading="lazy">
+        <img src="assets/bottle-reflection.png" alt="OLILO Sweet Fiber Syrup bottle" width="560" height="1365" loading="lazy">
       </div>
     </div>
 
