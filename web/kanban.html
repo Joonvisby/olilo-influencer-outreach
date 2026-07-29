@@ -453,7 +453,7 @@
             : r.fields['Category'] === activeCategory;
         const matchAssignee = activeAssignee === 'all'
           ? true
-          : r.fields['Assigned To'] === activeAssignee;
+          : r.fields['Owner'] === activeAssignee;
         return matchStatus && matchTier && matchCategory && matchAssignee;
       });
 

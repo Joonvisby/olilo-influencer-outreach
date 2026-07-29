@@ -1,6 +1,6 @@
-const ALLOWED_FIELDS = new Set(['Archived', 'Status', 'Last Contacted At', 'DM Draft', 'Contacted By']);
+const ALLOWED_FIELDS = new Set(['Archived', 'Status', 'Last Contacted At', 'DM Draft', 'Contacted By', 'Nurturing Started']);
 const VALID_STATUSES = new Set([
-  'Not Contacted', 'Contacted', 'Replied', 'Deal Agreed',
+  'Not Contacted', 'Nurturing', 'Contacted', 'Replied', 'Deal Agreed',
   'Shipped', 'Delivered', 'Content Posted', 'Declined',
 ]);
 
@@ -43,7 +43,7 @@ export default async function handler(req, res) {
           Authorization: `Bearer ${AIRTABLE_TOKEN}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ fields: safeFields }),
+        body: JSON.stringify({ fields: safeFields, typecast: true }),
       }
     );
     const data = await resp.json();

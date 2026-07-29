@@ -22,17 +22,21 @@ Master record for every influencer in the pipeline. One row per creator.
 | Why Olilo | Long text | Internal notes on why this creator is a fit. Written by Joon or Rich. |
 | Email | Email | Creator's business/contact email. |
 | Status | Single select | Options: Not Contacted, Contacted, Replied, Deal Agreed, Shipped, Delivered, Content Posted, Affiliate Active, Declined, No Response |
-| Assigned To | Single select | Options: Joon, Rich. Who owns outreach for this creator. |
-| List by | Multiple select | Options: Joon, Rich. Who sourced/contributed this creator to the list. Distinct from Assigned To (outreach owner). |
+| Owner | Single select | Options: Joon, Rich. Who owns outreach for this creator. |
+| List by | Multiple select | Options: Joon, Rich. Who sourced/contributed this creator to the list. Distinct from Owner (outreach owner). |
 | Creator Brief | Long text | Output from Scout agent. Generated in a Claude Code session and written to Airtable via the API. |
 | Email Draft | Long text | Output from Alice agent. Generated in a Claude Code session and written to Airtable via the API. |
 | DM Draft | Long text | Output from Alice agent. Must be populated at import time — see "Creator import rule" in `../CLAUDE.md`. |
 | Shipping Address | Long text | Populated from intake form submission (`kit.olilosweet.com`). Format: Street, City, State ZIP, Country |
-| Affiliate Code | Single line text | WooCommerce coupon code. e.g. STEPH10 |
-| Affiliate Link | URL | Full affiliate URL. e.g. https://olilosweet.com/?ref=steph10 |
-| Commission Rate | Percent | Default: 10%. Range 0–30%. |
-| Total Conversions | Number | Integer. Pulled from WooCommerce affiliate tracking. |
-| Total Revenue | Currency | USD. Calculated from affiliate sales. |
+| Affiliate Code | Single line text | **Amazon promo code** for this creator. e.g. STEPH20 (created in Seller Central → Promotions). |
+| Amazon Attribution Link | URL | Per-creator Amazon Attribution tag link (created in Amazon Ads). This is the tracked link the creator posts; also captures the 10% Brand Referral Bonus. |
+| Commission Rate | Percent | 20% standard / 25% Founding Creator. |
+| Founding Creator | Checkbox | First 50 creators who post — locks in 25% commission permanently. |
+| Payout Method | Single select | Options: PayPal, Wise, Venmo. |
+| Payout Handle | Single line text | PayPal email / Wise / Venmo handle for paying commission. |
+| Affiliate Link | URL | *(Legacy — WooCommerce DTC `?ref=` URL. Unused under the Amazon model; kept for history.)* |
+| Total Conversions | Number | *(Legacy — was WooCommerce. Use the Affiliate Payouts rollup instead.)* |
+| Total Revenue | Currency | *(Legacy — was WooCommerce. Use the Affiliate Payouts rollup instead.)* |
 | Notes | Long text | Freeform internal notes. |
 | Date Added | Date | Date creator was added to the base. |
 | Archived | Checkbox | Hides creator from active outreach views (admin list, kanban). Toggle from web/admin.html. |
@@ -139,18 +143,47 @@ Public self-apply submissions from `olilosweet.com/contact-us/` → `/apply` for
 
 ---
 
+## TABLE 6: AFFILIATE PAYOUTS
+
+**Table ID:** `tblHjmJP5kHddLqgG`
+
+One row per creator **per month**. Our $0 replacement for Levanta: each month you read the Amazon Attribution dashboard, enter the units/revenue each creator drove, and track what you owe and what you've paid. Created by `scripts/setup-affiliate-tracking.airtable.py`.
+
+| Field Name | Field Type | Options / Notes |
+| --- | --- | --- |
+| Payout | Single line text | Primary. Label, e.g. "Steph — 2026-05". |
+| Creator | Link to another record | Links to: Creators (confirmed). |
+| Month | Single select | Options: 2026-05 … 2026-12. |
+| Units Sold | Number | Integer. From the creator's Amazon Attribution tag for that month. |
+| Sales Revenue | Currency | USD attributed to that creator's tag for the month. |
+| Commission Rate | Percent | Copy from the creator (20% / 25%). |
+| Commission Owed | Currency | Set formula in UI: `{Sales Revenue} * {Commission Rate}`. |
+| Payout Status | Single select | Options: Pending, Paid. |
+| Paid Date | Date | When commission was sent (PayPal/Wise/Venmo). |
+| Payout Reference | Single line text | Transaction ID / confirmation from the payout. |
+| Notes | Long text | Adjustments, disputes, returns. |
+
+**Monthly workflow:** (1) In Amazon Ads → Attribution, pull each creator's units + sales for the month. (2) Add one Affiliate Payouts row per creator with those numbers + their rate. (3) Pay via their `Payout Method` / `Payout Handle`, mark **Paid**, log the reference. The 10% Brand Referral Bonus comes back to you from Amazon separately and funds these payouts.
+
+**Manual UI follow-ups** (Airtable's API can't create formula/rollup fields):
+- Set `Commission Owed` to a formula field: `{Sales Revenue} * {Commission Rate}`.
+- On **Creators (confirmed)**, add rollup fields over the linked Affiliate Payouts: Total Units (`SUM(Units Sold)`), Total Sales (`SUM(Sales Revenue)`), Total Commission Owed (`SUM(Commission Owed)`), Total Paid (`SUM(Commission Owed)` where Payout Status = Paid).
+- Add a **Pending Payouts** view on this table filtered to `Payout Status = Pending`, sorted by Month — your monthly pay run.
+
+---
+
 ## VIEWS (on Creators Table)
 
 ### View 1: Pipeline (Kanban)
 - **Type:** Kanban
 - **Grouped by:** Status
 - **Columns:** Not Contacted → Contacted → Replied → Deal Agreed → Shipped → Delivered → Content Posted → Affiliate Active
-- **Card fields shown:** Name, Assigned To, Outreach Tier, Category
+- **Card fields shown:** Name, Owner, Outreach Tier, Category
 - **Hidden:** Creator Brief, Email Draft, DM Draft, Notes
 
 ### View 2: My Creators (Grid)
 - **Type:** Grid
-- **Filter:** Assigned To = [current user — set per person]
+- **Filter:** Owner = [current user — set per person]
 - **Sorted by:** Status (ascending), Date Added (descending)
 - **Fields shown:** Name, Status, Platform(s), Outreach Tier, Category, Email, Follow-Up Date
 
@@ -158,13 +191,13 @@ Public self-apply submissions from `olilosweet.com/contact-us/` → `/apply` for
 - **Type:** Grid
 - **Filter:** Status = Contacted AND Date Added is before 7 days ago (or use Outreach Log's Follow-Up Date = today)
 - **Sorted by:** Date Added (ascending — oldest first)
-- **Fields shown:** Name, Assigned To, Email, Date Added, Notes
+- **Fields shown:** Name, Owner, Email, Date Added, Notes
 - **Setup note:** For precise follow-up tracking, filter the Outreach Log table for Follow-Up Date = today instead. Joon/Rich check this view daily.
 
 ### View 4: Awaiting Post (Grid)
 - **Type:** Grid
 - **Filter:** Status = Delivered
-- **Fields shown:** Name, Assigned To, Platform(s), Category, Shipping Address, Notes
+- **Fields shown:** Name, Owner, Platform(s), Category, Shipping Address, Notes
 - **Purpose:** Shows creators who received their kit but haven't posted yet.
 
 ### View 5: Affiliate Active (Grid)

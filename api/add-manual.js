@@ -44,7 +44,7 @@ export default async function handler(req, res) {
           'Instagram Handle': clean,
           'Instagram Link': `https://instagram.com/${clean}`,
           Status: 'New',
-          'Assigned To': by,
+          Owner: by,
           Source: 'Manual',
           'Date Added': today,
         },

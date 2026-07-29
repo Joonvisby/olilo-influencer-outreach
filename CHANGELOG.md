@@ -7,6 +7,18 @@ Format per entry:
 
 ---
 
+## 2026-07-28 — Deployed the "Owner" field-rename fix (admin was still empty in prod)
+- **Why** — The 2026-06-26 fix below was written locally but never committed or deployed, so `kit.olilosweet.com/admin` kept showing zero creators. Verified the Airtable token/base were fine and the deployed function was still requesting the dead `Assigned To` field; committed the pending fix set and redeployed to Vercel.
+- Also shipped with it (same pending set): `api/update-creator.js` now allows `Nurturing` status + `Nurturing Started` field and sends `typecast: true`; `airtable/schema.md` updated.
+
+## 2026-06-26 — Fix admin page showing no creators (Airtable field renamed to "Owner")
+- **Why** — `kit.olilosweet.com/admin` rendered an empty list. The `Assigned To` field had been renamed to `Owner` in Airtable, so `api/creators.js` was requesting a field name that no longer existed; Airtable 422'd the whole request and the page got zero records. Env vars and token were fine.
+- Renamed the field references in code from `Assigned To` to `Owner` (its new Airtable name): `api/creators.js` (field list), `web/kanban.html` (assignee filter), `api/add-manual.js` (quick-add stamp).
+
+## 2026-06-25 — Enriched 8 manual-add creators via /scout-creators
+- Ran `/scout-creators` over the 8 `New` (Source = Manual) rows in the Creators table. All 8 verified public/active/US via Apify, none duplicates. Enriched with handle, audience size, outreach tier, category, Why Olilo, verified bio email, v10 DM Draft, and tiered Email Draft, then set `Status = Not Contacted` (live).
+- Creators: @vivian.youjin (119K, T2, Gut Health), @blakeswanson (215K, T2, Healthy Recipe), @rinasvoyage (912K, T2, Asian Food), @boymeetsale (121K, T2, Lifestyle), @niikkifogg (69K, T3, Healthy Recipe), @dennisjauch (40K, T3, Beverage), @matcha.eats (10.4K, T3, Beverage), @eatswithyasmine (9.0K, T3, Healthy Recipe). All 8 had a public bio email.
+
 ## 2026-06-05 — scout-creators verifies via Apify (real follower counts + bio emails)
 - **Why** — Web-search snippets gave stale/approximate follower counts and hid disqualifiers. Scouting 4 creators, Apify caught a sub-1K account (@eyesandhour, 750) and two non-US accounts (@thematchatalk DE, @foodnsnackreviews DE/UK) that snippets made look fine, and pulled a verified bio email for @butterbeready — none of which plain search surfaced.
 - `scripts/apify-ig.mjs` — New helper. `node scripts/apify-ig.mjs <handle> [handle ...]` returns real per-profile data (followers, posts, verified, private, bio email, bio) via the `apify/instagram-scraper` actor using the existing `APIFY_TOKEN`.
